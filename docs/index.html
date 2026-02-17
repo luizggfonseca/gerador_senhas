@@ -1691,7 +1691,7 @@
       <div>
         <label class="label">Caracteres Especiais</label>
         <input type="text" class="input-field input-mono" value="${escHtml(o.symbols || '')}"
-               oninput="setOption('symbols', this.value)">
+               onchange="setOption('symbols', this.value)">
       </div>`;
       } else if (o.token_type === 'uuid') {
         // UUID não tem opções configuráveis
@@ -1761,7 +1761,7 @@
              <div>
                <label class="label">Pool</label>
                <input type="text" class="input-field input-mono" value="${escHtml(o.numbers_pool || '0123456789')}"
-                      oninput="setOption('numbers_pool', this.value)">
+                      onchange="setOption('numbers_pool', this.value)">
              </div>
            </div>`
         )}
@@ -1777,7 +1777,7 @@
              <div>
                <label class="label">Pool</label>
                <input type="text" class="input-field input-mono" value="${escHtml(o.symbols_pool || '!@#$%&*')}"
-                      oninput="setOption('symbols_pool', this.value)">
+                      onchange="setOption('symbols_pool', this.value)">
              </div>
            </div>`
         )}
