@@ -151,5 +151,22 @@ MUDANÇAS APLICADAS:
      file:// e orienta a usar servidor local ou GitHub Pages.
 
 ================================================================================
+7. MELHORIA NO MANUAL DE USO (17/02/2026)
+================================================================================
+
+PROBLEMA:
+  - O manual na barra lateral (colapsável) ocupava muito espaço vertical e
+    era cortado em telas menores, prejudicando a leitura.
+
+SOLUÇÃO (Versão Standalone):
+  ✅ Barra lateral limpa: removido o manual colapsável.
+  ✅ Botão de Ajuda (?): fixado no rodapé da sidebar (desktop) ou canto
+     inferior direito (mobile).
+  ✅ Modal Responsivo: ao clicar em (?), abre-se um popup centralizado com
+     fundo escurecido (backdrop blur), contendo todo o manual de uso.
+  ✅ Melhoria na UX: leitura focada sem precisar rolar a barra lateral de
+     configurações.
+
+================================================================================
 FIM DO HISTÓRICO
 ================================================================================
