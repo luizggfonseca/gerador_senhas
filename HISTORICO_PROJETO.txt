@@ -86,7 +86,37 @@ INFRAESTRUTURA:
   ✅ Documento de histórico do projeto criado (este arquivo).
 
 ================================================================================
-4. PENDÊNCIAS / MELHORIAS FUTURAS
+4. VERSÃO WEB (GitHub Pages) — 17/02/2026
+================================================================================
+
+OBJETIVO:
+  Criar uma versão acessível via GitHub Pages, sem modificar o projeto
+  principal que depende do backend Python (FastAPI).
+
+ABORDAGEM:
+  ✅ Criada pasta docs/ com aplicação standalone (index.html + wordlists/).
+  ✅ Toda a lógica de geração reimplementada em JavaScript puro (client-side).
+  ✅ Utiliza Web Crypto API (crypto.getRandomValues, crypto.randomUUID) para
+     geração criptograficamente segura — mesma qualidade do Python secrets.
+  ✅ Wordlists Diceware copiadas para docs/wordlists/ e carregadas via fetch.
+  ✅ Design idêntico ao frontend React (mesmo CSS semântico).
+  ✅ Responsivo para dispositivos móveis.
+  ✅ Nenhum arquivo do projeto original foi modificado.
+
+GERADORES IMPLEMENTADOS:
+  • Aleatório Clássico — com pool customizável, exclusão de ambíguos
+  • Token Hex / URL-Safe / UUID — com cálculo de entropia correto
+  • Diceware Puro — passphrase com 7 idiomas
+  • Diceware Modificado — capitalização, números, símbolos configuráveis
+
+COMO PUBLICAR:
+  1. Fazer push da pasta docs/ para o repositório GitHub.
+  2. Ir em Settings → Pages → Deploy from branch.
+  3. Selecionar branch main e pasta /docs.
+  4. Salvar. O site estará acessível em https://<usuario>.github.io/<repo>/.
+
+================================================================================
+5. PENDÊNCIAS / MELHORIAS FUTURAS
 ================================================================================
 
 - [ ] Integrar módulo vault ao histórico (substituir history.json em texto 
