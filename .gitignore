@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vault (dados sensíveis)
+vault.enc
+vault.enc.salt
+
+# Node
+node_modules/
+frontend/node_modules/
+
+# Logs
+*.log
+
+# History (contém senhas em texto plano)
+history.json

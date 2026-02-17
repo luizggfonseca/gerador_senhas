@@ -1,0 +1,104 @@
+================================================================================
+HISTÓRICO DO PROJETO — GERADOR DE SENHAS
+================================================================================
+
+Criado por: Luiz G G Fonseca
+Data de início: Janeiro/2026
+Última atualização: 17/02/2026
+
+================================================================================
+1. FASE INICIAL (jan/2026)
+================================================================================
+
+- Estrutura inicial do projeto criada com Python + FastAPI (backend) e React + 
+  Vite (frontend).
+- Três geradores de senhas implementados:
+  * Diceware Puro — passphrase com palavras de listas em 7 idiomas
+  * Diceware Modificado — passphrase com capitalização, números e símbolos
+  * Aleatório / Token — senhas clássicas, hex, URL-safe, UUID
+- Módulo de cálculo de entropia (core/entropy.py) para classificação de 
+  força das senhas.
+- Módulo vault (vault/) com criptografia AES-256-GCM + PBKDF2 implementado
+  mas não integrado ao fluxo principal.
+- Listas Diceware em 7 idiomas: português, espanhol, italiano, francês,
+  latim, inglês e catalão.
+- Frontend com componente único monolítico (Generator.jsx, 385 linhas).
+- CSS com classes utilitárias manuais imitando Tailwind (~880 linhas).
+- Histórico de senhas armazenado em texto plano (history.json).
+
+================================================================================
+2. PROBLEMAS IDENTIFICADOS (fev/2026)
+================================================================================
+
+- [SEGURANÇA] history.json armazena senhas em texto plano no disco.
+- [SEGURANÇA] CORS aberto para todas as origens (allow_origins=["*"]).
+- [SEGURANÇA] debug_init.py com senha hardcoded ("testpassword").
+- [CÓDIGO] sys.path.append manual no backend/main.py — frágil e desnecessário.
+- [CÓDIGO] Generator.jsx monolítico (385 linhas) misturando lógica e UI.
+- [CÓDIGO] App.css com resíduos do template Vite (logo-spin, read-the-docs).
+- [CÓDIGO] index.css com ~880 linhas reimplementando Tailwind manualmente.
+- [CÓDIGO] Exceção genérica `except:` (bare) no diceware_pure.py.
+- [CÓDIGO] Faltavam __init__.py nos pacotes core/, backend/, diceware/.
+- [CÓDIGO] Sem .gitignore na raiz do projeto.
+- [PROJETO] README.md com apenas 13 linhas, sem instruções de instalação.
+- [PROJETO] Sem requirements.txt para dependências Python.
+- [PROJETO] run_app.sh sem validações de ambiente.
+- [PROJETO] Sem documento de histórico do projeto.
+- [TESTES] Nenhum teste automatizado.
+
+================================================================================
+3. REFATORAÇÃO GERAL (17/02/2026)
+================================================================================
+
+SEGURANÇA:
+  ✅ CORS restringido para localhost:5173 e 127.0.0.1:5173 apenas.
+  ✅ debug_init.py removido do projeto.
+  ✅ Exceção bare `except:` corrigida para `except (ValueError, TypeError):`.
+  ✅ .gitignore criado excluindo history.json, vault.enc, __pycache__, etc.
+
+BACKEND:
+  ✅ backend/main.py reescrito sem sys.path.append.
+  ✅ Tratamento de erros melhorado com exceções tipadas (KeyError, RuntimeError).
+  ✅ Usado gen.configure() ao invés de setattr direto.
+  ✅ Variáveis internas prefixadas com _ para evitar conflitos.
+  ✅ Docstring adicionada ao módulo.
+
+FRONTEND:
+  ✅ Generator.jsx dividido em componentes menores:
+     - Sidebar.jsx — seleção do método de geração
+     - ConfigPanel.jsx — formulário de personalização
+     - ResultPanel.jsx — exibição da senha gerada
+  ✅ Hook usePasswordGenerator.js criado para encapsular lógica de API.
+  ✅ Generator.jsx reduzido de 385 para ~120 linhas.
+  ✅ App.css limpo (removidos resíduos do template Vite).
+  ✅ index.css reescrito: ~880 linhas de utilitários → ~500 linhas de CSS
+     semântico organizado por componente.
+  ✅ App.jsx atualizado para usar classes semânticas.
+  ✅ Feedback visual melhorado: spinner no botão gerar, texto "Copiado!" 
+     no botão copiar, exibição de erros.
+  ✅ Clipboard com fallback para navegadores antigos.
+
+INFRAESTRUTURA:
+  ✅ __init__.py criados para core/, backend/, diceware/.
+  ✅ requirements.txt criado com dependências Python.
+  ✅ run_app.sh reescrito com validações (venv, node_modules, portas).
+  ✅ README.md reescrito com arquitetura, instruções e detalhes de segurança.
+  ✅ Documento de histórico do projeto criado (este arquivo).
+
+================================================================================
+4. PENDÊNCIAS / MELHORIAS FUTURAS
+================================================================================
+
+- [ ] Integrar módulo vault ao histórico (substituir history.json em texto 
+      plano por armazenamento criptografado).
+- [ ] Criar suite de testes automatizados (pytest para backend, vitest para 
+      frontend).
+- [ ] Adicionar pyproject.toml para empacotamento profissional do Python.
+- [ ] Implementar limpeza automática do clipboard após X segundos.
+- [ ] Adicionar indicador visual de força da senha em tempo real (barra de 
+      progresso durante a configuração).
+- [ ] Exportar/importar vault como backup.
+
+================================================================================
+FIM DO HISTÓRICO
+================================================================================
