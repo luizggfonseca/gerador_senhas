@@ -1,1085 +1,1687 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SecureGen — Gerador de Senhas</title>
-  <meta name="description" content="Gere senhas fortes e seguras diretamente no seu navegador. Suporte a Diceware em 7 idiomas, senhas aleatórias e tokens.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+  <meta name="description"
+    content="Gere senhas fortes e seguras diretamente no seu navegador. Suporte a Diceware em 7 idiomas, senhas aleatórias e tokens.">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-/* ========================================================================== */
-/* Gerador de Senhas — Design System (GitHub Pages Edition)                   */
-/* ========================================================================== */
-
-/* ---------- Tokens ---------- */
-
-:root {
-  --bg-primary: #0a0a0a;
-  --bg-secondary: #ffffff08;
-  --bg-card: #161618;
-  --bg-input: #202022;
-
-  --text-primary: #ededed;
-  --text-secondary: #a1a1aa;
-
-  --accent: #5e6ad2;
-  --accent-hover: #4e5ac0;
-  --accent-glow: #5e6ad240;
-
-  --border: #ffffff15;
-  --border-active: #5e6ad2;
-
-  --success: #22c55e;
-  --warning: #eab308;
-  --error: #ef4444;
-
-  --radius-sm: 6px;
-  --radius: 12px;
-  --radius-lg: 18px;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-glow: 0 0 20px var(--accent-glow);
-}
-
-/* ---------- Reset & Base ---------- */
-
-*, *::before, *::after { box-sizing: border-box; }
-
-body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  background-color: var(--bg-primary);
-  background-image:
-    radial-gradient(circle at 15% 50%, rgba(94, 106, 210, 0.08), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
-  color: var(--text-primary);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-::selection { background: var(--accent); color: white; }
-
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #ffffff20; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #ffffff30; }
-
-/* ---------- Animations ---------- */
-
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95) translateY(10px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
-
-.animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-.animate-scale-in { animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-/* ========================================================================== */
-/* App Layout                                                                 */
-/* ========================================================================== */
-
-.app-container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-  animation: fadeIn 0.3s ease-out forwards;
-}
-
-.app-wrapper { width: 960px; max-width: 100%; }
-
-.app-header { margin-bottom: 1rem; text-align: center; }
-
-.app-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.25rem;
-  background: linear-gradient(to right, #fff, var(--text-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.app-subtitle { color: var(--text-secondary); margin: 0; font-size: 0.8125rem; }
-
-/* Glass Panel */
-.glass-panel {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  padding: 4px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  position: relative;
-  overflow: hidden;
-}
-
-.glass-glow {
-  position: absolute; top: 0; left: 50%;
-  transform: translateX(-50%);
-  width: 100%; height: 100%; max-width: 48rem;
-  background: var(--accent);
-  opacity: 0.03; filter: blur(48px);
-  z-index: -1; border-radius: 50%; pointer-events: none;
-}
-
-.glass-inner {
-  background: rgba(10, 10, 10, 0.8);
-  border-radius: var(--radius);
-  padding: 1rem;
-  backdrop-filter: blur(4px);
-}
-
-.app-footer {
-  margin-top: 0.5rem;
-  text-align: center;
-  font-size: 0.625rem;
-  color: var(--text-secondary);
-  opacity: 0.4;
-}
-
-.app-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: rgba(94, 106, 210, 0.12);
-  border: 1px solid rgba(94, 106, 210, 0.25);
-  color: #8b95e0;
-  font-size: 0.625rem;
-  font-weight: 600;
-  padding: 0.2rem 0.5rem;
-  border-radius: 99px;
-  margin-left: 0.5rem;
-  vertical-align: middle;
-  letter-spacing: 0.03em;
-}
-
-/* ========================================================================== */
-/* Generator Layout                                                           */
-/* ========================================================================== */
-
-.generator-layout {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  min-height: 380px;
-}
-
-.generator-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  overflow: hidden;
-}
-
-/* ========================================================================== */
-/* Sidebar                                                                    */
-/* ========================================================================== */
-
-.generator-sidebar {
-  width: 200px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.sidebar-header {
-  font-size: 0.75rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem; padding-left: 0.5rem;
-}
-
-.sidebar-list { display: flex; flex-direction: column; gap: 0.25rem; }
-
-.sidebar-btn {
-  width: 100%; text-align: left;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-sm);
-  color: var(--text-secondary);
-  background: transparent;
-  border: 1px solid transparent;
-  cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 0.75rem;
-  font-size: 0.875rem; font-weight: 500; font-family: inherit;
-}
-
-.sidebar-btn:hover { background: var(--bg-secondary); color: var(--text-primary); }
-
-.sidebar-btn.active {
-  background: var(--accent); color: white;
-  box-shadow: var(--shadow-sm); border-color: transparent;
-}
-
-.sidebar-icon { width: 1rem; height: 1rem; flex-shrink: 0; }
-
-.sidebar-tip {
-  margin-top: auto; display: block;
-  padding: 1rem; border-radius: var(--radius-sm);
-  background: var(--bg-secondary); border: 1px solid var(--border);
-}
-
-.sidebar-tip-title {
-  font-size: 0.75rem; font-weight: 700;
-  color: var(--accent); margin: 0 0 0.25rem;
-}
-
-.sidebar-tip-text {
-  font-size: 10px; color: var(--text-secondary);
-  line-height: 1.6; margin: 0;
-}
-
-/* ========================================================================== */
-/* Config Panel                                                               */
-/* ========================================================================== */
-
-.config-panel {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1rem; flex: 1;
-  display: flex; flex-direction: column;
-  overflow-y: auto;
-}
-
-.config-panel-header {
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 0.5rem; margin-bottom: 0.75rem;
-}
-
-.config-panel-title {
-  font-size: 0.875rem; font-weight: 600;
-  color: var(--text-primary);
-  display: flex; align-items: center; gap: 0.5rem; margin: 0;
-}
-
-.config-panel-icon { width: 1rem; height: 1rem; color: var(--accent); }
-
-.config-form { display: flex; flex-direction: column; gap: 0.75rem; }
-
-.config-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
-}
-
-/* ========================================================================== */
-/* Form Elements                                                              */
-/* ========================================================================== */
-
-.label {
-  display: block; font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem; font-weight: 500;
-}
-
-.input-field {
-  background: var(--bg-input);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-primary);
-  padding: 0.75rem 1rem; font-size: 1rem;
-  width: 100%; transition: border-color 0.2s, box-shadow 0.2s;
-  outline: none; font-family: inherit;
-}
-
-.input-field:focus {
-  border-color: var(--border-active);
-  box-shadow: 0 0 0 2px var(--accent-glow);
-}
-
-.input-mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
-  font-size: 0.875rem;
-}
-
-.range-slider {
-  width: 100%; height: 6px;
-  background: var(--bg-secondary);
-  border-radius: 99px; outline: none;
-  -webkit-appearance: none; margin-top: 0.5rem;
-}
-
-.range-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none;
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent); cursor: pointer; transition: transform 0.1s;
-}
-.range-slider::-webkit-slider-thumb:hover { transform: scale(1.1); }
-
-.range-slider::-moz-range-thumb {
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent); border: none; cursor: pointer;
-}
-
-/* Checkbox */
-.checkbox {
-  appearance: none; -webkit-appearance: none;
-  background-color: var(--bg-input); margin: 0;
-  font: inherit; color: currentColor;
-  width: 1.25rem; height: 1.25rem;
-  border: 1px solid var(--border); border-radius: 4px;
-  display: grid; place-content: center;
-  cursor: pointer; flex-shrink: 0;
-}
-
-.checkbox::before {
-  content: ''; width: 0.65em; height: 0.65em;
-  transform: scale(0); transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em var(--accent);
-  background-color: var(--accent); transform-origin: center;
-  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-}
-
-.checkbox:checked::before { transform: scale(1); }
-
-.checkbox-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
-
-.checkbox-option {
-  display: flex; align-items: center; gap: 0.5rem;
-  cursor: pointer; user-select: none;
-  padding: 0.5rem; border-radius: 0.25rem;
-  border: 1px solid var(--border); transition: border-color 0.2s;
-}
-
-.checkbox-option:hover { border-color: var(--accent); }
-
-.checkbox-label { font-size: 0.875rem; font-weight: 500; }
-.checkbox-label--muted { color: var(--text-secondary); }
-
-/* ========================================================================== */
-/* Advanced / Toggle Section                                                  */
-/* ========================================================================== */
-
-.advanced-section {
-  display: flex; flex-direction: column; gap: 0.75rem;
-  padding-top: 0.75rem; border-top: 1px solid var(--border);
-}
-
-.advanced-title {
-  font-size: 0.75rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.05em;
-  color: var(--accent); margin: 0 0 0.25rem;
-}
-
-.toggle-section {
-  background: var(--bg-secondary);
-  padding: 0.75rem; border-radius: 0.25rem;
-  border: 1px solid var(--border);
-}
-
-.toggle-section .checkbox-option { border: none; padding: 0; }
-.toggle-section .checkbox-option:hover { border-color: transparent; }
-
-.toggle-section-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-
-.toggle-badge {
-  font-size: 0.75rem;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 0.125rem 0.5rem; border-radius: 0.25rem;
-  color: var(--accent);
-}
-
-/* ========================================================================== */
-/* Result Panel                                                               */
-/* ========================================================================== */
-
-.result-panel {
-  flex: 1; background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  display: flex; flex-direction: column;
-  position: relative; overflow: hidden; min-height: 140px;
-}
-
-.result-gradient-line {
-  position: absolute; top: 0; left: 0;
-  width: 100%; height: 2px;
-  background: linear-gradient(to right, #3b82f6, var(--accent), #a855f7);
-  opacity: 0.6;
-}
-
-.result-content {
-  flex: 1; display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 1rem; text-align: center;
-}
-
-.result-error {
-  font-size: 0.875rem; color: var(--error);
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: var(--radius-sm);
-  padding: 0.5rem 1rem; margin-bottom: 1rem;
-}
-
-.result-password {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    'Liberation Mono', 'Courier New', monospace;
-  font-size: 1.1rem; word-break: break-all;
-  color: var(--text-primary); user-select: all;
-}
-
-.result-password::selection { background: var(--accent); color: white; }
-
-.result-placeholder { color: var(--text-secondary); opacity: 0.3; font-size: 1.125rem; }
-
-.result-entropy { margin-top: 1rem; display: flex; align-items: center; gap: 0.75rem; }
-
-.entropy-badge {
-  font-size: 10px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 0.05em;
-  padding: 0.25rem 0.5rem; border-radius: 0.25rem; border: 1px solid;
-}
-
-.entropy--high { border-color: rgba(34, 197, 94, 0.3); color: #4ade80; background: rgba(34, 197, 94, 0.1); }
-.entropy--medium { border-color: rgba(234, 179, 8, 0.3); color: #facc15; background: rgba(234, 179, 8, 0.1); }
-.entropy--low { border-color: rgba(239, 68, 68, 0.3); color: #f87171; background: rgba(239, 68, 68, 0.1); }
-
-.result-actions {
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border);
-  padding: 0.5rem 1rem;
-  display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;
-}
-
-/* ========================================================================== */
-/* Buttons                                                                    */
-/* ========================================================================== */
-
-.btn {
-  background: var(--accent); color: white;
-  border: none; border-radius: var(--radius-sm);
-  padding: 0.75rem 1.5rem; font-size: 1rem; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 0.5rem; font-family: inherit;
-}
-
-.btn:hover { background: var(--accent-hover); box-shadow: var(--shadow-glow); transform: translateY(-1px); }
-.btn:active { transform: translateY(0); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-.btn-generate { padding: 0.5rem 2rem; font-size: 0.875rem; box-shadow: var(--shadow); }
-
-.btn-generate:hover:not(:disabled) {
-  box-shadow: 0 10px 30px -10px rgba(94, 106, 210, 0.5);
-  transform: translateY(-2px);
-}
-
-.btn-loading { display: flex; align-items: center; gap: 0.5rem; }
-
-.spinner { width: 1rem; height: 1rem; animation: spin 1s linear infinite; }
-
-.btn-copy {
-  font-size: 0.75rem; font-weight: 500;
-  color: var(--text-secondary); background: transparent;
-  border: 1px solid transparent; border-radius: 0.25rem;
-  padding: 0.5rem 0.75rem; cursor: pointer; transition: all 0.2s;
-  display: flex; align-items: center; gap: 0.375rem; font-family: inherit;
-}
-
-.btn-copy:hover:not(:disabled) { color: white; border-color: var(--border); }
-.btn-copy:disabled { opacity: 0.3; cursor: not-allowed; }
-
-.btn-icon { width: 1rem; height: 1rem; }
-
-/* ========================================================================== */
-/* Loading State                                                              */
-/* ========================================================================== */
-
-.wordlist-loading {
-  display: flex; align-items: center; gap: 0.5rem;
-  color: var(--text-secondary); font-size: 0.8rem;
-  padding: 0.5rem; animation: pulse 1.5s ease-in-out infinite;
-}
-
-.wordlist-loading-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--accent); animation: pulse 1s ease-in-out infinite;
-}
-
-/* ========================================================================== */
-/* Responsive                                                                 */
-/* ========================================================================== */
-
-@media (max-width: 768px) {
-  .app-container { padding: 0.75rem; }
-  .generator-layout { flex-direction: column; min-height: auto; }
-  .generator-sidebar { width: 100%; }
-  .sidebar-list { flex-direction: row; flex-wrap: wrap; gap: 0.5rem; }
-  .sidebar-btn { flex: 1; min-width: 0; justify-content: center; padding: 0.6rem 0.5rem; font-size: 0.75rem; }
-  .sidebar-tip { display: none; }
-  .config-grid { grid-template-columns: 1fr; gap: 0.75rem; }
-  .checkbox-grid { grid-template-columns: 1fr; }
-  .result-password { font-size: 0.9rem; }
-}
+    /* ========================================================================== */
+    /* Gerador de Senhas — Design System (GitHub Pages Edition)                   */
+    /* ========================================================================== */
+
+    /* ---------- Tokens ---------- */
+
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #ffffff08;
+      --bg-card: #161618;
+      --bg-input: #202022;
+
+      --text-primary: #ededed;
+      --text-secondary: #a1a1aa;
+
+      --accent: #5e6ad2;
+      --accent-hover: #4e5ac0;
+      --accent-glow: #5e6ad240;
+
+      --border: #ffffff15;
+      --border-active: #5e6ad2;
+
+      --success: #22c55e;
+      --warning: #eab308;
+      --error: #ef4444;
+
+      --radius-sm: 6px;
+      --radius: 12px;
+      --radius-lg: 18px;
+
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-glow: 0 0 20px var(--accent-glow);
+    }
+
+    /* ---------- Reset & Base ---------- */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--bg-primary);
+      background-image:
+        radial-gradient(circle at 15% 50%, rgba(94, 106, 210, 0.08), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: white;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ffffff20;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffffff30;
+    }
+
+    /* ---------- Animations ---------- */
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .5;
+      }
+    }
+
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .animate-scale-in {
+      animation: scaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* ========================================================================== */
+    /* App Layout                                                                 */
+    /* ========================================================================== */
+
+    .app-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 2rem;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .app-wrapper {
+      width: 960px;
+      max-width: 100%;
+    }
+
+    .app-header {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .app-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem;
+      background: linear-gradient(to right, #fff, var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .app-subtitle {
+      color: var(--text-secondary);
+      margin: 0;
+      font-size: 0.8125rem;
+    }
+
+    /* Glass Panel */
+    .glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 4px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-glow {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      max-width: 48rem;
+      background: var(--accent);
+      opacity: 0.03;
+      filter: blur(48px);
+      z-index: -1;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .glass-inner {
+      background: rgba(10, 10, 10, 0.8);
+      border-radius: var(--radius);
+      padding: 1rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .app-footer {
+      margin-top: 0.5rem;
+      text-align: center;
+      font-size: 0.625rem;
+      color: var(--text-secondary);
+      opacity: 0.4;
+    }
+
+    .app-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(94, 106, 210, 0.12);
+      border: 1px solid rgba(94, 106, 210, 0.25);
+      color: #8b95e0;
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 99px;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+      letter-spacing: 0.03em;
+    }
+
+    /* ========================================================================== */
+    /* Generator Layout                                                           */
+    /* ========================================================================== */
+
+    .generator-layout {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+
+    .generator-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      overflow: hidden;
+    }
+
+    /* ========================================================================== */
+    /* Sidebar                                                                    */
+    /* ========================================================================== */
+
+    .generator-sidebar {
+      width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .sidebar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .sidebar-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      font-family: inherit;
+    }
+
+    .sidebar-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .sidebar-btn.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow-sm);
+      border-color: transparent;
+    }
+
+    .sidebar-icon {
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Sub-items (árvore) */
+    .sidebar-subtree {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding-left: 1rem;
+    }
+
+    .sidebar-sub-btn {
+      width: 100%;
+      text-align: left;
+      padding: 0.45rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      font-family: inherit;
+      position: relative;
+    }
+
+    .sidebar-sub-btn::before {
+      content: '';
+      position: absolute;
+      left: -0.5rem;
+      top: 50%;
+      width: 0.4rem;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .sidebar-sub-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .sidebar-sub-btn.active {
+      background: rgba(94, 106, 210, 0.15);
+      color: #8b95e0;
+      border-color: rgba(94, 106, 210, 0.3);
+    }
+
+    .sidebar-sub-icon {
+      width: 0.7rem;
+      height: 0.7rem;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    /* Manual de utilização */
+    .sidebar-manual {
+      margin-top: auto;
+      display: block;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .sidebar-manual-toggle {
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: inherit;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+
+    .sidebar-manual-toggle:hover {
+      color: #8b95e0;
+    }
+
+    .sidebar-manual-chevron {
+      width: 0.75rem;
+      height: 0.75rem;
+      transition: transform 0.3s ease;
+      margin-left: auto;
+    }
+
+    .sidebar-manual-chevron.open {
+      transform: rotate(180deg);
+    }
+
+    .sidebar-manual-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 0.75rem;
+    }
+
+    .sidebar-manual-content.open {
+      max-height: 500px;
+      padding: 0 0.75rem 0.75rem;
+    }
+
+    .sidebar-manual-content dt {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 0.5rem;
+    }
+
+    .sidebar-manual-content dd {
+      font-size: 0.625rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0.15rem 0 0 0;
+    }
+
+    /* ========================================================================== */
+    /* Config Panel                                                               */
+    /* ========================================================================== */
+
+    .config-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .config-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .config-panel-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+
+    .config-panel-icon {
+      width: 1rem;
+      height: 1rem;
+      color: var(--accent);
+    }
+
+    .config-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* ========================================================================== */
+    /* Form Elements                                                              */
+    /* ========================================================================== */
+
+    .label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .input-field {
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      width: 100%;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .input-field:focus {
+      border-color: var(--border-active);
+      box-shadow: 0 0 0 2px var(--accent-glow);
+    }
+
+    .input-mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        'Liberation Mono', 'Courier New', monospace;
+      font-size: 0.875rem;
+    }
+
+    .range-slider {
+      width: 100%;
+      height: 6px;
+      background: var(--bg-secondary);
+      border-radius: 99px;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      margin-top: 0.5rem;
+    }
+
+    .range-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .range-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    .range-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Checkbox */
+    .checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      background-color: var(--bg-input);
+      margin: 0;
+      font: inherit;
+      color: currentColor;
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox::before {
+      content: '';
+      width: 0.65em;
+      height: 0.65em;
+      transform: scale(0);
+      transition: 120ms transform ease-in-out;
+      box-shadow: inset 1em 1em var(--accent);
+      background-color: var(--accent);
+      transform-origin: center;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+
+    .checkbox:checked::before {
+      transform: scale(1);
+    }
+
+    .checkbox-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .checkbox-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+
+    .checkbox-option:hover {
+      border-color: var(--accent);
+    }
+
+    .checkbox-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .checkbox-label--muted {
+      color: var(--text-secondary);
+    }
+
+    /* ========================================================================== */
+    /* Advanced / Toggle Section                                                  */
+    /* ========================================================================== */
+
+    .advanced-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .advanced-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+      align-items: stretch;
+    }
+
+    .advanced-title {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin: 0 0 0.15rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .advanced-title::before {
+      content: '';
+      width: 3px;
+      height: 0.8rem;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .toggle-section {
+      background: var(--bg-secondary);
+      padding: 0.55rem 0.65rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toggle-section:hover {
+      border-color: rgba(124, 58, 237, 0.3);
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.08);
+    }
+
+    .toggle-section .checkbox-option {
+      border: none;
+      padding: 0;
+    }
+
+    .toggle-section .checkbox-option:hover {
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .toggle-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.35rem;
+    }
+
+    .toggle-section .label {
+      font-size: 0.65rem;
+      opacity: 0.55;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.15rem;
+    }
+
+    .toggle-section .input-field {
+      padding: 0.3rem 0.45rem;
+      font-size: 0.78rem;
+    }
+
+    .toggle-badge {
+      font-size: 0.75rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 0.125rem 0.5rem;
+      border-radius: 0.25rem;
+      color: var(--accent);
+    }
+
+    .toggle-hint {
+      margin: 0.2rem 0 0;
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      line-height: 1.3;
+    }
+
+    .toggle-fields {
+      margin-top: 0.3rem;
+    }
+
+    .toggle-fields-row {
+      margin-top: 0.3rem;
+      display: grid;
+      grid-template-columns: 55px 1fr;
+      gap: 0.3rem;
+      align-items: end;
+    }
+
+    /* ========================================================================== */
+    /* Result Panel                                                               */
+    /* ========================================================================== */
+
+    .result-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-gradient-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(to right, #3b82f6, var(--accent), #a855f7);
+      opacity: 0.6;
+    }
+
+    .result-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .result-error {
+      font-size: 0.875rem;
+      color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.5rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .result-password {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+        'Liberation Mono', 'Courier New', monospace;
+      font-size: 1.1rem;
+      word-break: break-all;
+      color: var(--text-primary);
+      user-select: all;
+    }
+
+    .result-password::selection {
+      background: var(--accent);
+      color: white;
+    }
+
+    .result-placeholder {
+      color: var(--text-secondary);
+      opacity: 0.3;
+      font-size: 1.125rem;
+    }
+
+    .result-entropy {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .entropy-badge {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      border: 1px solid;
+    }
+
+    .entropy--high {
+      border-color: rgba(34, 197, 94, 0.3);
+      color: #4ade80;
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .entropy--medium {
+      border-color: rgba(234, 179, 8, 0.3);
+      color: #facc15;
+      background: rgba(234, 179, 8, 0.1);
+    }
+
+    .entropy--low {
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .result-actions {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+
+    /* ========================================================================== */
+    /* Buttons                                                                    */
+    /* ========================================================================== */
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: inherit;
+    }
+
+    .btn:hover {
+      background: var(--accent-hover);
+      box-shadow: var(--shadow-glow);
+      transform: translateY(-1px);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .btn-generate {
+      padding: 0.5rem 2rem;
+      font-size: 0.875rem;
+      box-shadow: var(--shadow);
+    }
+
+    .btn-generate:hover:not(:disabled) {
+      box-shadow: 0 10px 30px -10px rgba(94, 106, 210, 0.5);
+      transform: translateY(-2px);
+    }
+
+    .btn-loading {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .spinner {
+      width: 1rem;
+      height: 1rem;
+      animation: spin 1s linear infinite;
+    }
+
+    .btn-copy {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-family: inherit;
+    }
+
+    .btn-copy:hover:not(:disabled) {
+      color: white;
+      border-color: var(--border);
+    }
+
+    .btn-copy:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .btn-icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    /* ========================================================================== */
+    /* Loading State                                                              */
+    /* ========================================================================== */
+
+    .wordlist-loading {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .wordlist-loading-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 1s ease-in-out infinite;
+    }
+
+    /* ========================================================================== */
+    /* Responsive                                                                 */
+    /* ========================================================================== */
+
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 0.75rem;
+      }
+
+      .generator-layout {
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .generator-sidebar {
+        width: 100%;
+      }
+
+      .sidebar-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .sidebar-btn {
+        flex: 1;
+        min-width: 0;
+        justify-content: center;
+        padding: 0.6rem 0.5rem;
+        font-size: 0.75rem;
+      }
+
+      .sidebar-subtree {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding-left: 0;
+      }
+
+      .sidebar-sub-btn::before {
+        display: none;
+      }
+
+      .sidebar-manual {
+        display: none;
+      }
+
+      .config-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+
+      .checkbox-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .advanced-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .result-password {
+        font-size: 0.9rem;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<div class="app-container">
-  <div class="app-wrapper">
-    <header class="app-header">
-      <h1 class="app-title">Gerador de Senhas <span class="app-badge">Web</span></h1>
-      <p class="app-subtitle">Crie senhas fortes e seguras diretamente no seu navegador.</p>
-    </header>
+  <div class="app-container">
+    <div class="app-wrapper">
+      <header class="app-header">
+        <h1 class="app-title">Gerador de Senhas <span class="app-badge">Web</span></h1>
+        <p class="app-subtitle">Crie senhas fortes e seguras diretamente no seu navegador.</p>
+      </header>
 
-    <div class="glass-panel">
-      <div class="glass-glow"></div>
-      <div class="glass-inner">
-        <div class="generator-layout">
-          <aside class="generator-sidebar" id="sidebar"></aside>
-          <div class="generator-main">
-            <div class="config-panel" id="configPanel"></div>
-            <div class="result-panel" id="resultPanel"></div>
+      <div class="glass-panel">
+        <div class="glass-glow"></div>
+        <div class="glass-inner">
+          <div class="generator-layout">
+            <aside class="generator-sidebar" id="sidebar"></aside>
+            <div class="generator-main">
+              <div class="config-panel" id="configPanel"></div>
+              <div class="result-panel" id="resultPanel"></div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <footer class="app-footer">
-      &copy; 2026 SecureGen. Nenhuma senha sai do seu dispositivo.
-    </footer>
+      <footer class="app-footer">
+        &copy; 2026 SecureGen. Nenhuma senha sai do seu dispositivo.
+      </footer>
+    </div>
   </div>
-</div>
 
-<script>
-/* ========================================================================== */
-/* Crypto Utilities                                                           */
-/* ========================================================================== */
+  <script>
+    /* ========================================================================== */
+    /* Crypto Utilities                                                           */
+    /* ========================================================================== */
 
-function secureRandBelow(n) {
-  if (n <= 0) return 0;
-  const array = new Uint32Array(1);
-  crypto.getRandomValues(array);
-  return array[0] % n;
-}
-
-function secureChoice(str) {
-  return str[secureRandBelow(str.length)];
-}
-
-function secureSample(arr, k) {
-  k = Math.max(0, Math.min(k, arr.length));
-  const copy = [...arr];
-  const result = [];
-  for (let i = 0; i < k; i++) {
-    const idx = secureRandBelow(copy.length);
-    result.push(copy[idx]);
-    copy.splice(idx, 1);
-  }
-  return result;
-}
-
-function secureShuffleInPlace(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = secureRandBelow(i + 1);
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-  return arr;
-}
-
-/* ========================================================================== */
-/* Generators Config                                                          */
-/* ========================================================================== */
-
-const GENERATORS = [
-  {
-    id: 'diceware_pure', label: 'Diceware (Puro)', type: 'diceware',
-    icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
-  },
-  {
-    id: 'diceware_modified', label: 'Diceware (Mod)', type: 'diceware_mod',
-    icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
-  },
-  {
-    id: 'random_classic', label: 'Aleatório / Token', type: 'random',
-    icon: 'M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z',
-  },
-];
-
-const DEFAULTS = {
-  random_classic: {
-    mode: 'classic', length: 16,
-    use_upper: true, use_lower: true, use_numbers: true,
-    symbols: '!@#$%^&*()-_=+', exclude_ambiguous: false,
-  },
-  diceware_pure: { language: 'portugues', num_words: 4 },
-  diceware_modified: {
-    language: 'portugues', num_words: 4, separator: '-',
-    use_uppercase: true, use_lowercase: true,
-    use_numbers: true, use_symbols: true,
-    number_count: 1, symbol_count: 1, capitalize_count: 1,
-    numbers_pool: '0123456789', symbols_pool: '!@#$%&*',
-  },
-};
-
-const LANGUAGES = [
-  { value: 'catalao', label: 'Catalão' },
-  { value: 'espanhol', label: 'Espanhol' },
-  { value: 'frances', label: 'Francês' },
-  { value: 'ingles', label: 'Inglês' },
-  { value: 'italiano', label: 'Italiano' },
-  { value: 'latim', label: 'Latim' },
-  { value: 'portugues', label: 'Português' },
-];
-
-const LANG_FILES = {
-  portugues: 'portugues.txt', espanhol: 'espanhol.txt',
-  italiano: 'italiano.txt', frances: 'frances.txt',
-  latim: 'latim.txt', ingles: 'ingles.txt', catalao: 'catalao.txt',
-};
-
-/* ========================================================================== */
-/* State                                                                      */
-/* ========================================================================== */
-
-const state = {
-  selectedGenId: 'random_classic',
-  options: { ...DEFAULTS.random_classic },
-  result: null,
-  error: null,
-  copied: false,
-  loading: false,
-  wordlists: {},
-  wordlistsLoading: true,
-};
-
-/* ========================================================================== */
-/* Wordlist Loader                                                            */
-/* ========================================================================== */
-
-async function loadWordlist(lang) {
-  if (state.wordlists[lang]) return state.wordlists[lang];
-  const file = LANG_FILES[lang];
-  if (!file) return null;
-  try {
-    const res = await fetch(`./wordlists/${file}`);
-    if (!res.ok) return null;
-    const text = await res.text();
-    const wl = {};
-    for (const line of text.split('\n')) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-      const parts = trimmed.split(/\s+/);
-      if (parts.length === 2) wl[parts[0]] = parts[1];
-    }
-    state.wordlists[lang] = wl;
-    return wl;
-  } catch { return null; }
-}
-
-async function preloadWordlists() {
-  const promises = Object.keys(LANG_FILES).map(lang => loadWordlist(lang));
-  await Promise.allSettled(promises);
-  state.wordlistsLoading = false;
-  render();
-}
-
-/* ========================================================================== */
-/* Entropy Helpers                                                            */
-/* ========================================================================== */
-
-function entropyFromWordlist(numWords, wordlistSize) {
-  if (numWords <= 0 || wordlistSize <= 1) return 0;
-  return numWords * Math.log2(wordlistSize);
-}
-
-function entropyCapitalization(numWords, enabled) {
-  if (!enabled || numWords <= 0) return 0;
-  return numWords * Math.log2(2);
-}
-
-function entropyInsertions(count, poolSize) {
-  if (count <= 0 || poolSize <= 1) return 0;
-  return count * Math.log2(poolSize);
-}
-
-function dicewareTotalEntropy(cfg) {
-  let total = entropyFromWordlist(cfg.num_words, cfg.wordlist_size);
-  total += entropyCapitalization(cfg.num_words, cfg.capitalize);
-  total += entropyInsertions(cfg.num_numbers, cfg.pool_numbers);
-  total += entropyInsertions(cfg.num_symbols, cfg.pool_symbols);
-  return total;
-}
-
-function getEntropyLabel(bits) {
-  if (bits >= 120) return 'Altíssima';
-  if (bits >= 80) return 'Alta';
-  if (bits >= 60) return 'Razoável';
-  if (bits >= 40) return 'Média';
-  return 'Baixa';
-}
-
-function getEntropyClass(bits) {
-  if (bits > 80) return 'entropy--high';
-  if (bits > 50) return 'entropy--medium';
-  return 'entropy--low';
-}
-
-/* ========================================================================== */
-/* Diceware Generator                                                         */
-/* ========================================================================== */
-
-function roll5d6() {
-  let code = '';
-  for (let i = 0; i < 5; i++) code += String(secureRandBelow(6) + 1);
-  return code;
-}
-
-function generatePassphrase(wordlist, numWords) {
-  if (!wordlist || Object.keys(wordlist).length === 0) {
-    throw new Error('Lista Diceware vazia ou não carregada.');
-  }
-  const keys = Object.keys(wordlist);
-  numWords = Math.min(numWords, keys.length);
-  const used = new Set();
-  const words = [];
-
-  while (words.length < numWords) {
-    let code = roll5d6();
-    if (!(code in wordlist)) code = keys[secureRandBelow(keys.length)];
-    if (used.has(code)) continue;
-    used.add(code);
-    words.push(wordlist[code]);
-  }
-  return words;
-}
-
-function formatPure(words, separator = '-') {
-  return words.join(separator || '-');
-}
-
-function formatModified(words, config) {
-  if (!words.length) return '';
-  const w = [...words];
-  const n = w.length;
-
-  const sep = config.separator ?? '-';
-  const capCount = parseInt(config.capitalize_count) || 0;
-  const forceUpper = !!config.force_uppercase;
-  const numCount = parseInt(config.num_numbers) || 0;
-  const symCount = parseInt(config.num_symbols) || 0;
-  const numbersPool = config.numbers_pool || '0123456789';
-  const symbolsPool = config.symbols_pool || '!@#$%^&*';
-  const avoidOverlap = config.avoid_overlap !== false;
-
-  // 1) Case
-  if (forceUpper) {
-    for (let i = 0; i < n; i++) w[i] = w[i].toUpperCase();
-  } else if (capCount > 0) {
-    const indices = secureSample([...Array(n).keys()], Math.min(capCount, n));
-    for (const i of indices) w[i] = w[i].charAt(0).toUpperCase() + w[i].slice(1);
-  }
-
-  const usedNum = new Set();
-
-  // 2) Numbers
-  if (numCount > 0) {
-    const indices = secureSample([...Array(n).keys()], Math.min(numCount, n));
-    for (const i of indices) {
-      usedNum.add(i);
-      const d = secureChoice(numbersPool);
-      w[i] = secureRandBelow(2) ? d + w[i] : w[i] + d;
-    }
-  }
-
-  // 3) Symbols
-  let symIndices = [...Array(n).keys()];
-  if (avoidOverlap) symIndices = symIndices.filter(i => !usedNum.has(i));
-
-  if (symCount > 0 && symIndices.length > 0) {
-    const picked = secureSample(symIndices, Math.min(symCount, symIndices.length));
-    for (const i of picked) {
-      const s = secureChoice(symbolsPool);
-      w[i] = secureRandBelow(2) ? s + w[i] : w[i] + s;
-    }
-  }
-
-  return w.join(sep || '-');
-}
-
-/* ========================================================================== */
-/* Random Classic Generator                                                   */
-/* ========================================================================== */
-
-function generateToken(opts) {
-  const tokenType = opts.token_type || 'hex';
-
-  if (tokenType === 'uuid') {
-    return { password: crypto.randomUUID(), entropy: 122.0 };
-  }
-
-  const tokenLength = parseInt(opts.token_length) || 32;
-
-  if (tokenType === 'hex') {
-    const nbytes = Math.ceil(tokenLength / 2);
-    const bytes = new Uint8Array(nbytes);
-    crypto.getRandomValues(bytes);
-    const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
-    return { password: hex.substring(0, tokenLength), entropy: tokenLength * 4.0 };
-  }
-
-  // urlsafe
-  const nbytes = Math.ceil(tokenLength * 3 / 4) + 1;
-  const bytes = new Uint8Array(nbytes);
-  crypto.getRandomValues(bytes);
-  const b64 = btoa(String.fromCharCode(...bytes))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-  return { password: b64.substring(0, tokenLength), entropy: tokenLength * 6.0 };
-}
-
-function generateClassicPassword(opts) {
-  const length = Math.max(10, parseInt(opts.length) || 16);
-  const useUpper = opts.use_upper !== false;
-  const useLower = opts.use_lower !== false;
-  const useNumbers = opts.use_numbers !== false;
-  const symbols = opts.symbols || '';
-  const excludeAmbiguous = opts.exclude_ambiguous === true;
-
-  const AMBIGUOUS = '1lI0O';
-  const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const LOWER = 'abcdefghijklmnopqrstuvwxyz';
-  const DIGITS = '0123456789';
-
-  const filterPool = chars => excludeAmbiguous
-    ? chars.split('').filter(c => !AMBIGUOUS.includes(c)).join('')
-    : chars;
-
-  let pool = '';
-  const pools = [];
-
-  if (useUpper) { const p = filterPool(UPPER); if (p) { pools.push(p); pool += p; } }
-  if (useLower) { const p = filterPool(LOWER); if (p) { pools.push(p); pool += p; } }
-  if (useNumbers) { const p = filterPool(DIGITS); if (p) { pools.push(p); pool += p; } }
-  if (symbols) { const p = filterPool(symbols); if (p) { pools.push(p); pool += p; } }
-
-  pool = [...new Set(pool)].sort().join('');
-
-  if (!pool) throw new Error('Selecione conjuntos que resultem em caracteres válidos.');
-
-  const chars = pools.map(p => secureChoice(p));
-  while (chars.length < length) chars.push(secureChoice(pool));
-  secureShuffleInPlace(chars);
-
-  const entropy = length * Math.log2(pool.length);
-  return { password: chars.join(''), entropy };
-}
-
-/* ========================================================================== */
-/* Main Generate Function                                                     */
-/* ========================================================================== */
-
-async function doGenerate() {
-  state.loading = true;
-  state.error = null;
-  state.copied = false;
-  render();
-
-  try {
-    const genId = state.selectedGenId;
-    const opts = state.options;
-    let password, entropy;
-
-    if (genId === 'random_classic') {
-      const result = opts.mode === 'token' ? generateToken(opts) : generateClassicPassword(opts);
-      password = result.password;
-      entropy = result.entropy;
-
-    } else if (genId === 'diceware_pure') {
-      const lang = opts.language || 'portugues';
-      const wl = await loadWordlist(lang);
-      if (!wl || Object.keys(wl).length === 0) throw new Error(`Lista "${lang}" não disponível.`);
-      const n = Math.max(3, parseInt(opts.num_words) || 4);
-      const words = generatePassphrase(wl, n);
-      password = formatPure(words, '-');
-      entropy = dicewareTotalEntropy({
-        num_words: words.length, wordlist_size: Object.keys(wl).length,
-        capitalize: false, num_numbers: 0, pool_numbers: 0, num_symbols: 0, pool_symbols: 0,
-      });
-
-    } else if (genId === 'diceware_modified') {
-      const lang = opts.language || 'portugues';
-      const wl = await loadWordlist(lang);
-      if (!wl || Object.keys(wl).length === 0) throw new Error(`Lista "${lang}" não disponível.`);
-      const n = Math.max(3, parseInt(opts.num_words) || 4);
-      const words = generatePassphrase(wl, n);
-
-      const forceUppercase = opts.use_lowercase === false;
-      const effCapCount = opts.use_uppercase !== false ? (parseInt(opts.capitalize_count) || 0) : 0;
-      const effNumCount = opts.use_numbers !== false ? (parseInt(opts.number_count) || 0) : 0;
-      const effSymCount = opts.use_symbols !== false ? (parseInt(opts.symbol_count) || 0) : 0;
-
-      password = formatModified(words, {
-        separator: opts.separator, capitalize_count: Math.min(effCapCount, words.length),
-        force_uppercase: forceUppercase, num_numbers: effNumCount, num_symbols: effSymCount,
-        numbers_pool: opts.numbers_pool || '0123456789',
-        symbols_pool: opts.symbols_pool || '!@#$%&*', avoid_overlap: true,
-      });
-
-      const wlSize = Object.keys(wl).length;
-      entropy = dicewareTotalEntropy({
-        num_words: words.length, wordlist_size: wlSize,
-        capitalize: effCapCount > 0 || forceUppercase,
-        num_numbers: effNumCount,
-        pool_numbers: effNumCount > 0 ? new Set(opts.numbers_pool || '0123456789').size : 0,
-        num_symbols: effSymCount,
-        pool_symbols: effSymCount > 0 ? new Set(opts.symbols_pool || '!@#$%&*').size : 0,
-      });
+    function secureRandBelow(n) {
+      if (n <= 0) return 0;
+      const array = new Uint32Array(1);
+      crypto.getRandomValues(array);
+      return array[0] % n;
     }
 
-    state.result = {
-      password,
-      entropy: parseFloat(entropy.toFixed(2)),
-      entropy_label: getEntropyLabel(entropy),
+    function secureChoice(str) {
+      return str[secureRandBelow(str.length)];
+    }
+
+    function secureSample(arr, k) {
+      k = Math.max(0, Math.min(k, arr.length));
+      const copy = [...arr];
+      const result = [];
+      for (let i = 0; i < k; i++) {
+        const idx = secureRandBelow(copy.length);
+        result.push(copy[idx]);
+        copy.splice(idx, 1);
+      }
+      return result;
+    }
+
+    function secureShuffleInPlace(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = secureRandBelow(i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    /* ========================================================================== */
+    /* Generators Config                                                          */
+    /* ========================================================================== */
+
+    const GENERATORS = [
+      {
+        id: 'diceware_pure', label: 'Diceware (Puro)', type: 'diceware',
+        icon: 'M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253',
+      },
+      {
+        id: 'diceware_modified', label: 'Diceware (Mod)', type: 'diceware_mod',
+        icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z',
+      },
+      {
+        id: 'random_classic', label: 'Aleatório / Token', type: 'random',
+        icon: 'M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z',
+        children: [
+          { subId: 'classic', label: 'Senha Clássica', icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z' },
+          { subId: 'hex', label: 'Token Hexadecimal', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
+          { subId: 'urlsafe', label: 'URL Safe (Base64)', icon: 'M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1' },
+          { subId: 'uuid', label: 'UUID (v4)', icon: 'M7 20l4-16m2 16l4-16M6 9h14M4 15h14' },
+        ],
+      },
+    ];
+
+    const DEFAULTS = {
+      random_classic: {
+        mode: 'classic', length: 16,
+        use_upper: true, use_lower: true, use_numbers: true,
+        symbols: '!@#$%^&*()-_=+', exclude_ambiguous: false,
+      },
+      diceware_pure: { language: 'portugues', num_words: 4 },
+      diceware_modified: {
+        language: 'portugues', num_words: 4, separator: '-',
+        use_uppercase: true, use_lowercase: true,
+        use_numbers: true, use_symbols: true,
+        number_count: 1, symbol_count: 1, capitalize_count: 1,
+        numbers_pool: '0123456789', symbols_pool: '!@#$%&*',
+      },
     };
-  } catch (e) {
-    state.error = e.message;
-    state.result = null;
-  } finally {
-    state.loading = false;
-    render();
-  }
-}
 
-/* ========================================================================== */
-/* Clipboard                                                                  */
-/* ========================================================================== */
+    const LANGUAGES = [
+      { value: 'todos', label: '🌍 Todos (Mistura)' },
+      { value: 'catalao', label: 'Catalão' },
+      { value: 'espanhol', label: 'Espanhol' },
+      { value: 'frances', label: 'Francês' },
+      { value: 'ingles', label: 'Inglês' },
+      { value: 'italiano', label: 'Italiano' },
+      { value: 'latim', label: 'Latim' },
+      { value: 'portugues', label: 'Português' },
+    ];
 
-async function copyToClipboard() {
-  if (!state.result?.password) return;
-  try {
-    await navigator.clipboard.writeText(state.result.password);
-  } catch {
-    const ta = document.createElement('textarea');
-    ta.value = state.result.password;
-    ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  }
-  state.copied = true;
-  render();
-  setTimeout(() => { state.copied = false; render(); }, 2000);
-}
+    const LANG_FILES = {
+      portugues: 'portugues.txt', espanhol: 'espanhol.txt',
+      italiano: 'italiano.txt', frances: 'frances.txt',
+      latim: 'latim.txt', ingles: 'ingles.txt', catalao: 'catalao.txt',
+    };
 
-/* ========================================================================== */
-/* Event Handlers                                                             */
-/* ========================================================================== */
+    /* ========================================================================== */
+    /* State                                                                      */
+    /* ========================================================================== */
 
-function selectGenerator(id) {
-  state.selectedGenId = id;
-  state.options = { ...(DEFAULTS[id] || {}) };
-  state.result = null;
-  state.error = null;
-  state.copied = false;
-  render();
-}
+    const state = {
+      selectedGenId: 'random_classic',
+      selectedSubId: 'classic',
+      options: { ...DEFAULTS.random_classic },
+      result: null,
+      error: null,
+      copied: false,
+      loading: false,
+      wordlists: {},
+      wordlistsLoading: true,
+      manualOpen: false,
+    };
 
-function setOption(key, value) {
-  state.options[key] = value;
-  render();
-}
+    /* ========================================================================== */
+    /* Wordlist Loader                                                            */
+    /* ========================================================================== */
 
-/* ========================================================================== */
-/* UI Rendering                                                               */
-/* ========================================================================== */
+    async function loadWordlist(lang) {
+      if (lang === 'todos') {
+        // Carregar todas as wordlists individuais primeiro
+        const promises = Object.keys(LANG_FILES).map(l => loadWordlist(l));
+        await Promise.allSettled(promises);
+        delete state.wordlists['_merged']; // invalidar cache para re-mesclar
+        return getMergedWordlist();
+      }
+      if (state.wordlists[lang]) return state.wordlists[lang];
+      const file = LANG_FILES[lang];
+      if (!file) return null;
+      try {
+        const res = await fetch(`./wordlists/${file}`);
+        if (!res.ok) return null;
+        const text = await res.text();
+        const wl = {};
+        for (const line of text.split('\n')) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+          const parts = trimmed.split(/\s+/);
+          if (parts.length === 2) wl[parts[0]] = parts[1];
+        }
+        state.wordlists[lang] = wl;
+        return wl;
+      } catch { return null; }
+    }
 
-const svgIcon = (d) => `<svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d}"/></svg>`;
+    function getMergedWordlist() {
+      if (state.wordlists['_merged']) return state.wordlists['_merged'];
+      const merged = {};
+      let counter = 0;
+      for (const lang of Object.keys(LANG_FILES)) {
+        const wl = state.wordlists[lang];
+        if (!wl) continue;
+        for (const word of Object.values(wl)) {
+          merged[`m${String(counter++).padStart(6, '0')}`] = word;
+        }
+      }
+      if (Object.keys(merged).length > 0) state.wordlists['_merged'] = merged;
+      return merged;
+    }
 
-const gearIcon = `<svg class="config-panel-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`;
+    async function preloadWordlists() {
+      const promises = Object.keys(LANG_FILES).map(lang => loadWordlist(lang));
+      await Promise.allSettled(promises);
+      state.wordlistsLoading = false;
+      render();
+    }
 
-function renderSidebar() {
-  const el = document.getElementById('sidebar');
-  el.innerHTML = `
+    /* ========================================================================== */
+    /* Entropy Helpers                                                            */
+    /* ========================================================================== */
+
+    function entropyFromWordlist(numWords, wordlistSize) {
+      if (numWords <= 0 || wordlistSize <= 1) return 0;
+      return numWords * Math.log2(wordlistSize);
+    }
+
+    function entropyCapitalization(numWords, enabled) {
+      if (!enabled || numWords <= 0) return 0;
+      return numWords * Math.log2(2);
+    }
+
+    function entropyInsertions(count, poolSize) {
+      if (count <= 0 || poolSize <= 1) return 0;
+      return count * Math.log2(poolSize);
+    }
+
+    function dicewareTotalEntropy(cfg) {
+      let total = entropyFromWordlist(cfg.num_words, cfg.wordlist_size);
+      total += entropyCapitalization(cfg.num_words, cfg.capitalize);
+      total += entropyInsertions(cfg.num_numbers, cfg.pool_numbers);
+      total += entropyInsertions(cfg.num_symbols, cfg.pool_symbols);
+      return total;
+    }
+
+    function getEntropyLabel(bits) {
+      if (bits >= 120) return 'Altíssima';
+      if (bits >= 80) return 'Alta';
+      if (bits >= 60) return 'Razoável';
+      if (bits >= 40) return 'Média';
+      return 'Baixa';
+    }
+
+    function getEntropyClass(bits) {
+      if (bits > 80) return 'entropy--high';
+      if (bits > 50) return 'entropy--medium';
+      return 'entropy--low';
+    }
+
+    /* ========================================================================== */
+    /* Diceware Generator                                                         */
+    /* ========================================================================== */
+
+    function roll5d6() {
+      let code = '';
+      for (let i = 0; i < 5; i++) code += String(secureRandBelow(6) + 1);
+      return code;
+    }
+
+    function generatePassphrase(wordlist, numWords) {
+      if (!wordlist || Object.keys(wordlist).length === 0) {
+        throw new Error('Lista Diceware vazia ou não carregada.');
+      }
+      const keys = Object.keys(wordlist);
+      numWords = Math.min(numWords, keys.length);
+      const used = new Set();
+      const words = [];
+
+      while (words.length < numWords) {
+        let code = roll5d6();
+        if (!(code in wordlist)) code = keys[secureRandBelow(keys.length)];
+        if (used.has(code)) continue;
+        used.add(code);
+        words.push(wordlist[code]);
+      }
+      return words;
+    }
+
+    function formatPure(words, separator = '-') {
+      return words.join(separator || '-');
+    }
+
+    function formatModified(words, config) {
+      if (!words.length) return '';
+      const w = [...words];
+      const n = w.length;
+
+      const sep = config.separator ?? '-';
+      const capCount = parseInt(config.capitalize_count) || 0;
+      const forceUpper = !!config.force_uppercase;
+      const numCount = parseInt(config.num_numbers) || 0;
+      const symCount = parseInt(config.num_symbols) || 0;
+      const numbersPool = config.numbers_pool || '0123456789';
+      const symbolsPool = config.symbols_pool || '!@#$%^&*';
+      const avoidOverlap = config.avoid_overlap !== false;
+
+      // 1) Case
+      if (forceUpper) {
+        for (let i = 0; i < n; i++) w[i] = w[i].toUpperCase();
+      } else if (capCount > 0) {
+        const indices = secureSample([...Array(n).keys()], Math.min(capCount, n));
+        for (const i of indices) w[i] = w[i].charAt(0).toUpperCase() + w[i].slice(1);
+      }
+
+      const usedNum = new Set();
+
+      // 2) Numbers
+      if (numCount > 0) {
+        const indices = secureSample([...Array(n).keys()], Math.min(numCount, n));
+        for (const i of indices) {
+          usedNum.add(i);
+          const d = secureChoice(numbersPool);
+          w[i] = secureRandBelow(2) ? d + w[i] : w[i] + d;
+        }
+      }
+
+      // 3) Symbols
+      let symIndices = [...Array(n).keys()];
+      if (avoidOverlap) symIndices = symIndices.filter(i => !usedNum.has(i));
+
+      if (symCount > 0 && symIndices.length > 0) {
+        const picked = secureSample(symIndices, Math.min(symCount, symIndices.length));
+        for (const i of picked) {
+          const s = secureChoice(symbolsPool);
+          w[i] = secureRandBelow(2) ? s + w[i] : w[i] + s;
+        }
+      }
+
+      return w.join(sep || '-');
+    }
+
+    /* ========================================================================== */
+    /* Random Classic Generator                                                   */
+    /* ========================================================================== */
+
+    function generateToken(opts) {
+      const tokenType = opts.token_type || 'hex';
+
+      if (tokenType === 'uuid') {
+        return { password: crypto.randomUUID(), entropy: 122.0 };
+      }
+
+      const tokenLength = parseInt(opts.token_length) || 32;
+
+      if (tokenType === 'hex') {
+        const nbytes = Math.ceil(tokenLength / 2);
+        const bytes = new Uint8Array(nbytes);
+        crypto.getRandomValues(bytes);
+        const hex = Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+        return { password: hex.substring(0, tokenLength), entropy: tokenLength * 4.0 };
+      }
+
+      // urlsafe
+      const nbytes = Math.ceil(tokenLength * 3 / 4) + 1;
+      const bytes = new Uint8Array(nbytes);
+      crypto.getRandomValues(bytes);
+      const b64 = btoa(String.fromCharCode(...bytes))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+      return { password: b64.substring(0, tokenLength), entropy: tokenLength * 6.0 };
+    }
+
+    function generateClassicPassword(opts) {
+      const length = Math.max(10, parseInt(opts.length) || 16);
+      const useUpper = opts.use_upper !== false;
+      const useLower = opts.use_lower !== false;
+      const useNumbers = opts.use_numbers !== false;
+      const symbols = opts.symbols || '';
+      const excludeAmbiguous = opts.exclude_ambiguous === true;
+
+      const AMBIGUOUS = '1lI0O';
+      const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+      const DIGITS = '0123456789';
+
+      const filterPool = chars => excludeAmbiguous
+        ? chars.split('').filter(c => !AMBIGUOUS.includes(c)).join('')
+        : chars;
+
+      let pool = '';
+      const pools = [];
+
+      if (useUpper) { const p = filterPool(UPPER); if (p) { pools.push(p); pool += p; } }
+      if (useLower) { const p = filterPool(LOWER); if (p) { pools.push(p); pool += p; } }
+      if (useNumbers) { const p = filterPool(DIGITS); if (p) { pools.push(p); pool += p; } }
+      if (symbols) { const p = filterPool(symbols); if (p) { pools.push(p); pool += p; } }
+
+      pool = [...new Set(pool)].sort().join('');
+
+      if (!pool) throw new Error('Selecione conjuntos que resultem em caracteres válidos.');
+
+      const chars = pools.map(p => secureChoice(p));
+      while (chars.length < length) chars.push(secureChoice(pool));
+      secureShuffleInPlace(chars);
+
+      const entropy = length * Math.log2(pool.length);
+      return { password: chars.join(''), entropy };
+    }
+
+    /* ========================================================================== */
+    /* Main Generate Function                                                     */
+    /* ========================================================================== */
+
+    async function doGenerate() {
+      state.loading = true;
+      state.error = null;
+      state.copied = false;
+      render();
+
+      try {
+        const genId = state.selectedGenId;
+        const opts = state.options;
+        let password, entropy;
+
+        if (genId === 'random_classic') {
+          const result = opts.mode === 'token' ? generateToken(opts) : generateClassicPassword(opts);
+          password = result.password;
+          entropy = result.entropy;
+
+        } else if (genId === 'diceware_pure') {
+          const lang = opts.language || 'portugues';
+          const wl = await loadWordlist(lang);
+          if (!wl || Object.keys(wl).length === 0) {
+            const isLocal = location.protocol === 'file:';
+            throw new Error(isLocal
+              ? 'Wordlists não carregam via file://. Use um servidor local (ex: npx serve docs) ou acesse via GitHub Pages.'
+              : `Lista "${lang}" não disponível. Verifique se os arquivos de wordlist estão na pasta wordlists/.`);
+          }
+          const n = Math.max(3, parseInt(opts.num_words) || 4);
+          const words = generatePassphrase(wl, n);
+          password = formatPure(words, '-');
+          entropy = dicewareTotalEntropy({
+            num_words: words.length, wordlist_size: Object.keys(wl).length,
+            capitalize: false, num_numbers: 0, pool_numbers: 0, num_symbols: 0, pool_symbols: 0,
+          });
+
+        } else if (genId === 'diceware_modified') {
+          const lang = opts.language || 'portugues';
+          const wl = await loadWordlist(lang);
+          if (!wl || Object.keys(wl).length === 0) {
+            const isLocal = location.protocol === 'file:';
+            throw new Error(isLocal
+              ? 'Wordlists não carregam via file://. Use um servidor local (ex: npx serve docs) ou acesse via GitHub Pages.'
+              : `Lista "${lang}" não disponível. Verifique se os arquivos de wordlist estão na pasta wordlists/.`);
+          }
+          const n = Math.max(3, parseInt(opts.num_words) || 4);
+          const words = generatePassphrase(wl, n);
+
+          const forceUppercase = opts.use_lowercase === false;
+          const effCapCount = opts.use_uppercase !== false ? (parseInt(opts.capitalize_count) || 0) : 0;
+          const effNumCount = opts.use_numbers !== false ? (parseInt(opts.number_count) || 0) : 0;
+          const effSymCount = opts.use_symbols !== false ? (parseInt(opts.symbol_count) || 0) : 0;
+
+          password = formatModified(words, {
+            separator: opts.separator, capitalize_count: Math.min(effCapCount, words.length),
+            force_uppercase: forceUppercase, num_numbers: effNumCount, num_symbols: effSymCount,
+            numbers_pool: opts.numbers_pool || '0123456789',
+            symbols_pool: opts.symbols_pool || '!@#$%&*', avoid_overlap: true,
+          });
+
+          const wlSize = Object.keys(wl).length;
+          entropy = dicewareTotalEntropy({
+            num_words: words.length, wordlist_size: wlSize,
+            capitalize: effCapCount > 0 || forceUppercase,
+            num_numbers: effNumCount,
+            pool_numbers: effNumCount > 0 ? new Set(opts.numbers_pool || '0123456789').size : 0,
+            num_symbols: effSymCount,
+            pool_symbols: effSymCount > 0 ? new Set(opts.symbols_pool || '!@#$%&*').size : 0,
+          });
+        }
+
+        state.result = {
+          password,
+          entropy: parseFloat(entropy.toFixed(2)),
+          entropy_label: getEntropyLabel(entropy),
+        };
+      } catch (e) {
+        state.error = e.message;
+        state.result = null;
+      } finally {
+        state.loading = false;
+        render();
+      }
+    }
+
+    /* ========================================================================== */
+    /* Clipboard                                                                  */
+    /* ========================================================================== */
+
+    async function copyToClipboard() {
+      if (!state.result?.password) return;
+      try {
+        await navigator.clipboard.writeText(state.result.password);
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = state.result.password;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      state.copied = true;
+      render();
+      setTimeout(() => { state.copied = false; render(); }, 2000);
+    }
+
+    /* ========================================================================== */
+    /* Event Handlers                                                             */
+    /* ========================================================================== */
+
+    function selectGenerator(id, subId) {
+      state.selectedGenId = id;
+      state.options = { ...(DEFAULTS[id] || {}) };
+      state.result = null;
+      state.error = null;
+      state.copied = false;
+
+      // Se tem subId (tree item do Aleatório/Token)
+      if (id === 'random_classic' && subId) {
+        state.selectedSubId = subId;
+        if (subId === 'classic') {
+          state.options.mode = 'classic';
+        } else {
+          state.options.mode = 'token';
+          state.options.token_type = subId; // hex, urlsafe, uuid
+        }
+      } else {
+        state.selectedSubId = null;
+      }
+      render();
+    }
+
+    function setOption(key, value) {
+      state.options[key] = value;
+      // Invalidar cache de merged ao trocar idioma
+      if (key === 'language') delete state.wordlists['_merged'];
+      render();
+    }
+
+    function toggleManual() {
+      state.manualOpen = !state.manualOpen;
+      const content = document.querySelector('.sidebar-manual-content');
+      const chevron = document.querySelector('.sidebar-manual-chevron');
+      if (content) content.classList.toggle('open', state.manualOpen);
+      if (chevron) chevron.classList.toggle('open', state.manualOpen);
+    }
+
+    /* ========================================================================== */
+    /* UI Rendering                                                               */
+    /* ========================================================================== */
+
+    const svgIcon = (d) => `<svg class="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d}"/></svg>`;
+
+    const gearIcon = `<svg class="config-panel-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>`;
+
+    function renderSidebar() {
+      const el = document.getElementById('sidebar');
+      const subIcon = (d) => `<svg class="sidebar-sub-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d}"/></svg>`;
+
+      const genButtons = GENERATORS.map(g => {
+        const isActive = state.selectedGenId === g.id;
+        let html = `<button class="sidebar-btn ${isActive ? 'active' : ''}" onclick="selectGenerator('${g.id}')">
+      ${svgIcon(g.icon)} ${g.label}
+    </button>`;
+
+        // Renderizar sub-itens (árvore) se o gerador estiver ativo e tiver children
+        if (isActive && g.children) {
+          html += `<div class="sidebar-subtree">
+        ${g.children.map(c => `
+          <button class="sidebar-sub-btn ${state.selectedSubId === c.subId ? 'active' : ''}"
+                  onclick="event.stopPropagation(); selectGenerator('${g.id}', '${c.subId}')">
+            ${subIcon(c.icon)} ${c.label}
+          </button>
+        `).join('')}
+      </div>`;
+        }
+        return html;
+      }).join('');
+
+      const chevronPath = 'M19 9l-7 7-7-7';
+      el.innerHTML = `
     <h3 class="sidebar-header">Método</h3>
-    <div class="sidebar-list">
-      ${GENERATORS.map(g => `
-        <button class="sidebar-btn ${state.selectedGenId === g.id ? 'active' : ''}"
-                onclick="selectGenerator('${g.id}')">
-          ${svgIcon(g.icon)} ${g.label}
-        </button>
-      `).join('')}
-    </div>
-    <div class="sidebar-tip">
-      <h4 class="sidebar-tip-title">Dica de Segurança</h4>
-      <p class="sidebar-tip-text">Senhas Diceware são fáceis de lembrar e difíceis de quebrar. Use pelo menos 4 palavras.</p>
+    <div class="sidebar-list">${genButtons}</div>
+    <div class="sidebar-manual">
+      <button class="sidebar-manual-toggle" onclick="toggleManual()">
+        <svg class="sidebar-sub-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Manual de Uso
+        <svg class="sidebar-manual-chevron ${state.manualOpen ? 'open' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${chevronPath}"/></svg>
+      </button>
+      <div class="sidebar-manual-content ${state.manualOpen ? 'open' : ''}">
+        <dl>
+          <dt>🎲 Diceware (Puro)</dt>
+          <dd>Gera uma frase-senha aleatória usando listas de palavras Diceware. Ideal para senhas memorizáveis e seguras.</dd>
+          <dt>🔧 Diceware (Mod)</dt>
+          <dd>Versão modificada que permite adicionar números, símbolos e capitalização às palavras do Diceware.</dd>
+          <dt>🔑 Aleatório / Token</dt>
+          <dd>Selecione um sub-tipo na árvore:<br>
+            <strong>Senha Clássica</strong> — caracteres aleatórios c/ pool customizável.<br>
+            <strong>Hex</strong> — token hexadecimal (APIs).<br>
+            <strong>URL Safe</strong> — Base64 URL-safe.<br>
+            <strong>UUID</strong> — identificador único v4.</dd>
+          <dt>🛡️ Entropia</dt>
+          <dd>Quanto maior o número de bits, mais segura é a senha. Acima de 80 bits é considerada forte.</dd>
+        </dl>
+      </div>
     </div>`;
-}
+    }
 
-function renderConfigPanel() {
-  const el = document.getElementById('configPanel');
-  const gen = GENERATORS.find(g => g.id === state.selectedGenId);
-  const type = gen?.type;
+    function renderConfigPanel() {
+      const el = document.getElementById('configPanel');
+      const gen = GENERATORS.find(g => g.id === state.selectedGenId);
+      const type = gen?.type;
 
-  let headerHtml = '';
-  if (type !== 'random') {
-    headerHtml = `
-      <div class="config-panel-header">
-        <h3 class="config-panel-title">${gearIcon} Personalização</h3>
-      </div>`;
-  }
+      let headerHtml = `
+    <div class="config-panel-header">
+      <h3 class="config-panel-title">${gearIcon} Personalização</h3>
+    </div>`;
 
-  let formHtml = '';
-  if (type === 'random') formHtml = renderRandomForm();
-  else if (type === 'diceware' || type === 'diceware_mod') formHtml = renderDicewareForm(type);
+      let formHtml = '';
+      if (type === 'random') formHtml = renderRandomForm();
+      else if (type === 'diceware' || type === 'diceware_mod') formHtml = renderDicewareForm(type);
 
-  el.innerHTML = headerHtml + formHtml;
-}
+      el.innerHTML = headerHtml + formHtml;
+    }
 
-function renderRandomForm() {
-  const o = state.options;
-  const isToken = o.mode === 'token';
+    function renderRandomForm() {
+      const o = state.options;
+      const isToken = o.mode === 'token';
+      const subSelected = state.selectedSubId;
 
-  let secondCol = '';
-  if (isToken) {
-    secondCol = `
-      <div>
-        <label class="label">Formato do Token</label>
-        <select class="input-field" onchange="setOption('token_type', this.value)">
-          <option value="hex" ${o.token_type === 'hex' ? 'selected' : ''}>Hexadecimal</option>
-          <option value="urlsafe" ${o.token_type === 'urlsafe' ? 'selected' : ''}>URL Safe (Base64)</option>
-          <option value="uuid" ${o.token_type === 'uuid' ? 'selected' : ''}>UUID (v4)</option>
-        </select>
-      </div>`;
-  } else {
-    secondCol = `
-      <div>
-        <label class="label">Comprimento</label>
-        <input type="number" min="8" max="128" value="${o.length || 16}"
-               class="input-field input-mono"
-               onchange="setOption('length', Math.min(128, Math.max(8, parseInt(this.value) || 16)))">
-      </div>`;
-  }
+      // Se um sub-item foi selecionado via árvore, mostramos apenas as opções relevantes
+      // Cabeçalho com nome do modo selecionado
+      const modeLabel = subSelected === 'classic' ? 'Senha Clássica'
+        : subSelected === 'hex' ? 'Token Hexadecimal'
+          : subSelected === 'urlsafe' ? 'URL Safe (Base64)'
+            : subSelected === 'uuid' ? 'UUID (v4)'
+              : (isToken ? 'Token / API Key' : 'Senha Clássica');
 
-  let charsetHtml = '';
-  if (!isToken) {
-    charsetHtml = `
+      let formContent = '';
+
+      if (!isToken) {
+        // Modo Senha Clássica
+        formContent = `
+      <div class="config-grid">
+        <div>
+          <label class="label">Comprimento</label>
+          <input type="number" min="8" max="128" value="${o.length || 16}"
+                 class="input-field input-mono"
+                 onchange="setOption('length', Math.min(128, Math.max(8, parseInt(this.value) || 16)))">
+        </div>
+        <div></div>
+      </div>
       <div class="checkbox-grid">
         ${checkbox('use_upper', o.use_upper !== false, 'ABC')}
         ${checkbox('use_lower', o.use_lower !== false, 'abc')}
@@ -1091,72 +1693,104 @@ function renderRandomForm() {
         <input type="text" class="input-field input-mono" value="${escHtml(o.symbols || '')}"
                oninput="setOption('symbols', this.value)">
       </div>`;
-  }
-
-  let tokenLenHtml = '';
-  if (isToken && o.token_type !== 'uuid') {
-    tokenLenHtml = `
-      <div>
-        <label class="label">Comprimento</label>
-        <input type="number" min="8" max="512" value="${o.token_length || 32}"
-               class="input-field input-mono"
-               onchange="setOption('token_length', Math.min(512, Math.max(8, parseInt(this.value) || 32)))">
+      } else if (o.token_type === 'uuid') {
+        // UUID não tem opções configuráveis
+        formContent = `
+      <p style="color: var(--text-secondary); font-size: 0.8rem; margin: 0.5rem 0;">
+        Gera um identificador universalmente único (UUID v4) com 122 bits de entropia.
+      </p>`;
+      } else {
+        // Hex ou URL Safe
+        formContent = `
+      <div class="config-grid">
+        <div>
+          <label class="label">Comprimento</label>
+          <input type="number" min="8" max="512" value="${o.token_length || 32}"
+                 class="input-field input-mono"
+                 onchange="setOption('token_length', Math.min(512, Math.max(8, parseInt(this.value) || 32)))">
+        </div>
+        <div></div>
       </div>`;
-  }
+      }
 
-  return `<div class="animate-fade-in config-form">
-    <div class="config-grid">
-      <div>
-        <label class="label">Modo de Geração</label>
-        <select class="input-field" onchange="setOption('mode', this.value)">
-          <option value="classic" ${o.mode !== 'token' ? 'selected' : ''}>Senha Clássica</option>
-          <option value="token" ${o.mode === 'token' ? 'selected' : ''}>Token / API Key</option>
-        </select>
-      </div>
-      ${secondCol}
+      return `<div class="animate-fade-in config-form">
+    <div style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;
+                letter-spacing: 0.05em; font-weight: 600; margin-bottom: 0.5rem; opacity: 0.6;">
+      ${modeLabel}
     </div>
-    ${charsetHtml}
-    ${tokenLenHtml}
+    ${formContent}
   </div>`;
-}
+    }
 
-function renderDicewareForm(type) {
-  const o = state.options;
+    function renderDicewareForm(type) {
+      const o = state.options;
 
-  const langOptions = LANGUAGES.map(l =>
-    `<option value="${l.value}" ${(o.language || 'portugues') === l.value ? 'selected' : ''}>${l.label}</option>`
-  ).join('');
+      const langOptions = LANGUAGES.map(l =>
+        `<option value="${l.value}" ${(o.language || 'portugues') === l.value ? 'selected' : ''}>${l.label}</option>`
+      ).join('');
 
-  let loadingHtml = '';
-  if (state.wordlistsLoading) {
-    loadingHtml = '<div class="wordlist-loading"><span class="wordlist-loading-dot"></span> Carregando listas...</div>';
-  }
+      let loadingHtml = '';
+      if (state.wordlistsLoading) {
+        loadingHtml = '<div class="wordlist-loading"><span class="wordlist-loading-dot"></span> Carregando listas...</div>';
+      }
 
-  let advancedHtml = '';
-  if (type === 'diceware_mod') {
-    advancedHtml = `
+      let advancedHtml = '';
+      if (type === 'diceware_mod') {
+        advancedHtml = `
     <div class="advanced-section">
       <h4 class="advanced-title">Opções Avançadas</h4>
-      ${toggleSection('use_uppercase', o.use_uppercase !== false, 'Maiúsculas (Capitalizar)',
-        o.use_uppercase !== false ? `${o.capitalize_count || 1} palavras` : null,
-        `<input type="range" min="1" max="${o.num_words || 4}" value="${o.capitalize_count || 1}"
-                class="range-slider" oninput="setOption('capitalize_count', parseInt(this.value))">`
-      )}
-      ${toggleSection('use_numbers', o.use_numbers !== false, 'Incluir Números',
-        o.use_numbers !== false ? `Qtd: ${o.number_count || 1}` : null,
-        `<input type="range" min="1" max="4" value="${o.number_count || 1}"
-                class="range-slider" oninput="setOption('number_count', parseInt(this.value))">`
-      )}
-      ${toggleSection('use_symbols', o.use_symbols !== false, 'Incluir Símbolos',
-        o.use_symbols !== false ? `Qtd: ${o.symbol_count || 1}` : null,
-        `<input type="range" min="1" max="4" value="${o.symbol_count || 1}"
-                class="range-slider" oninput="setOption('symbol_count', parseInt(this.value))">`
-      )}
-      ${checkbox('use_lowercase', o.use_lowercase !== false, 'Manter Minúsculas (Desmarcar = TUDO MAIÚSCULO)', true)}
-    </div>`;
-  }
+      <div class="advanced-grid">
+        ${toggleSection('use_uppercase', o.use_uppercase !== false, '\u2726 Capitalizar', null,
+          `<div class="toggle-fields">
+             <label class="label">Palavras</label>
+             <input type="number" min="1" max="${o.num_words || 4}" value="${o.capitalize_count || 1}"
+                    class="input-field input-mono"
+                    onchange="setOption('capitalize_count', Math.min(${o.num_words || 4}, Math.max(1, parseInt(this.value)||1)))">
+             <p class="toggle-hint">N\u00ba de palavras com inicial mai\u00fascula</p>
+           </div>`
+        )}
 
-  return `<div class="animate-fade-in config-form">
+        ${toggleSection('use_numbers', o.use_numbers !== false, '# N\u00fameros', null,
+          `<div class="toggle-fields-row">
+             <div>
+               <label class="label">Qtd</label>
+               <input type="number" min="1" max="10" value="${o.number_count || 1}"
+                      class="input-field input-mono"
+                      onchange="setOption('number_count', Math.min(10, Math.max(1, parseInt(this.value)||1)))">
+             </div>
+             <div>
+               <label class="label">Pool</label>
+               <input type="text" class="input-field input-mono" value="${escHtml(o.numbers_pool || '0123456789')}"
+                      oninput="setOption('numbers_pool', this.value)">
+             </div>
+           </div>`
+        )}
+
+        ${toggleSection('use_symbols', o.use_symbols !== false, '\u203b S\u00edmbolos', null,
+          `<div class="toggle-fields-row">
+             <div>
+               <label class="label">Qtd</label>
+               <input type="number" min="1" max="10" value="${o.symbol_count || 1}"
+                      class="input-field input-mono"
+                      onchange="setOption('symbol_count', Math.min(10, Math.max(1, parseInt(this.value)||1)))">
+             </div>
+             <div>
+               <label class="label">Pool</label>
+               <input type="text" class="input-field input-mono" value="${escHtml(o.symbols_pool || '!@#$%&*')}"
+                      oninput="setOption('symbols_pool', this.value)">
+             </div>
+           </div>`
+        )}
+
+        <div class="toggle-section" style="justify-content:center">
+          ${checkbox('use_lowercase', o.use_lowercase !== false, 'Aa Min\u00fasculas', true)}
+          <p class="toggle-hint">Desmarcar converte tudo para MAI\u00daSCULO</p>
+        </div>
+      </div>
+    </div>`;
+      }
+
+      return `<div class="animate-fade-in config-form">
     <div class="config-grid">
       <div>
         <label class="label">Idioma da Lista</label>
@@ -1172,30 +1806,30 @@ function renderDicewareForm(type) {
     ${loadingHtml}
     ${advancedHtml}
   </div>`;
-}
+    }
 
-function renderResultPanel() {
-  const el = document.getElementById('resultPanel');
-  const r = state.result;
-  const entropyClass = r ? getEntropyClass(r.entropy) : '';
+    function renderResultPanel() {
+      const el = document.getElementById('resultPanel');
+      const r = state.result;
+      const entropyClass = r ? getEntropyClass(r.entropy) : '';
 
-  let errorHtml = state.error ? `<div class="result-error">${escHtml(state.error)}</div>` : '';
+      let errorHtml = state.error ? `<div class="result-error">${escHtml(state.error)}</div>` : '';
 
-  let passwordHtml = r
-    ? `<span>${escHtml(r.password)}</span>`
-    : '<span class="result-placeholder">Clique em Gerar...</span>';
+      let passwordHtml = r
+        ? `<span>${escHtml(r.password)}</span>`
+        : '<span class="result-placeholder">Clique em Gerar...</span>';
 
-  let entropyHtml = r
-    ? `<div class="result-entropy animate-scale-in">
+      let entropyHtml = r
+        ? `<div class="result-entropy animate-scale-in">
         <span class="entropy-badge ${entropyClass}">${r.entropy_label} (${r.entropy.toFixed(1)} bits)</span>
        </div>`
-    : '';
+        : '';
 
-  const copyIcon = state.copied
-    ? `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Copiado!`
-    : `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>Copiar`;
+      const copyIcon = state.copied
+        ? `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Copiado!`
+        : `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>Copiar`;
 
-  el.innerHTML = `
+      el.innerHTML = `
     <div class="result-gradient-line"></div>
     <div class="result-content">
       ${errorHtml}
@@ -1210,29 +1844,29 @@ function renderResultPanel() {
       </button>
       <button class="btn-copy" onclick="copyToClipboard()" ${!r ? 'disabled' : ''}>${copyIcon}</button>
     </div>`;
-}
+    }
 
-/* ---------- Reusable HTML Helpers ---------- */
+    /* ---------- Reusable HTML Helpers ---------- */
 
-function escHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
+    function escHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
 
-function checkbox(key, checked, label, muted = false) {
-  const id = 'cb_' + key;
-  return `
+    function checkbox(key, checked, label, muted = false) {
+      const id = 'cb_' + key;
+      return `
     <label class="checkbox-option" for="${id}">
       <input type="checkbox" id="${id}" class="checkbox" ${checked ? 'checked' : ''}
              onchange="setOption('${key}', this.checked)">
       <span class="checkbox-label ${muted ? 'checkbox-label--muted' : ''}">${label}</span>
     </label>`;
-}
+    }
 
-function toggleSection(key, checked, label, badge, childHtml) {
-  const id = 'ts_' + key;
-  return `
+    function toggleSection(key, checked, label, badge, childHtml) {
+      const id = 'ts_' + key;
+      return `
     <div class="toggle-section">
       <div class="toggle-section-header">
         <label class="checkbox-option" for="${id}">
@@ -1244,22 +1878,23 @@ function toggleSection(key, checked, label, badge, childHtml) {
       </div>
       ${checked ? childHtml : ''}
     </div>`;
-}
+    }
 
-/* ---------- Main Render ---------- */
+    /* ---------- Main Render ---------- */
 
-function render() {
-  renderSidebar();
-  renderConfigPanel();
-  renderResultPanel();
-}
+    function render() {
+      renderSidebar();
+      renderConfigPanel();
+      renderResultPanel();
+    }
 
-/* ========================================================================== */
-/* Init                                                                       */
-/* ========================================================================== */
+    /* ========================================================================== */
+    /* Init                                                                       */
+    /* ========================================================================== */
 
-render();
-preloadWordlists();
-</script>
+    render();
+    preloadWordlists();
+  </script>
 </body>
+
 </html>

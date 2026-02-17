@@ -130,5 +130,26 @@ COMO PUBLICAR:
 - [ ] Exportar/importar vault como backup.
 
 ================================================================================
+6. AJUSTES DE UI — VERSÃO STANDALONE (17/02/2026)
+================================================================================
+
+MUDANÇAS APLICADAS:
+  ✅ Layout adaptativo: painéis ajustam altura ao conteúdo (sem espaço vazio
+     em modos com pouca informação, como UUID).
+  ✅ Estrutura em árvore no "Aleatório / Token": sub-itens clicáveis para
+     Senha Clássica, Token Hex, URL Safe e UUID.
+  ✅ Manual de Uso colapsável adicionado na sidebar (com descrição de cada
+     gerador e conceito de entropia).
+  ✅ Dica de segurança removida da sidebar.
+  ✅ Opções avançadas do Diceware Mod: sliders substituídos por campos
+     numéricos + pools editáveis para números e símbolos.
+  ✅ Idioma "Todos (Mistura)": combina todas as 7 wordlists em uma única
+     lista mesclada.
+  ✅ Correção do carregamento do idioma "Todos": agora carrega todas as
+     wordlists individuais antes de mesclar (corrige erro em file://).
+  ✅ Mensagem de erro melhorada: indica quando wordlists não carregam via
+     file:// e orienta a usar servidor local ou GitHub Pages.
+
+================================================================================
 FIM DO HISTÓRICO
 ================================================================================
