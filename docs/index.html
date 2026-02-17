@@ -387,133 +387,39 @@
     }
 
     /* Manual de utilização */
-    /* Help Button */
+    /* Help Button (Link) */
     .help-btn {
       margin-top: auto;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--bg-secondary);
-      color: var(--accent);
-      font-size: 0.85rem;
-      font-weight: 700;
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      /* Mesma cor base dos outros botões */
+      background: transparent;
+      border: 1px solid transparent;
+      font-size: 0.875rem;
+      font-weight: 500;
       font-family: inherit;
       cursor: pointer;
       display: flex;
       align-items: center;
-      justify-content: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      /* Como é um link <a> */
       transition: all 0.2s;
-      flex-shrink: 0;
     }
 
     .help-btn:hover {
-      background: var(--accent);
-      color: var(--bg-card);
-      border-color: var(--accent);
-      box-shadow: 0 0 12px rgba(124, 58, 237, 0.3);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
     }
 
-    /* Help Modal */
-    .help-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      animation: fadeIn 0.2s ease;
-    }
-
-    .help-overlay.open {
-      display: flex;
-    }
-
-    .help-modal {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      max-width: 520px;
-      width: 90vw;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-      animation: slideUp 0.25s ease;
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(16px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .help-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .help-modal-title {
-      font-size: 1rem;
-      font-weight: 700;
+    .help-icon {
+      width: 1rem;
+      height: 1rem;
       color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .help-modal-close {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text-secondary);
-      font-size: 1rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-    }
-
-    .help-modal-close:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: var(--text-primary);
-    }
-
-    .help-modal dt {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-top: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .help-modal dt:first-child {
-      margin-top: 0;
-    }
-
-    .help-modal dd {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin: 0.2rem 0 0 0;
-      padding-left: 0.2rem;
+      /* Destaque sutil no ícone */
     }
 
     /* ========================================================================== */
@@ -1631,10 +1537,7 @@
       render();
     }
 
-    function toggleHelp() {
-      const overlay = document.getElementById('helpOverlay');
-      if (overlay) overlay.classList.toggle('open');
-    }
+
 
     /* ========================================================================== */
     /* UI Rendering                                                               */
@@ -1654,7 +1557,6 @@
       ${svgIcon(g.icon)} ${g.label}
     </button>`;
 
-        // Renderizar sub-itens (árvore) se o gerador estiver ativo e tiver children
         if (isActive && g.children) {
           html += `<div class="sidebar-subtree">
         ${g.children.map(c => `
@@ -1671,38 +1573,10 @@
       el.innerHTML = `
     <h3 class="sidebar-header">Método</h3>
     <div class="sidebar-list">${genButtons}</div>
-    <button class="help-btn" onclick="toggleHelp()" title="Manual de Uso">?</button>`;
-
-      // Renderizar modal de help (fora da sidebar para não ser cortada)
-      let helpOverlay = document.getElementById('helpOverlay');
-      if (!helpOverlay) {
-        helpOverlay = document.createElement('div');
-        helpOverlay.id = 'helpOverlay';
-        helpOverlay.className = 'help-overlay';
-        helpOverlay.onclick = function (e) { if (e.target === this) toggleHelp(); };
-        helpOverlay.innerHTML = `
-      <div class="help-modal">
-        <div class="help-modal-header">
-          <span class="help-modal-title">📖 Manual de Uso</span>
-          <button class="help-modal-close" onclick="toggleHelp()">✕</button>
-        </div>
-        <dl>
-          <dt>🎲 Diceware (Puro)</dt>
-          <dd>Gera uma frase-senha aleatória usando listas de palavras Diceware. Ideal para senhas memorizáveis e seguras.</dd>
-          <dt>🔧 Diceware (Mod)</dt>
-          <dd>Versão modificada que permite adicionar números, símbolos e capitalização às palavras do Diceware.</dd>
-          <dt>🔑 Aleatório / Token</dt>
-          <dd>Selecione um sub-tipo na árvore:<br>
-            <strong>Senha Clássica</strong> — caracteres aleatórios c/ pool customizável.<br>
-            <strong>Hex</strong> — token hexadecimal (APIs).<br>
-            <strong>URL Safe</strong> — Base64 URL-safe.<br>
-            <strong>UUID</strong> — identificador único v4.</dd>
-          <dt>🛡️ Entropia</dt>
-          <dd>Quanto maior o número de bits, mais segura é a senha. Acima de 80 bits é considerada forte.</dd>
-        </dl>
-      </div>`;
-        document.body.appendChild(helpOverlay);
-      }
+    <a href="manual.html" target="_blank" class="help-btn" title="Abrir Manual de Uso">
+      <svg class="help-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      Ajuda
+    </a>`;
     }
 
     function renderConfigPanel() {

@@ -155,17 +155,14 @@ MUDANÇAS APLICADAS:
 ================================================================================
 
 PROBLEMA:
-  - O manual na barra lateral (colapsável) ocupava muito espaço vertical e
-    era cortado em telas menores, prejudicando a leitura.
+  - O manual na barra lateral era cortado em telas menores.
+  - A tentativa de usar um Modal (popup) também apresentou problemas de corte
+    de texto segundo o usuário.
 
-SOLUÇÃO (Versão Standalone):
-  ✅ Barra lateral limpa: removido o manual colapsável.
-  ✅ Botão de Ajuda (?): fixado no rodapé da sidebar (desktop) ou canto
-     inferior direito (mobile).
-  ✅ Modal Responsivo: ao clicar em (?), abre-se um popup centralizado com
-     fundo escurecido (backdrop blur), contendo todo o manual de uso.
-  ✅ Melhoria na UX: leitura focada sem precisar rolar a barra lateral de
-     configurações.
+SOLUÇÃO DEFINITIVA (Versão Standalone):
+  ✅ Criada página dedicada: docs/manual.html.
+  ✅ Botão de Ajuda: Link "Ajuda" com ícone (?) na sidebar, abrindo em nova aba.
+  ✅ Vantagem: Garante leitura confortável sem limitações de espaço de popups.
 
 ================================================================================
 FIM DO HISTÓRICO

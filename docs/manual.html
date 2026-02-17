@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureGen — Manual de Uso</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #ffffff08;
+            --bg-card: #161618;
+            --text-primary: #ededed;
+            --text-secondary: #a1a1aa;
+            --accent: #5e6ad2;
+            --accent-hover: #4e5ac0;
+            --border: #ffffff15;
+            --radius: 12px;
+            --radius-lg: 18px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(94, 106, 210, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem;
+            background: linear-gradient(to right, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        h2 {
+            color: var(--accent);
+            font-size: 1.25rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        h2:first-of-type {
+            margin-top: 0;
+        }
+
+        p {
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 1rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        li::before {
+            content: '•';
+            color: var(--accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 2rem;
+            text-decoration: none;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-back:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">Manual de Uso</h1>
+            <p style="color: var(--text-secondary)">Entenda como gerar senhas seguras com o SecureGen</p>
+        </header>
+
+        <div class="card">
+            <h2>🎲 Diceware (Puro)</h2>
+            <p>
+                O método Diceware gera senhas baseadas em frases (passphrases) compostas por palavras aleatórias.
+                É considerado um dos métodos mais seguros e fáceis de memorizar.
+            </p>
+            <ul>
+                <li><strong>Como funciona:</strong> O sistema seleciona palavras aleatórias de uma lista (wordlist) com
+                    7.776 palavras.</li>
+                <li><strong>Segurança:</strong> Cada palavra adiciona ~12.9 bits de entropia. Uma frase com 5 ou 6
+                    palavras é matematicamente inviável de ser quebrada por força bruta hoje.</li>
+                <li><strong>Recomendação:</strong> Use pelo menos 4 palavras para contas comuns e 6 palavras para contas
+                    críticas (como e-mail principal ou gerenciador de senhas).</li>
+            </ul>
+
+            <h2>🔧 Diceware (Modificado)</h2>
+            <p>
+                Uma variação do Diceware que adiciona complexidade extra para atender a requisitos de sites que exigem
+                símbolos, números ou letras maiúsculas.
+            </p>
+            <ul>
+                <li><strong>Capitalização:</strong> Permite transformar letras em maiúsculas aleatoriamente.</li>
+                <li><strong>Inserções:</strong> Adiciona números e símbolos entre ou dentro das palavras.</li>
+                <li><strong>Vantagem:</strong> Mantém a memorabilidade do Diceware enquanto satisfaz regras chatas de
+                    "pelo menos 1 símbolo e 1 número".</li>
+            </ul>
+
+            <h2>🔑 Aleatório / Token</h2>
+            <p>
+                Gera senhas de caracteres aleatórios ou tokens para uso em sistemas (API Keys, segredos).
+            </p>
+            <ul>
+                <li><strong>Senha Clássica:</strong> A tradicional "sopa de letrinhas" (ex: <code>aB3$kL9#mP</code>).
+                    Use o maior comprimento possível.</li>
+                <li><strong>Token Hexadecimal:</strong> Sequência de caracteres 0-9 e A-F. Comum para chaves de API.
+                </li>
+                <li><strong>URL Safe (Base64):</strong> Tokens que podem ser usados em URLs sem precisar de escape.</li>
+                <li><strong>UUID (v4):</strong> Identificadores Universais Únicos, padrão da indústria para IDs de banco
+                    de dados.</li>
+            </ul>
+
+            <h2>🛡️ Entropia</h2>
+            <p>
+                A entropia mede a imprevisibilidade de uma senha em "bits". Quanto mais bits, mais difícil é para um
+                computador adivinhar a senha.
+            </p>
+            <ul>
+                <li><strong>&lt; 40 bits:</strong> Muito Fraca. Quebrável instantaneamente.</li>
+                <li><strong>40 - 64 bits:</strong> Média. Razoável para coisas triviais.</li>
+                <li><strong>64 - 80 bits:</strong> Forte. Boa para a maioria dos serviços.</li>
+                <li><strong>&gt; 80 bits:</strong> Muito Forte. Resistente a ataques massivos de agências governamentais
+                    ou supercomputadores.</li>
+            </ul>
+
+            <div style="text-align: center;">
+                <a href="index.html" class="btn-back">← Voltar para o Gerador</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
