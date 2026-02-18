@@ -24,6 +24,17 @@
             --radius-lg: 18px;
         }
 
+        :root.light-theme {
+            --bg-primary: #f0f2f5;
+            --bg-secondary: #e2e8f0;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent: #4f46e5;
+            --accent-hover: #4338ca;
+            --border: #cbd5e1;
+        }
+
         *,
         *::before,
         *::after {
@@ -60,6 +71,13 @@
             font-weight: 700;
             margin: 0 0 0.5rem;
             background: linear-gradient(to right, #fff, var(--text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        :root.light-theme .title {
+            background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -208,6 +226,12 @@
             </div>
         </div>
     </div>
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            document.documentElement.classList.add('light-theme');
+        }
+    </script>
 </body>
 
 </html>

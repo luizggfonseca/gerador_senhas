@@ -192,6 +192,7 @@ ARQUIVOS MODIFICADOS:
   - frontend/src/App.jsx: Lógica de estado e novos controles.
   - frontend/src/index.css: Estilos para tema claro e modo mobile.
   - docs/index.html: Replica das func. de tema/tamanho na versão standalone.
+  - docs/manual.html: Suporte a tema claro para consistência visual.
 
 ================================================================================
 FIM DO HISTÓRICO
