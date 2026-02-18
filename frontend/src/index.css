@@ -33,9 +33,6 @@
   --radius-lg: 18px;
 
   /* Shadow */
-  /* Glass Strings */
-  --bg-glass: rgba(10, 10, 10, 0.8);
-
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   --shadow-glow: 0 0 20px var(--accent-glow);
@@ -57,8 +54,6 @@
 
   --border: #cbd5e1;
   --border-active: #4f46e5;
-
-  --bg-glass: rgba(255, 255, 255, 0.6);
 
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.05);
@@ -90,7 +85,15 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  body {
+    justify-content: center;
+    padding: 2rem;
+  }
 }
 
 ::selection {
@@ -173,14 +176,14 @@ body {
 }
 
 .app-wrapper {
-  width: 960px;
-  max-width: 100%;
-  transition: width 0.3s ease;
+  width: 100%;
+  max-width: 960px;
+  transition: all 0.3s ease;
 }
 
-/* UI Size Modes */
+/* UI Size Modes (Simulation) */
 .app-container.ui-mobile .app-wrapper {
-  width: 480px;
+  max-width: 480px;
 }
 
 .app-container.ui-mobile .generator-layout {
@@ -192,11 +195,13 @@ body {
   flex-direction: row;
   overflow-x: auto;
   padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app-container.ui-mobile .sidebar-list {
   flex-direction: row;
-  min-width: min-content;
+  min-width: max-content;
+  gap: 0.5rem;
 }
 
 .app-container.ui-mobile .sidebar-btn {
@@ -214,6 +219,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .header-content {
@@ -311,7 +317,7 @@ body {
 }
 
 .glass-inner {
-  background: var(--bg-glass);
+  background: rgba(10, 10, 10, 0.8);
   border-radius: var(--radius);
   padding: 1rem;
   backdrop-filter: blur(4px);

@@ -191,8 +191,9 @@ IMPLEMENTAÇÃO:
 ARQUIVOS MODIFICADOS:
   - frontend/src/App.jsx: Lógica de estado e novos controles.
   - frontend/src/index.css: Estilos para tema claro e modo mobile.
-  - docs/index.html: Replica das func. de tema/tamanho na versão standalone.
+  - docs/index.html: Replica das func. de tema/tamanho e correção de quebra no mobile.
   - docs/manual.html: Suporte a tema claro para consistência visual.
+  - Ajustes de Responsividade: Troca de 'width' fixo por 'max-width' e ajuste de padding/flex-wrap para evitar cortes em telas menores (ex: S21+).
 
 ================================================================================
 FIM DO HISTÓRICO
