@@ -38,6 +38,27 @@
   --shadow-glow: 0 0 20px var(--accent-glow);
 }
 
+:root.light-theme {
+  /* Colors — Modern Light Palette */
+  --bg-primary: #f0f2f5;
+  --bg-secondary: #e2e8f0;
+  --bg-card: #ffffff;
+  --bg-input: #f8fafc;
+
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-glow: #4f46e540;
+
+  --border: #cbd5e1;
+  --border-active: #4f46e5;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+}
+
 /* ---------- Reset & Base ---------- */
 
 *,
@@ -148,12 +169,78 @@ body {
 
 .app-wrapper {
   width: 960px;
+  max-width: 100%;
+  transition: width 0.3s ease;
+}
+
+/* UI Size Modes */
+.app-container.ui-mobile .app-wrapper {
+  width: 480px;
+}
+
+.app-container.ui-mobile .generator-layout {
+  flex-direction: column;
+}
+
+.app-container.ui-mobile .generator-sidebar {
+  width: 100%;
+  flex-direction: row;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.app-container.ui-mobile .sidebar-list {
+  flex-direction: row;
+  min-width: min-content;
+}
+
+.app-container.ui-mobile .sidebar-btn {
+  white-space: nowrap;
+}
+
+.app-container.ui-mobile .sidebar-tip {
+  display: none;
 }
 
 /* Header */
 .app-header {
   margin-bottom: 1rem;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header-content {
+  text-align: left;
+}
+
+.app-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.control-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: grid;
+  place-content: center;
+}
+
+.control-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+.control-btn .icon {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .app-title {
@@ -166,10 +253,27 @@ body {
   background-clip: text;
 }
 
+:root.light-theme .app-title {
+  background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .app-subtitle {
   color: var(--text-secondary);
   margin: 0;
   font-size: 0.8125rem;
+}
+
+/* Mobile Header Adjustments */
+.app-container.ui-mobile .app-header {
+  flex-direction: column;
+  text-align: center;
+}
+
+.app-container.ui-mobile .header-content {
+  text-align: center;
 }
 
 /* Glass Panel (card exterior) */

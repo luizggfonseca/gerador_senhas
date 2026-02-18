@@ -165,5 +165,34 @@ SOLUÇÃO DEFINITIVA (Versão Standalone):
   ✅ Vantagem: Garante leitura confortável sem limitações de espaço de popups.
 
 ================================================================================
+8. CONFIGURAÇÕES GLOBAIS DE UI (18/02/2026)
+================================================================================
+
+OBJETIVO:
+  Permitir personalização da aparência e layout da aplicação conforme
+  preferência do usuário (tamanho e tema).
+
+IMPLEMENTAÇÃO:
+  ✅ Adicionado controle de TEMA (Claro / Escuro):
+     - Alternância via botão no cabeçalho.
+     - Persistência da preferência em localStorage.
+     - Definição de variáveis CSS para o tema claro em ':root.light-theme'.
+  
+  ✅ Adicionado controle de TAMANHO (Celular / PC):
+     - Simulação de interface mobile em desktop via botão no cabeçalho.
+     - Ajuste de largura do container principal (max-width: 480px).
+     - Reorganização do layout (flex-direction: column) para modo mobile.
+     - Persistência da preferência em localStorage.
+
+  ✅ Melhorias no Cabeçalho (Header):
+     - Layout flexbox para acomodar título e controles.
+     - Novos botões com ícones e tooltips.
+
+ARQUIVOS MODIFICADOS:
+  - frontend/src/App.jsx: Lógica de estado e novos controles.
+  - frontend/src/index.css: Estilos para tema claro e modo mobile.
+
+================================================================================
 FIM DO HISTÓRICO
 ================================================================================
+
