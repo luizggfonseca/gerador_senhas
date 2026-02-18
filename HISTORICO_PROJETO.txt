@@ -208,10 +208,15 @@ IMPLEMENTAÇÃO:
      - Movido da sidebar para o cabeçalho (Header).
      - Resolve o problema de sobreposição com o botão "Gerar Senha" no mobile.
   
-  ✅ Menu Dropdown para Sub-itens:
-     - Substituído a árvore de botões na sidebar por um elemento <select>
-       (dropdown) quando um gerador com sub-opções é selecionado.
-     - Melhora drasticamente a usabilidade no celular, economizando espaço.
+  ✅ Menu Dropdown para Métodos e Sub-itens (Celular):
+     - No modo mobile, a sidebar agora utiliza um componente <select> para a
+       escolha do método principal e outro para sub-itens.
+     - Isso elimina a fila horizontal de botões que causava sobreposição e
+       quebra de layout em telas pequenas.
+
+  ✅ Limpeza de UI:
+     - Removido o rótulo "Personalização" do painel de configuração para ganhar
+       mais espaço vertical e foco nos controles.
 
   ✅ Refinamento Visual (Clean & Premium):
      - Overhauled CSS Variables: Paleta de cores mais profissional e harmônica.
@@ -222,7 +227,6 @@ IMPLEMENTAÇÃO:
 
 ARQUIVOS MODIFICADOS:
   - docs/index.html: Refatoração completa do CSS de UI e lógica de dropdown.
-  - frontend/src/index.css: (Em andamento) Sincronização dos estilos premium.
 
 ================================================================================
 FIM DO HISTÓRICO

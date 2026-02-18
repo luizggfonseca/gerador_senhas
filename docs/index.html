@@ -207,30 +207,17 @@
 
     .app-container.ui-mobile .generator-sidebar {
       width: 100%;
-      flex-direction: row;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-      -webkit-overflow-scrolling: touch;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
     }
 
     .app-container.ui-mobile .sidebar-list {
-      flex-direction: row;
-      min-width: max-content;
-      gap: 0.5rem;
-    }
-
-    .app-container.ui-mobile .sidebar-btn {
-      white-space: nowrap;
-      padding: 0.6rem 1rem;
+      width: 100%;
     }
 
     .app-container.ui-mobile .sidebar-tip {
       display: none;
-    }
-
-    .app-container.ui-mobile .generator-sidebar {
-      border-right: none;
-      border-bottom: 1px solid var(--border);
     }
 
     .app-header {
@@ -1119,27 +1106,12 @@
       }
 
       .sidebar-list {
-        flex-direction: row;
-        flex-wrap: wrap;
+        flex-direction: column;
         gap: 0.5rem;
       }
 
-      .sidebar-btn {
-        flex: 1;
-        min-width: 0;
-        justify-content: center;
-        padding: 0.6rem 0.5rem;
-        font-size: 0.75rem;
-      }
-
       .sidebar-subtree {
-        flex-direction: row;
-        flex-wrap: wrap;
         padding-left: 0;
-      }
-
-      .sidebar-sub-btn::before {
-        display: none;
       }
 
       .app-wrapper {
@@ -1348,6 +1320,7 @@
     const state = {
       selectedGenId: 'random_classic',
       selectedSubId: 'classic',
+      uiSize: localStorage.getItem('uiSize') || 'desktop',
       options: { ...DEFAULTS.random_classic },
       result: null,
       error: null,
@@ -1753,31 +1726,63 @@
 
     function renderSidebar() {
       const el = document.getElementById('sidebar');
+      // Detecta mobile se largura < 768px ou se o estado uiSize for mobile
+      const isMobile = state.uiSize === 'mobile' || window.innerWidth <= 768;
 
-      const genButtons = GENERATORS.map(g => {
-        const isActive = state.selectedGenId === g.id;
-        let html = `<button class="sidebar-btn ${isActive ? 'active' : ''}" onclick="selectGenerator('${g.id}')">
-      ${svgIcon(g.icon)} ${g.label}
-    </button>`;
+      if (isMobile) {
+        const optionsHtml = GENERATORS.map(g =>
+          `<option value="${g.id}" ${state.selectedGenId === g.id ? 'selected' : ''}>${g.label}</option>`
+        ).join('');
 
-        if (isActive && g.children) {
-          html += `
-      <div class="sidebar-subtree">
-        <select class="sidebar-select" onchange="selectGenerator('${g.id}', this.value)">
-          ${g.children.map(c => `
-            <option value="${c.subId}" ${state.selectedSubId === c.subId ? 'selected' : ''}>
-              ${c.label}
-            </option>
-          `).join('')}
-        </select>
-      </div>`;
+        let subSelectHtml = '';
+        const currentGen = GENERATORS.find(g => g.id === state.selectedGenId);
+        if (currentGen && currentGen.children) {
+          subSelectHtml = `
+          <div class="sidebar-subtree" style="margin-top: 0.5rem; padding: 0;">
+            <select class="sidebar-select" onchange="selectGenerator('${state.selectedGenId}', this.value)">
+              ${currentGen.children.map(c => `
+                <option value="${c.subId}" ${state.selectedSubId === c.subId ? 'selected' : ''}>
+                  ${c.label}
+                </option>
+              `).join('')}
+            </select>
+          </div>`;
         }
-        return html;
-      }).join('');
 
-      el.innerHTML = `
-    <h3 class="sidebar-header">Método</h3>
-    <div class="sidebar-list">${genButtons}</div>`;
+        el.innerHTML = `
+        <h3 class="sidebar-header">Método</h3>
+        <div class="sidebar-list" style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%;">
+          <select class="sidebar-select" onchange="selectGenerator(this.value)">
+            ${optionsHtml}
+          </select>
+          ${subSelectHtml}
+        </div>`;
+      } else {
+        const genButtons = GENERATORS.map(g => {
+          const isActive = state.selectedGenId === g.id;
+          let html = `<button class="sidebar-btn ${isActive ? 'active' : ''}" onclick="selectGenerator('${g.id}')">
+        ${svgIcon(g.icon)} ${g.label}
+      </button>`;
+
+          if (isActive && g.children) {
+            html += `
+        <div class="sidebar-subtree">
+          <select class="sidebar-select" onchange="selectGenerator('${g.id}', this.value)">
+            ${g.children.map(c => `
+              <option value="${c.subId}" ${state.selectedSubId === c.subId ? 'selected' : ''}>
+                ${c.label}
+              </option>
+            `).join('')}
+          </select>
+        </div>`;
+          }
+          return html;
+        }).join('');
+
+        el.innerHTML = `
+      <h3 class="sidebar-header">Método</h3>
+      <div class="sidebar-list">${genButtons}</div>`;
+      }
     }
 
     function renderConfigPanel() {
@@ -1785,10 +1790,7 @@
       const gen = GENERATORS.find(g => g.id === state.selectedGenId);
       const type = gen?.type;
 
-      let headerHtml = `
-    <div class="config-panel-header">
-      <h3 class="config-panel-title">${gearIcon} Personalização</h3>
-    </div>`;
+      let headerHtml = '';
 
       let formHtml = '';
       if (type === 'random') formHtml = renderRandomForm();
@@ -2098,12 +2100,15 @@
         if (isDesktop) {
           container.classList.add('ui-mobile');
           localStorage.setItem('uiSize', 'mobile');
+          state.uiSize = 'mobile';
           updateSizeIcon('mobile');
         } else {
           container.classList.remove('ui-mobile');
           localStorage.setItem('uiSize', 'desktop');
+          state.uiSize = 'desktop';
           updateSizeIcon('desktop');
         }
+        render();
       };
     }
 
