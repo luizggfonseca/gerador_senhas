@@ -196,6 +196,35 @@ ARQUIVOS MODIFICADOS:
   - Ajustes de Responsividade: Troca de 'width' fixo por 'max-width' e ajuste de padding/flex-wrap para evitar cortes em telas menores (ex: S21+).
 
 ================================================================================
+9. AJUSTES MOBILES E REFINAMENTO DE UI (18/02/2026)
+================================================================================
+
+OBJETIVO:
+  Corrigir sobreposições em dispositivos móveis e melhorar a usabilidade da
+  interface em telas pequenas.
+
+IMPLEMENTAÇÃO:
+  ✅ Relocação do Botão de Ajuda:
+     - Movido da sidebar para o cabeçalho (Header).
+     - Resolve o problema de sobreposição com o botão "Gerar Senha" no mobile.
+  
+  ✅ Menu Dropdown para Sub-itens:
+     - Substituído a árvore de botões na sidebar por um elemento <select>
+       (dropdown) quando um gerador com sub-opções é selecionado.
+     - Melhora drasticamente a usabilidade no celular, economizando espaço.
+
+  ✅ Refinamento Visual (Clean & Premium):
+     - Overhauled CSS Variables: Paleta de cores mais profissional e harmônica.
+     - Glassmorphism: Efeito de vidro refinado com melhor legibilidade.
+     - Tipografia: Ajuste de tamanhos de fonte no mobile (senha maior).
+     - Componentes: Botões e campos de input com bordas mais suaves, sombras
+       profundas (glow) e transições mais fluidas.
+
+ARQUIVOS MODIFICADOS:
+  - docs/index.html: Refatoração completa do CSS de UI e lógica de dropdown.
+  - frontend/src/index.css: (Em andamento) Sincronização dos estilos premium.
+
+================================================================================
 FIM DO HISTÓRICO
 ================================================================================
 

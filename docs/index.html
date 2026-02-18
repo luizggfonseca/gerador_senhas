@@ -514,6 +514,26 @@
       opacity: 0.6;
     }
 
+    /* Style for the new sidebar dropdown */
+    .sidebar-select {
+      width: 100%;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      padding: 0.65rem;
+      font-size: 0.8125rem;
+      font-family: inherit;
+      outline: none;
+      margin-top: 0.25rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+    }
+
+    .sidebar-select:focus {
+      border-color: var(--accent);
+    }
+
     /* Manual de utilização */
     /* Help Button (Link) */
     .help-btn {
@@ -1122,11 +1142,21 @@
         display: none;
       }
 
+      .app-wrapper {
+        padding: 0.5rem;
+      }
+
+      .glass-inner {
+        padding: 0.75rem;
+      }
+
+      .generator-main {
+        gap: 0.75rem;
+      }
+
       .help-btn {
-        position: fixed;
-        bottom: 1rem;
-        right: 1rem;
-        z-index: 50;
+        display: none;
+        /* Movememos para o header */
       }
 
       .config-grid {
@@ -1183,12 +1213,18 @@
                 d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           </button>
-          <button class="control-btn" id="btnSize" title="Carregando...">
+          <button class="control-btn" id="btnSize" title="Alternar Layout">
             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </button>
+          <a href="manual.html" target="_blank" class="control-btn" title="Manual de Uso">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </a>
         </div>
       </header>
 
@@ -1717,7 +1753,6 @@
 
     function renderSidebar() {
       const el = document.getElementById('sidebar');
-      const subIcon = (d) => `<svg class="sidebar-sub-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${d}"/></svg>`;
 
       const genButtons = GENERATORS.map(g => {
         const isActive = state.selectedGenId === g.id;
@@ -1726,13 +1761,15 @@
     </button>`;
 
         if (isActive && g.children) {
-          html += `<div class="sidebar-subtree">
-        ${g.children.map(c => `
-          <button class="sidebar-sub-btn ${state.selectedSubId === c.subId ? 'active' : ''}"
-                  onclick="event.stopPropagation(); selectGenerator('${g.id}', '${c.subId}')">
-            ${subIcon(c.icon)} ${c.label}
-          </button>
-        `).join('')}
+          html += `
+      <div class="sidebar-subtree">
+        <select class="sidebar-select" onchange="selectGenerator('${g.id}', this.value)">
+          ${g.children.map(c => `
+            <option value="${c.subId}" ${state.selectedSubId === c.subId ? 'selected' : ''}>
+              ${c.label}
+            </option>
+          `).join('')}
+        </select>
       </div>`;
         }
         return html;
@@ -1740,11 +1777,7 @@
 
       el.innerHTML = `
     <h3 class="sidebar-header">Método</h3>
-    <div class="sidebar-list">${genButtons}</div>
-    <a href="manual.html" target="_blank" class="help-btn" title="Abrir Manual de Uso">
-      <svg class="help-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-      Ajuda
-    </a>`;
+    <div class="sidebar-list">${genButtons}</div>`;
     }
 
     function renderConfigPanel() {
@@ -1780,7 +1813,6 @@
       let formContent = '';
 
       if (!isToken) {
-        // Modo Senha Clássica
         formContent = `
       <div class="config-grid">
         <div>
@@ -1809,7 +1841,6 @@
         Gera um identificador universalmente único (UUID v4) com 122 bits de entropia.
       </p>`;
       } else {
-        // Hex ou URL Safe
         formContent = `
       <div class="config-grid">
         <div>
@@ -1849,17 +1880,17 @@
     <div class="advanced-section">
       <h4 class="advanced-title">Opções Avançadas</h4>
       <div class="advanced-grid">
-        ${toggleSection('use_uppercase', o.use_uppercase !== false, '\u2726 Capitalizar', null,
+        ${toggleSection('use_uppercase', o.use_uppercase !== false, '✦ Capitalizar', null,
           `<div class="toggle-fields">
              <label class="label">Palavras</label>
              <input type="number" min="1" max="${o.num_words || 4}" value="${o.capitalize_count || 1}"
                     class="input-field input-mono"
                     onchange="setOption('capitalize_count', Math.min(${o.num_words || 4}, Math.max(1, parseInt(this.value)||1)))">
-             <p class="toggle-hint">N\u00ba de palavras com inicial mai\u00fascula</p>
+             <p class="toggle-hint">Nº de palavras com inicial maiúscula</p>
            </div>`
         )}
 
-        ${toggleSection('use_numbers', o.use_numbers !== false, '# N\u00fameros', null,
+        ${toggleSection('use_numbers', o.use_numbers !== false, '# Números', null,
           `<div class="toggle-fields-row">
              <div>
                <label class="label">Qtd</label>
@@ -1875,7 +1906,7 @@
            </div>`
         )}
 
-        ${toggleSection('use_symbols', o.use_symbols !== false, '\u203b S\u00edmbolos', null,
+        ${toggleSection('use_symbols', o.use_symbols !== false, '※ Símbolos', null,
           `<div class="toggle-fields-row">
              <div>
                <label class="label">Qtd</label>
@@ -1892,8 +1923,8 @@
         )}
 
         <div class="toggle-section" style="justify-content:center">
-          ${checkbox('use_lowercase', o.use_lowercase !== false, 'Aa Min\u00fasculas', true)}
-          <p class="toggle-hint">Desmarcar converte tudo para MAI\u00daSCULO</p>
+          ${checkbox('use_lowercase', o.use_lowercase !== false, 'Aa Minúsculas', true)}
+          <p class="toggle-hint">Desmarcar converte tudo para MAIÚSCULO</p>
         </div>
       </div>
     </div>`;
@@ -1908,8 +1939,8 @@
       <div>
         <label class="label">Número de Palavras</label>
         <input type="number" min="3" max="10" value="${o.num_words || 4}"
-               class="input-field input-mono"
-               onchange="setOption('num_words', Math.min(10, Math.max(3, parseInt(this.value) || 4)))">
+          class="input-field input-mono"
+          onchange="setOption('num_words', Math.min(10, Math.max(3, parseInt(this.value) || 4)))">
       </div>
     </div>
     ${loadingHtml}
@@ -1935,8 +1966,8 @@
         : '';
 
       const copyIcon = state.copied
-        ? `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>Copiado!`
-        : `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>Copiar`;
+        ? `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Copiado!`
+        : `<svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg> Copiar`;
 
       el.innerHTML = `
     <div class="result-gradient-line"></div>
@@ -1966,11 +1997,11 @@
     function checkbox(key, checked, label, muted = false) {
       const id = 'cb_' + key;
       return `
-    <label class="checkbox-option" for="${id}">
-      <input type="checkbox" id="${id}" class="checkbox" ${checked ? 'checked' : ''}
-             onchange="setOption('${key}', this.checked)">
-      <span class="checkbox-label ${muted ? 'checkbox-label--muted' : ''}">${label}</span>
-    </label>`;
+      <label class="checkbox-option" for="${id}">
+        <input type="checkbox" id="${id}" class="checkbox" ${checked ? 'checked' : ''}
+          onchange="setOption('${key}', this.checked)">
+        <span class="checkbox-label ${muted ? 'checkbox-label--muted' : ''}">${label}</span>
+      </label>`;
     }
 
     function toggleSection(key, checked, label, badge, childHtml) {
@@ -1980,7 +2011,7 @@
       <div class="toggle-section-header">
         <label class="checkbox-option" for="${id}">
           <input type="checkbox" id="${id}" class="checkbox" ${checked ? 'checked' : ''}
-                 onchange="setOption('${key}', this.checked)">
+            onchange="setOption('${key}', this.checked)">
           <span class="checkbox-label">${label}</span>
         </label>
         ${badge ? `<span class="toggle-badge">${badge}</span>` : ''}
