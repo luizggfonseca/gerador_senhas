@@ -43,6 +43,9 @@
       --radius: 12px;
       --radius-lg: 18px;
 
+      /* Glass Strings */
+      --bg-glass: rgba(10, 10, 10, 0.8);
+
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
       --shadow-glow: 0 0 20px var(--accent-glow);
@@ -64,6 +67,8 @@
 
       --border: #cbd5e1;
       --border-active: #4f46e5;
+
+      --bg-glass: rgba(255, 255, 255, 0.6);
 
       --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
       --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.05);
@@ -312,7 +317,7 @@
     }
 
     .glass-inner {
-      background: rgba(10, 10, 10, 0.8);
+      background: var(--bg-glass);
       border-radius: var(--radius);
       padding: 1rem;
       backdrop-filter: blur(4px);
