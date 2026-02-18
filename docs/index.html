@@ -48,6 +48,27 @@
       --shadow-glow: 0 0 20px var(--accent-glow);
     }
 
+    :root.light-theme {
+      /* Colors — Modern Light Palette */
+      --bg-primary: #f0f2f5;
+      --bg-secondary: #e2e8f0;
+      --bg-card: #ffffff;
+      --bg-input: #f8fafc;
+
+      --text-primary: #1e293b;
+      --text-secondary: #64748b;
+
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --accent-glow: #4f46e540;
+
+      --border: #cbd5e1;
+      --border-active: #4f46e5;
+
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+    }
+
     /* ---------- Reset & Base ---------- */
 
     *,
@@ -166,11 +187,76 @@
     .app-wrapper {
       width: 960px;
       max-width: 100%;
+      transition: width 0.3s ease;
+    }
+
+    /* UI Size Modes */
+    .app-container.ui-mobile .app-wrapper {
+      width: 480px;
+    }
+
+    .app-container.ui-mobile .generator-layout {
+      flex-direction: column;
+    }
+
+    .app-container.ui-mobile .generator-sidebar {
+      width: 100%;
+      flex-direction: row;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+    }
+
+    .app-container.ui-mobile .sidebar-list {
+      flex-direction: row;
+      min-width: min-content;
+    }
+
+    .app-container.ui-mobile .sidebar-btn {
+      white-space: nowrap;
+    }
+
+    .app-container.ui-mobile .sidebar-tip {
+      display: none;
     }
 
     .app-header {
       margin-bottom: 1rem;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .header-content {
+      text-align: left;
+    }
+
+    .app-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .control-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: grid;
+      place-content: center;
+    }
+
+    .control-btn:hover {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .control-btn .icon {
+      width: 1.25rem;
+      height: 1.25rem;
     }
 
     .app-title {
@@ -178,6 +264,13 @@
       font-weight: 700;
       margin: 0 0 0.25rem;
       background: linear-gradient(to right, #fff, var(--text-secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    :root.light-theme .app-title {
+      background: linear-gradient(to right, var(--text-primary), var(--text-secondary));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -231,6 +324,16 @@
       font-size: 0.625rem;
       color: var(--text-secondary);
       opacity: 0.4;
+    }
+
+    /* Mobile Header Adjustments */
+    .app-container.ui-mobile .app-header {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .app-container.ui-mobile .header-content {
+      text-align: center;
     }
 
     .app-badge {
@@ -1020,8 +1123,24 @@
   <div class="app-container">
     <div class="app-wrapper">
       <header class="app-header">
-        <h1 class="app-title">Gerador de Senhas <span class="app-badge">Web</span></h1>
-        <p class="app-subtitle">Crie senhas fortes e seguras diretamente no seu navegador.</p>
+        <div class="header-content">
+          <h1 class="app-title">Gerador de Senhas <span class="app-badge">Web</span></h1>
+          <p class="app-subtitle">Crie senhas fortes e seguras diretamente no seu navegador.</p>
+        </div>
+        <div class="app-controls">
+          <button class="control-btn" id="btnTheme" title="Carregando...">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </button>
+          <button class="control-btn" id="btnSize" title="Carregando...">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </button>
+        </div>
       </header>
 
       <div class="glass-panel">
@@ -1835,6 +1954,81 @@
 
     render();
     preloadWordlists();
+
+    /* ========================================================================== */
+    /* Theme & UI Size Logic                                                      */
+    /* ========================================================================== */
+
+    function initThemeAndSize() {
+      // Theme
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const root = document.documentElement;
+      const btnTheme = document.getElementById('btnTheme');
+
+      const updateThemeIcon = (t) => {
+        if (t === 'dark') {
+          // Sun icon
+          btnTheme.innerHTML = `<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>`;
+          btnTheme.title = "Modo Claro";
+        } else {
+          // Moon icon
+          btnTheme.innerHTML = `<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>`;
+          btnTheme.title = "Modo Escuro";
+        }
+      };
+
+      if (savedTheme === 'light') root.classList.add('light-theme');
+      updateThemeIcon(savedTheme);
+
+      btnTheme.onclick = () => {
+        const isDark = !root.classList.contains('light-theme');
+        if (isDark) {
+          root.classList.add('light-theme');
+          localStorage.setItem('theme', 'light');
+          updateThemeIcon('light');
+        } else {
+          root.classList.remove('light-theme');
+          localStorage.setItem('theme', 'dark');
+          updateThemeIcon('dark');
+        }
+      };
+
+      // UI Size
+      const savedSize = localStorage.getItem('uiSize') || 'desktop';
+      const container = document.querySelector('.app-container');
+      const btnSize = document.getElementById('btnSize');
+
+      const updateSizeIcon = (s) => {
+        if (s === 'desktop') {
+          // Mobile icon (to switch to mobile)
+          btnSize.innerHTML = `<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>`;
+          btnSize.title = "Visualizar como Celular";
+        } else {
+          // Desktop icon (to switch to desktop)
+          btnSize.innerHTML = `<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>`;
+          btnSize.title = "Visualizar como PC";
+        }
+      };
+
+      if (savedSize === 'mobile') container.classList.add('ui-mobile');
+      updateSizeIcon(savedSize);
+
+      btnSize.onclick = () => {
+        const isDesktop = !container.classList.contains('ui-mobile');
+        if (isDesktop) {
+          container.classList.add('ui-mobile');
+          localStorage.setItem('uiSize', 'mobile');
+          updateSizeIcon('mobile');
+        } else {
+          container.classList.remove('ui-mobile');
+          localStorage.setItem('uiSize', 'desktop');
+          updateSizeIcon('desktop');
+        }
+      };
+    }
+
+    // Call init
+    initThemeAndSize();
   </script>
 </body>
 
