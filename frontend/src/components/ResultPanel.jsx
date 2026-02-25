@@ -1,44 +1,18 @@
 /**
- * ResultPanel — exibição da senha gerada com indicador de entropia.
+ * ResultPanel — botão de geração e Placeholder central.
+ * A senha gerada agora abre um Modal de Segurança.
  */
-export default function ResultPanel({ result, loading, error, copied, onGenerate, onCopy }) {
-    const entropyClass = result
-        ? result.entropy > 80
-            ? 'entropy--high'
-            : result.entropy > 50
-                ? 'entropy--medium'
-                : 'entropy--low'
-        : '';
-
+export default function ResultPanel({ loading, onGenerate }) {
     return (
         <div className="result-panel">
             {/* Linha de gradiente no topo */}
             <div className="result-gradient-line" />
 
-            {/* Conteúdo Central */}
-            <div className="result-content">
-                {error && <div className="result-error">{error}</div>}
+            {/* Removemos o conteúdo central em branco para um design mais compacto */}
 
-                <div className="result-password">
-                    {result ? (
-                        result.password
-                    ) : (
-                        <span className="result-placeholder">Clique em Gerar...</span>
-                    )}
-                </div>
-
-                {result && (
-                    <div className="result-entropy animate-scale-in">
-                        <span className={`entropy-badge ${entropyClass}`}>
-                            {result.entropy_label} ({result.entropy.toFixed(1)} bits)
-                        </span>
-                    </div>
-                )}
-            </div>
-
-            {/* Barra de Ações */}
-            <div className="result-actions">
-                <button onClick={onGenerate} disabled={loading} className="btn btn-generate">
+            {/* Barra de Ações (Apenas Gerar) */}
+            <div className="result-actions" style={{ justifyContent: 'center' }}>
+                <button onClick={onGenerate} disabled={loading} className="btn btn-generate" style={{ width: '100%', maxWidth: '300px' }}>
                     {loading ? (
                         <span className="btn-loading">
                             <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -47,30 +21,7 @@ export default function ResultPanel({ result, loading, error, copied, onGenerate
                             Gerando...
                         </span>
                     ) : (
-                        'Gerar Senha'
-                    )}
-                </button>
-
-                <button onClick={onCopy} disabled={!result} className="btn-copy">
-                    {copied ? (
-                        <>
-                            <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                            </svg>
-                            Copiado!
-                        </>
-                    ) : (
-                        <>
-                            <svg className="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"
-                                />
-                            </svg>
-                            Copiar
-                        </>
+                        'Gerar Senha Segura'
                     )}
                 </button>
             </div>

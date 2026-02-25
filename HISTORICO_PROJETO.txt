@@ -260,6 +260,291 @@ IMPLEMENTAÇÃO:
   ✅ Mantida a consistência visual e de links.
 
 ================================================================================
-FIM DO HISTÓRICO
+12. AJUSTES DE UI — TEMA CLARO (24/02/2026)
 ================================================================================
 
+PROBLEMA:
+  - Elementos da interface (moldura glass-inner) permaneciam escuros mesmo
+    após alternar para o modo claro.
+
+SOLUÇÃO:
+  ✅ CSS atualizado: .glass-inner agora possui variação para o tema claro
+     (rgba(255, 255, 255, 0.7)).
+  ✅ Scrollbar ajustado para melhor visibilidade no tema claro.
+
+================================================================================
+13. REESTRUTURAÇÃO DA SIDEBAR (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Organizar a sidebar com uma estrutura hierárquica clara para facilitar a
+  escolha entre Diceware e diferentes modos de geração aleatória (Tokens/UUID).
+
+IMPLEMENTAÇÃO:
+  ✅ Sidebar.jsx reescrito para suportar uma lista aninhada (níveis 1, 2 e 3).
+  ✅ Estrutura definida:
+     1. Diceware
+     2. Diceware modificado
+     3. Aleatório (Grupo)
+        a. Senha clássica
+        b. Token/API Key (Grupo)
+           I. Hexadecimal
+           II. URL (base64)
+           III. UUID
+  ✅ Lógica de "Paths" implementada no Generator.jsx para sincronizar cliques na
+     sidebar com as configurações do gerador.
+  ✅ CSS atualizado com recuos (padding-left) e opacidades distintas para cada 
+     nível hierárquico.
+
+================================================================================
+14. LAYOUT ADAPTATIVO (25/02/2026)
+================================================================================
+
+PROBLEMA:
+  - Presença de espaços em branco excessivos nos painéis de configuração e 
+    resultado, que não se ajustavam ao conteúdo oferecido.
+
+SOLUÇÃO:
+  ✅ Removidas as alturas mínimas (min-height) do layout principal e do painel 
+     de resultados.
+  ✅ Ajustado o comportamento de flexbox para que os containers se expandam ou 
+     contraiam organicamente conforme a quantidade de opções visíveis.
+
+================================================================================
+15. SIMPLIFICAÇÃO DA SIDEBAR (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Tornar o menu lateral mais direto e intuitivo, removendo prefixos de 
+  numeração/letras e agrupamentos complexos.
+
+IMPLEMENTAÇÃO:
+  ✅ Sidebar.jsx atualizado com nomes simplificados:
+     - Diceware
+     - Diceware modificado
+     - Senha clássica aleatória
+     - Token hexadecimal
+     - Token URL (base64)
+     - UUID (v4)
+  ✅ Estrutura convertida para lista plana, removendo o agrupamento hierárquico
+     para um acesso mais rápido e visual limpo.
+
+================================================================================
+16. PERSONALIZAÇÃO DE CORES (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Alterar a paleta de cores do modo escuro para tons mais quentes e orgânicos,
+  conforme preferência do usuário.
+
+IMPLEMENTAÇÃO:
+  ✅ Fundo principal (--bg-primary) alterado para #302F2C.
+  ✅ Letras principais (--text-primary) alteradas para #EFEDE3.
+  ✅ Ajustadas variáveis secundárias (--bg-card, --bg-input, --border) para 
+     harmonizar com o novo esquema de cores quentes.
+  ✅ Cor interna do painel glass ajustada para manter a consistência visual.
+
+================================================================================
+17. REFINAMENTO ESTÉTICO — COR VINHO (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Substituir o azul padrão por uma cor mais sofisticada (#722F37) para o 
+  destaque da interface, harmonizando com os tons quentes do fundo.
+
+IMPLEMENTAÇÃO:
+  ✅ Variáveis de destaque (--accent) atualizadas para #722F37 (Bordeaux).
+  ✅ Gradientes radiais do fundo (body) ajustados para tons de vinho.
+  ✅ Linha de progresso/resultado atualizada para gradiente bordô.
+  ✅ Botões, ícones e estados ativos sincronizados com a nova paleta.
+
+================================================================================
+18. LIMPEZA DE UI — SIDEBAR (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Remover elementos secundários da sidebar para focar apenas nos métodos de
+  geração.
+
+IMPLEMENTAÇÃO:
+  ✅ Seção "Dica de Segurança" removida do componente Sidebar.jsx.
+
+================================================================================
+19. AJUSTE MOBILE — SIDEBAR (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Melhorar a experiência em dispositivos móveis, trocando a navegação 
+  horizontal (deslizante) por uma lista vertical clara.
+
+IMPLEMENTAÇÃO:
+  ✅ CSS alterado para forçar flex-direction: column na sidebar e na lista 
+     de métodos quando no modo mobile.
+  ✅ Removido o scroll horizontal e o impedimento de quebra de linha.
+  ✅ Os botões agora ocupam 100% da largura disponível, empilhados verticalmente.
+
+================================================================================
+20. DROPDOWN MOBILE — SIDEBAR (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Otimizar o espaço vertical em dispositivos móveis, substituindo a lista
+  de botões por um menu suspenso (dropdown) mais elegante.
+
+IMPLEMENTAÇÃO:
+  ✅ Componente Sidebar.jsx atualizado para renderizar condicionalmente:
+     - Desktop: Lista de botões laterais (padrão).
+     - Mobile: Menu suspenso estilizado (Select).
+  ✅ CSS atualizado com classes .desktop-only e .mobile-only para controle 
+     de visibilidade.
+  ✅ Estilização customizada para o select bordeaux, incluindo ícone de seta 
+     e alinhamento com a nova paleta de cores.
+
+================================================================================
+21. LIMPEZA DE REDUNDÂNCIAS (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Tornar a interface mais direta e menos poluída, removendo títulos óbvios e 
+  opções que já foram selecionadas na navegação principal.
+
+IMPLEMENTAÇÃO:
+  ✅ Removido o rótulo "MÉTODO" da sidebar, deixando apenas as opções.
+  ✅ Removidos os seletores "Modo de Geração" e "Formato do Token" do painel de 
+     configuração.
+  ✅ Agora, ao selecionar um tipo na sidebar (ex: Token Hexadecimal), o painel 
+     exibe apenas o ajuste de comprimento (ou nenhuma configuração para UUID), 
+     evitando escolhas duplicadas e confusas.
+
+================================================================================
+22. IMPLEMENTAÇÃO DO MODAL DE SEGURANÇA (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Aumentar a segurança e a conscientização do usuário ao gerar senhas, 
+  garantindo que ele veja as informações críticas antes de prosseguir.
+
+IMPLEMENTAÇÃO:
+  ✅ Removida a exibição direta da senha no painel principal e o botão "Copiar"
+     adjacente.
+  ✅ Implementado o ModalSeguranca.jsx:
+     - Pop-up automático ao clicar em "Gerar Senha".
+     - Exibe a senha, entropia e indicações de uso.
+     - Inclui um aviso crítico para anotar a senha em local seguro, ressaltando
+       que os dados não são armazenados.
+  ✅ CSS atualizado com estilos de overlay, animações scale-in e boxes de aviso.
+
+================================================================================
+23. ENRIQUECIMENTO DE METADADOS (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Educar o usuário sobre a finalidade específica e a força de cada método de 
+  geração, fornecendo contexto técnico e prático.
+
+IMPLEMENTAÇÃO:
+  ✅ Criado generatorMetadata.js para centralizar Indicações de Uso e 
+     Justificativas Técnicas.
+  ✅ ModalSeguranca atualizado para renderizar dinamicamente:
+     - Título específico do método.
+     - Campo de "Indicação de Uso" (Prático).
+     - Campo de "Justificativa Técnica" (Teórico/Segurança).
+  ✅ Integrado ao Generator.jsx para carregar os metadados corretos baseados
+     no 'path' de seleção da sidebar.
+
+================================================================================
+24. RESPONSIVIDADE NATIVA (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Remover a troca manual de tamanho de interface (PC/Celular) e permitir que 
+  o layout se ajuste organicamente ao tamanho da tela do dispositivo.
+
+IMPLEMENTAÇÃO:
+  ✅ Removido o estado 'uiSize' e o botão de alternância no App.jsx.
+  ✅ Substituídas as regras fixas de '.ui-mobile' por Media Queries 
+     (@media (max-width: 768px)) no index.css.
+  ✅ Ajustadas as classes '.desktop-only' e '.mobile-only' para que sua 
+     visibilidade seja controlada automaticamente pela largura da janela.
+  ✅ A interface agora é "fluid-first", adaptando-se instantaneamente desde 
+     monitores ultra-wide até smartphones pequenos.
+
+================================================================================
+25. CORREÇÃO CRÍTICA DO MODAL (25/02/2026)
+================================================================================
+
+PROBLEMA:
+  O Modal de Segurança estava sendo cortado pelo container principal do 
+  gerador devido ao contexto de empilhamento (stacking context) criado por 
+  filtros de vidro (backdrop-filter) e overflow oculto. Isso impedia a 
+  visualização da senha e dos botões.
+
+SOLUÇÃO:
+  ✅ Implementado React Portal no ModalSeguranca.jsx para renderizar o modal 
+     diretamente no <body>, escapando de qualquer restrição visual do pai.
+  ✅ Adicionado scroll interno inteligente (modal-info-scroll) para garantir 
+     que todo o texto explicativo seja legível em telas menores.
+  ✅ Ajustado CSS com 'max-height: 90vh' e 'z-index: 9999' para garantir que 
+     o modal sempre caiba na tela e fique acima de todos os elementos.
+
+================================================================================
+26. SEGURANÇA REFORÇADA E REFINAMENTO VISUAL (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Aumentar o rigor de segurança na entrega das senhas e garantir legibilidade 
+  perfeita em ambos os temas (Claro e Escuro).
+
+IMPLEMENTAÇÃO:
+  ✅ Modo Claro: Texto agora é preto (#000000) para contraste absoluto.
+  ✅ Modo Escuro: Mantidas as cores institucionais (#302F2C / #EFEDE3).
+  ✅ Remoção do Clipboard: O botão de copiar senha foi removido para evitar 
+     rastros de senhas em áreas de transferência voláteis do sistema.
+  ✅ Aviso de Anotação: Implementado aviso explícito instruindo o usuário a 
+     anotar a senha manualmente (papel ou cofre físico).
+  ✅ Ciclo de Geração: Adicionado botão "Gerar Outra Senha" diretamente no 
+     modal para agilizar a criação de múltiplas opções sem sair da tela.
+  ✅ Compatibilidade CSS: Corrigidos prefixos de 'appearance' para silenciar 
+     alertas de compatibilidade e seguir padrões modernos de desenvolvimento.
+
+================================================================================
+27. MANUAL TÉCNICO E SIMPLIFICAÇÃO DO MODAL (25/02/2026)
+================================================================================
+
+OBJETIVO:
+  Centralizar as informações detalhadas em um local de fácil consulta e manter 
+  o fluxo de geração de senhas o mais limpo possível.
+
+IMPLEMENTAÇÃO:
+  ✅ Criado 'manual.html' em /public com instruções de uso e justificativas 
+     técnicas detalhadas para cada método de geração.
+  ✅ Adicionado botão "AJUDA" proeminente no cabeçalho do App.jsx, abrindo o 
+     manual em uma nova guia.
+  ✅ Simplificado o ModalSeguranca.jsx: removidas as seções extensas de texto 
+     para focar na senha e na entropia.
+  ✅ Adicionado link direto para o Manual dentro do modal, permitindo acesso 
+     rápido a quem precisar de detalhes durante a geração.
+  ✅ Desenho do manual segue a estética premium do projeto (glassmorphism/dark).
+  ✅ Ajuste minimalista no cabeçalho: removido o texto "Ajuda", mantendo apenas o ícone de interrogação discreto.
+  ✅ Suporte a Temas no Manual: O manual técnico agora detecta automaticamente a preferência do sistema (Claro/Escuro) e aplica as mesmas cores da interface principal, garantindo uma transição visual suave.
+  ✅ Limpeza de Interface: Removido o título "Personalização" dos geradores Diceware para um visual mais limpo e direto.
+  ✅ Otimização UUID: O painel de configuração agora é ocultado completamente quando o modo UUID está selecionado, removendo qualquer resquício visual (barra branca/caixa vazia) de opções inexistentes.
+  ✅ Novo Design de Opções Avançadas: No modo Diceware Modificado, os seletores de "barra" (sliders) foram substituídos por campos numéricos precisos. O layout foi redesenhado em cards interativos que destacam as opções ativas e mantêm a interface organizada e premium.
+  ✅ Personalização de Símbolos: Adicionado campo de texto no Diceware Modificado para permitir a escolha exata de quais caracteres especiais serão injetados na senha, sincronizando com a funcionalidade já existente no modo aleatório.
+  ✅ Geração por Entropia (Modo Inteligente): Agora posicionada como a última opção na sidebar para um fluxo mais intuitivo. O usuário pode definir o nível exato de bits de entropia desejado. Suporta os modelos: Senha Aleatória Clássica, Token Hexadecimal e Diceware, calculando automaticamente as dimensões necessárias para cada um.
+  ✅ Limpeza de Layout: Removido o espaço em branco (placeholder) acima do botão de gerar no painel de resultados, tornando a interface mais compacta e focada.
+  ✅ Estabilidade Visual (Altura Rígida): Implementada uma altura fixa e imutável para o card principal no desktop. Isso elimina completamente qualquer "salto" ou ajuste de tamanho ao alternar entre os métodos de geração, garantindo que todos os elementos da interface (sidebar, configurações e botão de ação) permaneçam em posições estáticas e previsíveis.
+  ✅ Refatoração Total de Layout (Single Page Dashboard): Removida a barra lateral e o sistema de abas. Agora o aplicativo exibe todos os geradores disponíveis em uma única página rolável, permitindo acesso imediato a qualquer configuração.
+  ✅ Seções Independentes: Cada método de geração (Diceware, Clássica, Token, UUID) possui seu próprio card com parâmetros específicos e botão de geração dedicado.
+  ✅ Novas Opções: Adicionado campo para 'Separador' no Diceware Modificado e integração nativa de cálculo de bits de entropia nas seções de Senha Clássica e Token Hexadecimal.
+  ✅ Otimização Visual: Implementada uma barra de scroll personalizada (accent color) e cards com efeito glassmorphism e micro-interações de hover.
+  ✅ Correções e Refinamentos (Dashboard v1.1):
+    - Correção na lógica de símbolos para o gerador Aleatório Clássico (resolvendo falhas de geração).
+    - Adição de barra de navegação superior com links de scroll rápido para cada seção.
+    - Implementação de seleção de idiomas (incluindo Espanhol e Francês) no Diceware Modificado.
+    - Ajuste de contraste e cores no Modo Claro (Light Theme) para manter legibilidade premium.
+    - Redução de margens e paddings para otimizar o espaço vertical no desktop.
+
+================================================================================
+FIM DO HISTÓRICO
+================================================================================

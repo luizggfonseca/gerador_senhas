@@ -9,7 +9,7 @@ from password_generators.base import PasswordGenerator, GeneratedPassword
 class RandomClassicGenerator(PasswordGenerator):
     id = "random_classic"
 
-    MIN_LENGTH = 10
+    MIN_LENGTH = 4
     UUID_ENTROPY_BITS = 122.0  # UUID v4 efetivo
 
     def __init__(self, app_context):

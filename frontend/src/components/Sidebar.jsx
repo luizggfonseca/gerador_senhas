@@ -1,36 +1,66 @@
 /**
  * Sidebar — seleção do método de geração.
+ * No modo Desktop exibe botões laterais.
+ * No modo Mobile exibe um dropdown (lista suspensa) para economizar espaço.
  */
-export default function Sidebar({ generators, selectedGenId, onSelect, generatorsConfig }) {
+export default function Sidebar({ selectedPath, onSelectPath }) {
+    const menuItems = [
+        { id: 'diceware_pure', name: 'Diceware' },
+        { id: 'diceware_modified', name: 'Diceware modificado' },
+        { id: 'random_classic:classic', name: 'Senha clássica aleatória' },
+        { id: 'random_classic:token:hex', name: 'Token hexadecimal' },
+        { id: 'random_classic:token:urlsafe', name: 'Token URL (base64)' },
+        { id: 'random_classic:token:uuid', name: 'UUID (v4)' },
+        { id: 'divider', isDivider: true },
+        { id: 'entropy_based', name: 'Gerar por Entropia' },
+    ];
+
     return (
         <aside className="generator-sidebar">
-            <h3 className="sidebar-header">Método</h3>
-            <div className="sidebar-list">
-                {generators.map((g) => {
-                    const config = generatorsConfig[g.id];
+            {/* Desktop: Lista de botões */}
+            <div className="sidebar-list desktop-only">
+                {menuItems.map((item) => {
+                    if (item.isDivider) {
+                        return <div key={item.id} className="sidebar-divider" style={{
+                            height: '1px',
+                            background: 'var(--border)',
+                            margin: '0.75rem 0.5rem',
+                            opacity: 0.5
+                        }} />;
+                    }
+                    const isActive = selectedPath === item.id;
+                    const isSpecial = item.id === 'entropy_based';
                     return (
                         <button
-                            key={g.id}
-                            onClick={() => onSelect(g.id)}
-                            className={`sidebar-btn ${selectedGenId === g.id ? 'active' : ''}`}
+                            key={item.id}
+                            onClick={() => onSelectPath(item.id)}
+                            className={`sidebar-btn level-1 ${isActive ? 'active' : ''} ${isSpecial ? 'btn-entropy' : ''}`}
+                            style={isSpecial ? { borderLeft: '3px solid var(--accent)', background: 'rgba(var(--accent-rgb, 114, 47, 55), 0.05)' } : {}}
                         >
-                            {config?.icon && (
-                                <svg className="sidebar-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={config.icon} />
-                                </svg>
-                            )}
-                            {g.name.replace('Generator', '').trim()}
+                            {item.name}
                         </button>
                     );
                 })}
             </div>
 
-            {/* Dica de Segurança */}
-            <div className="sidebar-tip">
-                <h4 className="sidebar-tip-title">Dica de Segurança</h4>
-                <p className="sidebar-tip-text">
-                    Senhas Diceware são fáceis de lembrar e difíceis de quebrar. Use pelo menos 4 palavras.
-                </p>
+            {/* Mobile: Lista suspensa (Select) */}
+            <div className="mobile-only sidebar-dropdown-container">
+                <select
+                    className="input-field sidebar-select"
+                    value={selectedPath}
+                    onChange={(e) => onSelectPath(e.target.value)}
+                >
+                    {menuItems.filter(i => !i.isDivider).map((item) => (
+                        <option key={item.id} value={item.id}>
+                            {item.name}
+                        </option>
+                    ))}
+                </select>
+                <div className="sidebar-select-icon">
+                    <svg viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                </div>
             </div>
         </aside>
     );
