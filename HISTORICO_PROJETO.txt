@@ -555,6 +555,8 @@ IMPLEMENTAÇÃO:
     - Script de inicialização (run_app.sh) agora limpa processos antigos com kill -9 e força o uso das portas corretas.
   ✅ Atualização de Segurança (Modal):
     - Texto da "Ação Necessária" atualizado para "INFORMAÇÃO" com diretrizes mais rígidas sobre anotação manual e isenção de responsabilidade.
+  ✅ Melhoria de UX (Gerador):
+    - Botão "Gerar Outra Senha" agora permite cliques infinitos de forma recursiva, permitindo que o usuário gere quantas senhas desejar sem fechar o modal.
 
 ================================================================================
 FIM DO HISTÓRICO
