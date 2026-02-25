@@ -283,7 +283,10 @@ body {
   font-size: 1.25rem;
   color: white;
   word-break: break-all;
-  user-select: all;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .modal-info-grid {

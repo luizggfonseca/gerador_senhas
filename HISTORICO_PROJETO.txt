@@ -576,6 +576,9 @@ IMPLEMENTAÇÃO:
     - Interface totalmente responsiva com suporte a telas a partir de 320px.
     - Correção de clipping à esquerda através de alinhamento `flex-start` em dispositivos móveis.
     - Implementação de grid adaptativo (coluna única) para formulários complexos no celular.
+  ✅ Segurança Reforçada (Anti-Copy):
+    - Bloqueio técnico total de cópia (Ctrl+C, Ctrl+X) e menu de contexto (clique direito) no modal de exibição de senhas.
+    - Desativação da seleção de texto (user-select: none) via CSS para impedir rastros digitais.
 
 ================================================================================
 FIM DO HISTÓRICO

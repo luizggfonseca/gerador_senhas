@@ -1,10 +1,43 @@
 import { createPortal } from 'react-dom';
+import { useEffect } from 'react';
 
 /**
  * ModalSeguranca — Exibe a senha gerada com foco total na segurança e anotação manual.
  * Metadados detalhados foram movidos para o Manual Técnico (botão AJUDA).
  */
 export default function ModalSeguranca({ result, metadata, onClose, onGenerate }) {
+    useEffect(() => {
+        if (!result) return;
+
+        // Bloqueio de eventos de cópia e menu sensível
+        const preventCopy = (e) => {
+            e.preventDefault();
+            return false;
+        };
+
+        const handleKeyDown = (e) => {
+            // Bloqueia Ctrl+C, Ctrl+V, Ctrl+X, Ctrl+U (ver código fonte)
+            if (e.ctrlKey && (e.key === 'c' || e.key === 'v' || e.key === 'x' || e.key === 'u' || e.key === 'i')) {
+                e.preventDefault();
+                return false;
+            }
+        };
+
+        // Adiciona os listeners
+        document.addEventListener('copy', preventCopy);
+        document.addEventListener('cut', preventCopy);
+        document.addEventListener('contextmenu', preventCopy);
+        document.addEventListener('keydown', handleKeyDown);
+
+        // Cleanup ao fechar
+        return () => {
+            document.removeEventListener('copy', preventCopy);
+            document.removeEventListener('cut', preventCopy);
+            document.removeEventListener('contextmenu', preventCopy);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [result]);
+
     if (!result || !metadata) return null;
 
     const getEntropyColor = (label) => {
