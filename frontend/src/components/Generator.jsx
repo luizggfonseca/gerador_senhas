@@ -49,10 +49,11 @@ function CheckboxOption({ checked, onChange, label, muted = false }) {
 /* ============================== Main Generator ============================== */
 
 export default function Generator() {
-    const { result, loading, error, generate, reset } = usePasswordGenerator();
+    const { result, loading: globalLoading, error, generate, reset } = usePasswordGenerator();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [activeMetadata, setActiveMetadata] = useState(null);
     const [lastGenerateFn, setLastGenerateFn] = useState(null);
+    const [pendingSectionId, setPendingSectionId] = useState(null);
     const scrollContainerRef = useRef(null);
 
     // Navigation Links Data
@@ -118,7 +119,10 @@ export default function Generator() {
             }
         }
 
+        setPendingSectionId(metadataPath);
         const res = await generate(genId, finalOptions);
+        setPendingSectionId(null);
+
         if (res) {
             setActiveMetadata(GENERATOR_METADATA[metadataPath] || { title: 'Senha Gerada', description: 'Senha gerada com sucesso.' });
             setLastGenerateFn(() => generateFn);
@@ -145,7 +149,7 @@ export default function Generator() {
                     title="Diceware Tradicional"
                     icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure', () => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure'))}
-                    loading={loading}
+                    loading={globalLoading && pendingSectionId === 'diceware_pure'}
                 >
                     <div className="config-grid">
                         <div>
@@ -173,7 +177,7 @@ export default function Generator() {
                     title="Diceware Modificado"
                     icon="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                     onGenerate={() => handleGenerate('diceware_modified', dicewareMod, 'diceware_modified', () => handleGenerate('diceware_modified', dicewareMod, 'diceware_modified'))}
-                    loading={loading}
+                    loading={globalLoading && pendingSectionId === 'diceware_modified'}
                 >
                     <div className="config-grid">
                         <div>
@@ -227,7 +231,7 @@ export default function Generator() {
                     title="Senha Clássica Aleatória"
                     icon="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
                     onGenerate={() => handleGenerate('random_classic', { ...randomClassic, mode: 'classic' }, 'random_classic:classic', () => handleGenerate('random_classic', { ...randomClassic, mode: 'classic' }, 'random_classic:classic'))}
-                    loading={loading}
+                    loading={globalLoading && pendingSectionId === 'random_classic:classic'}
                 >
                     <div className="config-grid">
                         <div>
@@ -259,7 +263,7 @@ export default function Generator() {
                     title="Token / API Key Hexadecimal"
                     icon="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'hex', token_length: tokenHex.length, entropy_bits: tokenHex.entropy_bits }, 'random_classic:token:hex', () => handleGenerate('random_classic', { mode: 'token', token_type: 'hex', token_length: tokenHex.length, entropy_bits: tokenHex.entropy_bits }, 'random_classic:token:hex'))}
-                    loading={loading}
+                    loading={globalLoading && pendingSectionId === 'random_classic:token:hex'}
                 >
                     <div className="config-grid">
                         <div>
@@ -279,7 +283,7 @@ export default function Generator() {
                     title="Token URL (Base64)"
                     icon="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'urlsafe', token_length: tokenUrl.length }, 'random_classic:token:urlsafe', () => handleGenerate('random_classic', { mode: 'token', token_type: 'urlsafe', token_length: tokenUrl.length }, 'random_classic:token:urlsafe'))}
-                    loading={loading}
+                    loading={globalLoading && pendingSectionId === 'random_classic:token:urlsafe'}
                 >
                     <div>
                         <label className="label">Comprimento</label>
@@ -293,7 +297,7 @@ export default function Generator() {
                     title="UUID (v4)"
                     icon="M7 7h.01M7 11h.01M7 15h.01M10 7h.01M10 11h.01M10 15h.01M13 7h.01M13 11h.01M13 15h.01M17 7h.01M17 11h.01M17 15h.01"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'uuid' }, 'random_classic:token:uuid', () => handleGenerate('random_classic', { mode: 'token', token_type: 'uuid' }, 'random_classic:token:uuid'))}
-                    loading={loading}
+                    loading={globalLoading && pendingSectionId === 'random_classic:token:uuid'}
                 >
                     <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Identificador único universal versao 4 (aleatório padrão RFC 4122).</p>
                 </GeneratorSection>
