@@ -7,6 +7,18 @@ import { createPortal } from 'react-dom';
 export default function ModalSeguranca({ result, metadata, onClose, onGenerate }) {
     if (!result || !metadata) return null;
 
+    const getEntropyColor = (label) => {
+        const colors = {
+            'Baixíssima': '#ff4d4d',
+            'Baixa': '#ffa500',
+            'Média': '#ffd700',
+            'Alta': '#98fb98',
+            'Altíssima': '#00ff00',
+            'Impossível': '#bf00ff'
+        };
+        return colors[label] || 'var(--accent)';
+    };
+
     return createPortal(
         <div className="modal-overlay animate-fade-in">
             <div className="modal-content animate-scale-in">
@@ -23,7 +35,7 @@ export default function ModalSeguranca({ result, metadata, onClose, onGenerate }
                 <div className="modal-info-grid" style={{ marginBottom: '1.5rem' }}>
                     <div className="modal-info-item">
                         <span className="modal-info-label">Força da Senha (Entropia)</span>
-                        <p style={{ color: 'var(--accent)', fontWeight: 600, fontSize: '0.9rem', margin: 0 }}>
+                        <p style={{ color: getEntropyColor(result.entropy_label), fontWeight: 600, fontSize: '0.9rem', margin: 0 }}>
                             {result.entropy_label} ({result.entropy.toFixed(1)} bits)
                         </p>
                     </div>

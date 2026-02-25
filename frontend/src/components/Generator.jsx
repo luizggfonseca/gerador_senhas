@@ -123,7 +123,7 @@ export default function Generator() {
                     const uniqueSymbols = new Set(options.symbols).size;
                     poolSize += uniqueSymbols;
                 }
-                
+
                 if (poolSize > 1) {
                     const bitsPerChar = Math.log2(poolSize);
                     finalOptions.length = Math.ceil(bits / bitsPerChar);
@@ -161,6 +161,15 @@ export default function Generator() {
             </nav>
 
             <div className="generator-main" ref={scrollContainerRef}>
+                {/* Entropy Legend */}
+                <div className="entropy-legend">
+                    <span className="legend-item"><span className="legend-dot legend-baixissima"></span> Baixíssima</span>
+                    <span className="legend-item"><span className="legend-dot legend-baixa"></span> Baixa</span>
+                    <span className="legend-item"><span className="legend-dot legend-media"></span> Média</span>
+                    <span className="legend-item"><span className="legend-dot legend-alta"></span> Alta</span>
+                    <span className="legend-item"><span className="legend-dot legend-altissima"></span> Altíssima</span>
+                    <span className="legend-item"><span className="legend-dot legend-impossivel"></span> Impossível</span>
+                </div>
 
                 {/* 1. Diceware */}
                 <GeneratorSection

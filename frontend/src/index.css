@@ -593,6 +593,56 @@ body {
   transform: scale(0.95);
 }
 
+/* Entropy Legend */
+.entropy-legend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+.legend-baixissima {
+  color: #ff4d4d;
+}
+
+.legend-baixa {
+  color: #ffa500;
+}
+
+.legend-media {
+  color: #ffd700;
+}
+
+.legend-alta {
+  color: #98fb98;
+}
+
+.legend-altissima {
+  color: #00ff00;
+}
+
+.legend-impossivel {
+  color: #bf00ff;
+}
+
 /* Dashboard Sections */
 .dashboard-section {
   background: var(--bg-card);

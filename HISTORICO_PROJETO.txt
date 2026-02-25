@@ -561,6 +561,10 @@ IMPLEMENTAÇÃO:
   ✅ Precisão Matemática (Entropia):
     - Implementado cálculo dinâmico de bits por caractere baseado no pool real selecionado (Upper, Lower, Números, Símbolos).
     - Isso garante que, ao pedir uma entropia específica (ex: 103 bits), o sistema gere o menor comprimento possível que satisfaça o requisito, eliminando overshoots agressivos.
+  ✅ Categorização de Segurança:
+    - Nova legenda visual adicionada ao Dashboard com 6 níveis: Baixíssima, Baixa, Média, Alta, Altíssima e Impossível.
+    - Sistema de cores semafórico aplicado tanto na legenda quanto no modal de resultado.
+    - Backend atualizado para classificar entropia rigorosamente (Impossível >= 128 bits).
 
 ================================================================================
 FIM DO HISTÓRICO

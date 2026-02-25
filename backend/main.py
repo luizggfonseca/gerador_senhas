@@ -153,17 +153,20 @@ def generate_password(req: GenerateRequest):
     # Auto-save no histórico
     history_manager.add_entry(result.value, req.generator_id)
 
-    # Classificação de entropia
-    if result.entropy_bits >= 120:
+    # Classificação de entropia (v3.0 - Alinhada com Legenda)
+    bits = result.entropy_bits
+    if bits >= 128:
+        label = "Impossível"
+    elif bits >= 103:
         label = "Altíssima"
-    elif result.entropy_bits >= 80:
+    elif bits >= 80:
         label = "Alta"
-    elif result.entropy_bits >= 60:
-        label = "Razoável"
-    elif result.entropy_bits >= 40:
+    elif bits >= 50:
         label = "Média"
-    else:
+    elif bits >= 30:
         label = "Baixa"
+    else:
+        label = "Baixíssima"
 
     return GenerateResponse(
         password=result.value,
