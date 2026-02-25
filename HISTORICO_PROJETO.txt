@@ -553,6 +553,8 @@ IMPLEMENTAÇÃO:
   ✅ Estabilização de Infraestrutura (v2.0):
     - Correção do erro de travamento "Gerando..." causado por conflito de portas (quando o frontend subia na 5174 e era bloqueado pelo CORS do backend).
     - Script de inicialização (run_app.sh) agora limpa processos antigos com kill -9 e força o uso das portas corretas.
+  ✅ Atualização de Segurança (Modal):
+    - Texto da "Ação Necessária" atualizado para "INFORMAÇÃO" com diretrizes mais rígidas sobre anotação manual e isenção de responsabilidade.
 
 ================================================================================
 FIM DO HISTÓRICO
