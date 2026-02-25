@@ -1,10 +1,16 @@
-# 🔐 SecureGen — Gerador de Senhas
+# 🔐 SecureGen — Gerador de Senhas / Password Generator
+
+[Português](#português) | [English](#english)
+
+---
+
+<a name="português"></a>
+
+# 🇧🇷 Português
 
 Aplicação web para geração de senhas fortes e seguras, diretamente no navegador. Nenhum dado sai do seu dispositivo.
 
 > **Acesse online:** [GitHub Pages](https://luizggfonseca.github.io/gerador_senhas/)
-
----
 
 ## ✨ Funcionalidades
 
@@ -27,104 +33,95 @@ Aplicação web para geração de senhas fortes e seguras, diretamente no navega
 - 📱 **Responsivo** — Funciona em desktop e dispositivos móveis
 - 🔒 **100% local** — Toda geração usa `crypto.getRandomValues()` (CSPRNG)
 
----
+## 🏗️ Arquitetura do Projeto
+
+O SecureGen utiliza uma arquitetura híbrida otimizada:
+
+1.  **Modo Standalone (Produção):** Localizado na pasta `docs/`, executa inteiramente no client-side (JS puro).
+2.  **Modo Dev (Client-Server):** Backend em **FastAPI (Python)** e Frontend em **React 19 (Vite 7)**.
+
+Para detalhes técnicos profundos, consulte a [Documentação de Arquitetura](./DOCUMENTACAO_ARQUITETURA.md).
 
 ## 🚀 Como Usar
 
 ### Opção 1: Online (recomendado)
+Acesse diretamente: **https://luizggfonseca.github.io/gerador_senhas/**
 
-Acesse diretamente pelo GitHub Pages — sem instalação:
-
-🔗 **https://luizggfonseca.github.io/gerador_senhas/**
-
-### Opção 2: Localmente com servidor
-
+### Opção 2: Localmente (Backend + React)
 ```bash
-# Clonar o repositório
-git clone https://github.com/luizggfonseca/gerador_senhas.git
-cd gerador_senhas
-
-# Servir localmente (qualquer servidor HTTP)
-npx -y serve docs
-# ou
-python3 -m http.server 8000 -d docs
-```
-
-> ⚠️ **Nota:** Abrir o `index.html` diretamente via `file://` não carrega as wordlists Diceware (limitação de CORS do navegador). Use um servidor HTTP local ou acesse via GitHub Pages.
-
-### Opção 3: Backend + Frontend React (desenvolvimento)
-
-```bash
-# Ambiente virtual Python
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
 # Backend
-PYTHONPATH=. .venv/bin/uvicorn backend.main:app --port 8000
+pip install -r requirements.txt
+python3 -m uvicorn backend.main:app --port 8000
 
-# Frontend (em outro terminal)
+# Frontend
 cd frontend && npm install && npm run dev
 ```
 
----
-
-## 🏗️ Estrutura do Projeto
-
-```
-senhas/
-├── docs/                 → Versão web standalone (GitHub Pages)
-│   ├── index.html        → Aplicação completa (HTML + CSS + JS)
-│   └── wordlists/        → 7 listas Diceware
-├── backend/              → API FastAPI (endpoints REST)
-├── banco_dados/          → Listas Diceware originais
-├── core/                 → Cálculo de entropia e utilitários
-├── diceware/             → Loader, gerador e formatador Diceware
-├── frontend/             → App React 19 + Vite 7 (dark theme)
-├── password_generators/  → Geradores: Diceware Puro, Modificado, Aleatório
-├── config.py             → Configurações globais
-├── run_app.sh            → Script de inicialização (backend + frontend)
-└── requirements.txt      → Dependências Python
-```
-
----
-
 ## 🔒 Segurança
-
-- Todas as senhas são geradas **localmente** no navegador
-- Nenhum dado trafega para servidores externos
-- Fonte de aleatoriedade: `crypto.getRandomValues()` (CSPRNG do sistema operacional)
-- Versão Python usa `secrets` (`/dev/urandom` via `os.urandom`)
+- Geração local via `crypto.getRandomValues()` ou módulo `secrets` (Python).
+- Nenhuma senha é enviada para servidores externos.
+- CORS restrito a localhost em ambiente de desenvolvimento.
 
 ---
 
-## 📋 Wordlists Diceware
+<a name="english"></a>
 
-| Arquivo         | Idioma     | Formato |
-|-----------------|------------|---------|
-| `portugues.txt` | Português  | `12345 palavra` |
-| `ingles.txt`    | Inglês     | `12345 palavra` |
-| `espanhol.txt`  | Espanhol   | `12345 palavra` |
-| `frances.txt`   | Francês    | `12345 palavra` |
-| `italiano.txt`  | Italiano   | `12345 palavra` |
-| `latim.txt`     | Latim      | `12345 palavra` |
-| `catalao.txt`   | Catalão    | `12345 palavra` |
+# 🇺🇸 English
+
+Web application for generating strong and secure passwords, directly in your browser. No data leaves your device.
+
+> **Access online:** [GitHub Pages](https://luizggfonseca.github.io/gerador_senhas/)
+
+## ✨ Features
+
+| Generator | Description |
+|-----------|-------------|
+| **Pure Diceware** | Passphrase with random words from lists in 7 languages |
+| **Modified Diceware** | Passphrase with configurable capitalization, numbers, and symbols |
+| **Classic Random** | Password with customizable pool (uppercase, lowercase, numbers, symbols) |
+| **Hex Token** | Hexadecimal string of configurable length |
+| **URL-Safe Token** | URL-safe Base64 string |
+| **UUID v4** | Universally Unique Identifier (122 bits of entropy) |
+
+### Additional Resources
+
+- 🎲 **7 Diceware wordlists** — Portuguese, English, Spanish, French, Italian, Latin, and Catalan
+- 🌍 **"All (Mix)" Mode** — Combines all wordlists into a single list
+- 📊 **Entropy Calculation** — Shows the real password strength in bits
+- 🎨 **Premium Dark Interface** — Modern design with glassmorphism and micro-animations
+- 📖 **Integrated User Manual** — Collapsible guide explaining each generator
+- 📱 **Responsive** — Works on desktop and mobile devices
+- 🔒 **100% Local** — All generation uses `crypto.getRandomValues()` (CSPRNG)
+
+## 🏗️ Project Architecture
+
+SecureGen uses an optimized hybrid architecture:
+
+1.  **Standalone Mode (Production):** Located in the `docs/` folder, runs entirely client-side (Vanilla JS).
+2.  **Dev Mode (Client-Server):** Backend in **FastAPI (Python)** and Frontend in **React 19 (Vite 7)**.
+
+For deep technical details, see the [Architecture Documentation](./DOCUMENTACAO_ARQUITETURA.md).
+
+## 🚀 How to Use
+
+### Option 1: Online (Recommended)
+Access directly: **https://luizggfonseca.github.io/gerador_senhas/**
+
+### Option 2: Locally (Backend + React)
+```bash
+# Backend
+pip install -r requirements.txt
+python3 -m uvicorn backend.main:app --port 8000
+
+# Frontend
+cd frontend && npm install && npm run dev
+```
+
+## 🔒 Security
+- Local generation via `crypto.getRandomValues()` or Python's `secrets` module.
+- No passwords are sent to external servers.
+- CORS restricted to localhost in development environments.
 
 ---
 
-## ⚙️ Tecnologias
-
-| Camada         | Stack                                    |
-|----------------|------------------------------------------|
-| Web Standalone | HTML5, Vanilla CSS, JavaScript (ES2020+) |
-| Frontend Dev   | React 19, Vite 7, Vanilla CSS            |
-| Backend Dev    | FastAPI, Uvicorn, Pydantic               |
-| RNG            | crypto.getRandomValues() / secrets       |
-
----
-
-## 📄 Licença
-
-Projeto pessoal de uso educacional.
-
-© 2026 SecureGen. Nenhuma senha sai do seu dispositivo.
+© 2026 SecureGen. No passwords leave your device.

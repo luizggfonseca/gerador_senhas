@@ -229,6 +229,37 @@ ARQUIVOS MODIFICADOS:
   - docs/index.html: Refatoração completa do CSS de UI e lógica de dropdown.
 
 ================================================================================
+10. DOCUMENTAÇÃO DE ARQUITETURA (24/02/2026)
+================================================================================
+
+OBJETIVO:
+  Criar um documento detalhado cobrindo toda a arquitetura do projeto, 
+  tecnologias utilizadas, fluxo de dados e decisões de design.
+
+IMPLEMENTAÇÃO:
+  ✅ Criado DOCUMENTACAO_ARQUITETURA.md com:
+     - Visão geral do sistema.
+     - Detalhamento das camadas (Frontend, Backend, Core).
+     - Descrição dos geradores de senhas e fontes de entropia.
+     - Modelo de segurança e privacidade.
+     - Estrutura de diretórios comentada.
+     - Fluxo de execução (Standalone vs Client-Server).
+
+================================================================================
+11. ATUALIZAÇÃO BILINGUE (README) (24/02/2026)
+================================================================================
+
+OBJETIVO:
+  Atualizar o README.md para incluir a nova documentação de arquitetura e 
+  adicionar suporte bilingue (Português e Inglês).
+
+IMPLEMENTAÇÃO:
+  ✅ README.md reestruturado com âncoras de navegação.
+  ✅ Seção "Arquitetura do Projeto" adicionada com link para o documento detalhado.
+  ✅ Tradução completa de todas as seções para o Inglês.
+  ✅ Mantida a consistência visual e de links.
+
+================================================================================
 FIM DO HISTÓRICO
 ================================================================================
 
