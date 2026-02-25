@@ -18,26 +18,25 @@ def generate_passphrase(wordlist: Dict[str, str], num_words: int, mixed_mode: bo
         raise ValueError("num_words deve ser > 0.")
 
     keys = list(wordlist.keys())
-    used = set()
-    words: List[str] = []
-    audit: List[str] = []
-
-    num_words = min(num_words, len(keys))
-
-    while len(words) < num_words:
-        if mixed_mode:
-            code = secrets.choice(keys)
-        else:
+    if mixed_mode or len(keys) < 7776:
+        # Se for modo misto ou lista incompleta, pegamos direto das chaves
+        # sem repetição usando sample (muito mais rápido)
+        import secrets
+        num_to_get = min(num_words, len(keys))
+        selected_keys = secrets.SystemRandom().sample(keys, num_to_get)
+        words = [wordlist[k] for k in selected_keys]
+        audit = selected_keys
+    else:
+        # Diceware clássico (5d6) para listas completas (7776 palavras)
+        used = set()
+        words = []
+        audit = []
+        while len(words) < num_words:
             code = roll_5d6_code()
-            if code not in wordlist:
-                # fallback para listas incompletas
-                code = secrets.choice(keys)
-
-        if code in used:
-            continue
-
-        used.add(code)
-        words.append(wordlist[code])
-        audit.append(code)
+            if code in used:
+                continue
+            used.add(code)
+            words.append(wordlist[code])
+            audit.append(code)
 
     return words, audit

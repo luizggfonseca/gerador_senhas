@@ -545,6 +545,7 @@ IMPLEMENTAÇÃO:
     - Ajuste de contraste e cores no Modo Claro (Light Theme) para manter legibilidade premium.
     - Redução de margens e paddings para otimizar o espaço vertical no desktop.
   ✅ Restauração de Idiomas: Reintroduzidos todos os 7 idiomas suportados (Português, Inglês, Espanhol, Francês, Italiano, Latim e Catalão) em ambas as seções de Diceware, corrigindo a omissão da versão anterior.
+  ✅ Correção de UX (Loading): Agora o indicador de "Gerando..." é exibido apenas no botão do card que foi clicado, evitando confusão visual em múltiplos campos.
 
 ================================================================================
 FIM DO HISTÓRICO

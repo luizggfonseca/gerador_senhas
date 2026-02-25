@@ -59,7 +59,7 @@ export default function Generator() {
     // Navigation Links Data
     const navLinks = [
         { id: 'diceware-pure', label: 'Diceware' },
-        { id: 'diceware-mod', label: 'Modificado' },
+        { id: 'diceware-mod', label: 'Diceware Mod.' },
         { id: 'random-classic', label: 'Aleatória' },
         { id: 'token-hex', label: 'Token Hex' },
         { id: 'token-url', label: 'Token URL' },
@@ -143,10 +143,10 @@ export default function Generator() {
 
             <div className="generator-main" ref={scrollContainerRef}>
 
-                {/* 1. Diceware Tradicional */}
+                {/* 1. Diceware */}
                 <GeneratorSection
                     id="diceware-pure"
-                    title="Diceware Tradicional"
+                    title="Diceware"
                     icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure', () => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure'))}
                     loading={globalLoading && pendingSectionId === 'diceware_pure'}
@@ -157,11 +157,6 @@ export default function Generator() {
                             <select className="input-field" value={dicewareTrad.language} onChange={(e) => setDicewareTrad({ ...dicewareTrad, language: e.target.value })}>
                                 <option value="português">Português</option>
                                 <option value="inglês">Inglês</option>
-                                <option value="espanhol">Espanhol</option>
-                                <option value="francês">Francês</option>
-                                <option value="italiano">Italiano</option>
-                                <option value="latim">Latim</option>
-                                <option value="catalão">Catalão</option>
                             </select>
                         </div>
                         <div>
@@ -171,10 +166,10 @@ export default function Generator() {
                     </div>
                 </GeneratorSection>
 
-                {/* 2. Diceware Modificado */}
+                {/* 2. Diceware Mod. */}
                 <GeneratorSection
                     id="diceware-mod"
-                    title="Diceware Modificado"
+                    title="Diceware Mod."
                     icon="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                     onGenerate={() => handleGenerate('diceware_modified', dicewareMod, 'diceware_modified', () => handleGenerate('diceware_modified', dicewareMod, 'diceware_modified'))}
                     loading={globalLoading && pendingSectionId === 'diceware_modified'}
@@ -183,13 +178,13 @@ export default function Generator() {
                         <div>
                             <label className="label">Idioma</label>
                             <select className="input-field" value={dicewareMod.language} onChange={(e) => setDicewareMod({ ...dicewareMod, language: e.target.value })}>
-                                <option value="português">Português</option>
-                                <option value="inglês">Inglês</option>
+                                <option value="catalão">Catalão</option>
                                 <option value="espanhol">Espanhol</option>
                                 <option value="francês">Francês</option>
+                                <option value="inglês">Inglês</option>
                                 <option value="italiano">Italiano</option>
                                 <option value="latim">Latim</option>
-                                <option value="catalão">Catalão</option>
+                                <option value="português">Português</option>
                             </select>
                         </div>
                         <div>
