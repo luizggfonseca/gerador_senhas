@@ -73,9 +73,9 @@ export default function Generator() {
     };
 
     // States for each section
-    const [dicewareTrad, setDicewareTrad] = useState({ language: 'portugues', num_words: 4 });
+    const [dicewareTrad, setDicewareTrad] = useState({ language: 'português', num_words: 4 });
     const [dicewareMod, setDicewareMod] = useState({
-        language: 'portugues',
+        language: 'português',
         num_words: 4,
         separator: '-',
         use_uppercase: true,
@@ -151,8 +151,13 @@ export default function Generator() {
                         <div>
                             <label className="label">Idioma</label>
                             <select className="input-field" value={dicewareTrad.language} onChange={(e) => setDicewareTrad({ ...dicewareTrad, language: e.target.value })}>
-                                <option value="portugues">Português</option>
-                                <option value="ingles">Inglês</option>
+                                <option value="português">Português</option>
+                                <option value="inglês">Inglês</option>
+                                <option value="espanhol">Espanhol</option>
+                                <option value="francês">Francês</option>
+                                <option value="italiano">Italiano</option>
+                                <option value="latim">Latim</option>
+                                <option value="catalão">Catalão</option>
                             </select>
                         </div>
                         <div>
@@ -174,10 +179,13 @@ export default function Generator() {
                         <div>
                             <label className="label">Idioma</label>
                             <select className="input-field" value={dicewareMod.language} onChange={(e) => setDicewareMod({ ...dicewareMod, language: e.target.value })}>
-                                <option value="portugues">Português</option>
-                                <option value="ingles">Inglês</option>
+                                <option value="português">Português</option>
+                                <option value="inglês">Inglês</option>
                                 <option value="espanhol">Espanhol</option>
-                                <option value="frances">Francês</option>
+                                <option value="francês">Francês</option>
+                                <option value="italiano">Italiano</option>
+                                <option value="latim">Latim</option>
+                                <option value="catalão">Catalão</option>
                             </select>
                         </div>
                         <div>
