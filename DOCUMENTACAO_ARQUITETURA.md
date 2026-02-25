@@ -1,36 +1,35 @@
 # 🏗️ Documentação de Arquitetura — SecureGen
 
-Esta documentação detalha a arquitetura do projeto **SecureGen**, um gerador de senhas focado em privacidade, segurança e versatilidade. O sistema foi projetado para operar tanto como uma aplicação web standalone (client-side) quanto em um modelo cliente-servidor para desenvolvimento e funcionalidades avançadas.
+Esta documentação detalha a arquitetura do projeto **SecureGen**, um gerador de senhas focado em privacidade, segurança e versatilidade. O sistema foi projetado para operar como uma aplicação **Full-stack Moderna**, otimizada para infraestruturas **Serverless** (como Vercel).
 
 ---
 
 ## 1. Visão Geral do Sistema
 
-O SecureGen possui uma arquitetura híbrida que permite a execução em dois modos distintos:
+O SecureGen utiliza uma arquitetura modular unificada:
 
-1.  **Modo Standalone (Produção/GitHub Pages):** Uma aplicação "Single-File" (ou quase) que reside na pasta `docs/`. Toda a lógica de geração de senhas e cálculo de entropia é executada diretamente no navegador do usuário via JavaScript.
-2.  **Modo Client-Server (Desenvolvimento):** Composto por um backend em **FastAPI (Python)** e um frontend em **React (Vite 7)**. Este modo permite uma modularização mais profunda e facilita a expansão de funcionalidades como armazenamento criptografado (Vault).
+1.  **Backend (API Serverless):** Implementado em **FastAPI (Python)**, reside na pasta `/api`. Funciona de forma *stateless* (sem estado), processando requisições de geração e retornando resultados instantaneamente sem persistência em disco.
+2.  **Frontend (Dashboard):** Aplicação **React (Vite)** que consome a API. Gerencia toda a interface, estados de configuração e exibição segura no navegador.
 
 ### Diagrama de Arquitetura
 
 ```mermaid
 graph TD
-    subgraph "Ambiente do Usuário (Navegador)"
-        A[Interface React / HTML5] --> B{Modo de Execução}
-        B -- "Standalone (docs/)" --> C[Geradores em JS]
-        B -- "Client-Server" --> D[API REST (FastAPI)]
+    subgraph "Navegador (Client-Side)"
+        A[Interface React Dashboard] --> B[Hook usePasswordGenerator]
+        B -- "Requisição REST" --> C[API Endpoints]
     end
 
-    subgraph "Backend (Python)"
-        D --> E[Módulo Diceware]
-        D --> F[Password Generators]
-        D --> G[Core - Entropia]
-        E --> H[Wordlists / TXT]
+    subgraph "Infraestrutura Serverless (Vercel)"
+        C --> D[Módulo api/index.py]
+        D --> E[Geradores de Senha]
+        D --> F[Lógica de Entropia]
+        E --> G[Wordlists Diceware]
     end
 
-    subgraph "Segurança"
-        C --> I[Web Crypto API]
-        D --> J[Python secrets module]
+    subgraph "Camada de Segurança"
+        D --> H[secrets module /dev/urandom]
+        A --> I[crypto.getRandomValues]
     end
 ```
 
@@ -39,95 +38,57 @@ graph TD
 ## 2. Tecnologias Utilizadas
 
 ### Frontend
--   **React 19 + Vite 7:** Framework para a interface principal de desenvolvimento.
--   **Vanilla CSS:** Estilização semântica e moderna com suporte a temas (dark/light) e responsividade mobile.
--   **JavaScript (ES2020+):** Lógica standalone e integração com API.
+-   **React 19 + Vite 7:** Framework para a interface de alta performance.
+-   **Vanilla CSS:** Design System próprio baseado em Glassmorphism e HSL adaptativo.
 
 ### Backend (Python 3.10+)
--   **FastAPI:** Framework web moderno e de alta performance.
--   **Pydantic:** Validação de dados e esquemas de API.
--   **Uvicorn:** Servidor ASGI para execução do backend.
+-   **FastAPI:** Framework ASGI para endpoints redundantes e velozes.
+-   **Vercel Python Runtime:** Gerenciamento de funções serverless.
 
-### Segurança e RNG (Random Number Generation)
--   **Client-side:** `window.crypto.getRandomValues()` — CSPRNG (Cryptographically Secure Pseudo-Random Number Generator).
--   **Server-side:** Módulo `secrets` do Python — interface para fontes de entropia do sistema operacional (`/dev/urandom`).
-
----
-
-## 3. Estrutura de Módulos
-
-O projeto é organizado de forma modular para garantir que a lógica de geração de senhas seja independente da interface de exibição.
-
-### A. Módulo `core/`
-Contém a lógica compartilhada, como o cálculo de entropia (`entropy.py`). O cálculo utiliza o logaritmo da base 2 do tamanho do espaço de busca elevado ao comprimento da senha ($log_2(pool^{length})$).
-
-### B. Módulo `diceware/`
-Responsável pelo gerenciamento de passphrases baseadas em palavras.
--   **Loader:** Carrega as wordlists filtrando comentários e formatando pares índice-palavra.
--   **Generator:** Seleciona palavras aleatórias garantindo unicidade e segurança.
-
-### C. Módulo `vault/` (Em desenvolvimento)
-Sistema de armazenamento criptografado utilizando AES-256-GCM com derivação de chave PBKDF2.
+### Segurança
+-   **Server-side:** Módulo `secrets` do Python — interface segura do SO.
+-   **Privacidade:** Arquitetura **Zero Knowledge** (nenhum dado é salvo no servidor).
 
 ---
 
-## 4. Fluxo de Dados
+## 3. Modelo de Segurança: Zero Knowledge
 
-### Geração de Senha (Modo API)
-1.  O usuário altera um parâmetro na interface (ex: incluir símbolos).
-2.  O Frontend dispara uma requisição POST para o backend com o esquema de configuração.
-3.  O Backend valida os dados com Pydantic e chama o gerador correspondente em `password_generators/`.
-4.  O gerador utiliza o módulo `secrets` para obter bytes aleatórios.
-5.  A senha e o cálculo de entropia são retornados como JSON.
-
-### Geração de Senha (Modo Standalone)
-1.  O usuário clica em "Gerar".
-2.  A lógica JS em `docs/script.js` lê os estados dos inputs.
-3.  Utiliza `fetch` para carregar wordlists (se necessário) e armazena em cache na memória.
-4.  Inicia o loop de geração usando `crypto.getRandomValues()`.
-5.  Calcula a entropia localmente e atualiza o DOM.
+O SecureGen segue o princípio de **Confiança Zero (Zero Trust)**:
+-   **Sem Bancos de Dados:** Não existem tabelas de usuários, históricos ou logs de senhas.
+-   **Memória Volátil:** A senha gerada permanece na memória RAM do servidor apenas durante a fração de segundo necessária para retornar a resposta JSON. 
+-   **Zero Logs:** O backend é configurado para não registrar no log os parâmetros sensíveis das requisições.
 
 ---
 
-## 5. Modelo de Segurança
-
-O SecureGen segue o princípio de **Confiança Zero (Zero Trust)** em relação a servidores externos:
--   **Isolamento Local:** Nenhuma senha gerada é enviada para servidores externos ou logs de telemetria.
--   **Gerenciamento de Memória:** As senhas permanecem na memória volátil e no histórico local (opcional) do navegador/backend.
--   **CORS Restrito:** No modo backend, as políticas de CORS são rigidamente definidas para aceitar apenas requisições do localhost.
-
----
-
-## 6. Estrutura de Diretórios Detalhada
+## 4. Estrutura de Diretórios Detalhada
 
 ```bash
 /
-├── backend/            # Servidor FastAPI e rotas da API
-├── banco_dados/        # Wordlists Diceware em formato bruto (.txt)
-├── core/               # Lógica de negócio (entropia, utilitários)
-├── diceware/           # Lógica específica para o método Diceware
-├── docs/               # Versão STANDALONE para hospedagem web
-│   ├── index.html      # UI principal (HTML/CSS/JS)
-│   ├── wordlists/      # Listas otimizadas para carregamento web
-│   └── manual.html     # Documentação de ajuda ao usuário
-├── frontend/           # Aplicação principal em React
+├── api/                # Backend FastAPI (Padrão Serverless Vercel)
+│   ├── index.py        # Entrypoint da API
+│   └── ...             # Utilitários de histórico (removidos/desativados)
+├── banco_dados/        # Wordlists Diceware oficiais
+├── core/               # Lógica matemática (entropia.py)
+├── diceware/           # Processamento dinâmico de listas de palavras
+├── frontend/           # Aplicação Dashboard em React
 │   ├── src/
-│   │   ├── components/ # Sidebar, ConfigPanel, ResultPanel
-│   │   ├── hooks/      # usePasswordGenerator (Lógica de API)
-│   │   └── App.jsx     # Orquestrador da Interface
-├── password_generators/# Implementações dos variados geradores
-├── vault/              # Módulo de criptografia para histórico seguro
-├── run_app.sh          # Script automatizado para rodar dev environment
-└── config.py           # Definições globais de ambiente
+│   │   ├── components/ # Legenda de Entropia, Generator, Modals
+│   │   └── hooks/      # Integração com a API local/remota
+├── password_generators/# Algoritmos de geração (Classic, Hex, URL, UUID)
+├── vercel.json         # Orquestração de deploy (Frontend + Backend)
+├── requirements.txt    # Dependências de infraestrutura Python
+└── run_app.sh          # Script de desenvolvimento local sincronizado
 ```
 
 ---
 
-## 7. Decisões de Design
+## 5. Legenda e Força de Senha
 
--   **Glassmorphism:** Escolhido para dar um aspecto premium e moderno, utilizando transparências e borrões (`backdrop-filter`).
--   **Responsividade Adaptativa:** A interface muda de um layout de sidebar (Desktop) para um layout de abas/dropdowns (Mobile).
--   **Performance Standalone:** A versão em `docs/` foi otimizada para ser extremamente rápida, carregando wordlists sob demanda para economizar largura de banda.
+O sistema utiliza a biblioteca `math` para calcular a entropia real com base no pool de caracteres ativo:
+$$E = L \cdot \log_2(R)$$
+Onde $L$ é o comprimento e $R$ o tamanho do alfabeto de caracteres. 
+
+A classificação visual é segmentada em 6 níveis cromáticos, permitindo que o usuário identifique o risco da senha antes de utilizá-la em serviços reais.
 
 ---
-*Documento gerado automaticamente pelo assistente Antigravity em 24/02/2026.*
+*Documento atualizado em 25/02/2026 para refletir a transição para arquitetura Serverless.*
