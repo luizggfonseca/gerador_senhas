@@ -579,6 +579,10 @@ IMPLEMENTAÇÃO:
   ✅ Segurança Reforçada (Anti-Copy):
     - Bloqueio técnico total de cópia (Ctrl+C, Ctrl+X) e menu de contexto (clique direito) no modal de exibição de senhas.
     - Desativação da seleção de texto (user-select: none) via CSS para impedir rastros digitais.
+  🚀 Expansão de Algoritmos (Novas Opções):
+    - Implementação de High-Entropy Alphanumeric, Apenas Consoantes e estilo ProtonPass.
+    - Adição de geradores de PIN (4, 6, 8 dígitos), ULID (ordenável) e NanoID (moderno).
+    - Inclusão de algoritmos fonéticos (FIPS-181) e codificação Bubble Babble para verificações visuais.
 
 ================================================================================
 FIM DO HISTÓRICO

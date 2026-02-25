@@ -63,7 +63,15 @@ export default function Generator() {
         { id: 'random-classic', label: 'Aleatória' },
         { id: 'token-hex', label: 'Token Hex' },
         { id: 'token-url', label: 'Token URL' },
-        { id: 'uuid', label: 'UUID' }
+        { id: 'uuid', label: 'UUID' },
+        { id: 'high-entropy', label: 'High-Entropy' },
+        { id: 'consonants', label: 'Consoantes' },
+        { id: 'proton-style', label: 'Proton' },
+        { id: 'pin', label: 'PIN' },
+        { id: 'ulid', label: 'ULID' },
+        { id: 'nanoid', label: 'NanoID' },
+        { id: 'fips-181', label: 'Fonética' },
+        { id: 'bubble-babble', label: 'Bubble' }
     ];
 
     const scrollToSection = (id) => {
@@ -99,6 +107,12 @@ export default function Generator() {
     });
     const [tokenHex, setTokenHex] = useState({ length: 32, entropy_bits: 0 });
     const [tokenUrl, setTokenUrl] = useState({ length: 32 });
+    const [highEntropy, setHighEntropy] = useState({ length: 32 });
+    const [consonants, setConsonants] = useState({ length: 16 });
+    const [protonStyle, setProtonStyle] = useState({ length: 12 });
+    const [pin, setPin] = useState({ length: 6 });
+    const [nanoid, setNanoid] = useState({ length: 21 });
+    const [fips181, setFips181] = useState({ length: 10 });
 
     const handleGenerate = async (genId, options, metadataPath) => {
         let finalOptions = { ...options };
@@ -335,6 +349,114 @@ export default function Generator() {
                     loading={globalLoading && pendingSectionId === 'random_classic:token:uuid'}
                 >
                     <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Identificador único universal versao 4 (aleatório padrão RFC 4122).</p>
+                </GeneratorSection>
+
+                {/* 7. High-Entropy */}
+                <GeneratorSection
+                    id="high-entropy"
+                    title="High-Entropy Alphanumeric"
+                    icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'high_entropy', length: highEntropy.length }, 'advanced:high_entropy')}
+                    loading={globalLoading && pendingSectionId === 'advanced:high_entropy'}
+                >
+                    <div>
+                        <label className="label">Comprimento</label>
+                        <input type="number" min="8" max="128" className="input-field input-mono" value={highEntropy.length} onChange={(e) => setHighEntropy({ length: parseInt(e.target.value) || 32 })} />
+                    </div>
+                </GeneratorSection>
+
+                {/* 8. Consonants */}
+                <GeneratorSection
+                    id="consonants"
+                    title="Apenas Consoantes"
+                    icon="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'consonants', length: consonants.length }, 'advanced:consonants')}
+                    loading={globalLoading && pendingSectionId === 'advanced:consonants'}
+                >
+                    <div>
+                        <label className="label">Comprimento</label>
+                        <input type="number" min="4" max="128" className="input-field input-mono" value={consonants.length} onChange={(e) => setConsonants({ length: parseInt(e.target.value) || 16 })} />
+                    </div>
+                </GeneratorSection>
+
+                {/* 9. Proton Style */}
+                <GeneratorSection
+                    id="proton-style"
+                    title="ProtonPass Style"
+                    icon="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'proton', length: protonStyle.length }, 'advanced:proton')}
+                    loading={globalLoading && pendingSectionId === 'advanced:proton'}
+                >
+                    <div>
+                        <label className="label">Comprimento Total (aprox.)</label>
+                        <input type="number" min="8" max="128" className="input-field input-mono" value={protonStyle.length} onChange={(e) => setProtonStyle({ length: parseInt(e.target.value) || 12 })} />
+                    </div>
+                </GeneratorSection>
+
+                {/* 10. PIN */}
+                <GeneratorSection
+                    id="pin"
+                    title="PIN Numérico"
+                    icon="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'pin', length: pin.length }, 'advanced:pin')}
+                    loading={globalLoading && pendingSectionId === 'advanced:pin'}
+                >
+                    <div className="config-grid">
+                        <button className={`btn-outline ${pin.length === 4 ? 'active' : ''}`} onClick={() => setPin({ length: 4 })}>4 Dígitos</button>
+                        <button className={`btn-outline ${pin.length === 6 ? 'active' : ''}`} onClick={() => setPin({ length: 6 })}>6 Dígitos</button>
+                        <button className={`btn-outline ${pin.length === 8 ? 'active' : ''}`} onClick={() => setPin({ length: 8 })}>8 Dígitos</button>
+                        <input type="number" className="input-field input-mono" value={pin.length} onChange={(e) => setPin({ length: parseInt(e.target.value) || 4 })} />
+                    </div>
+                </GeneratorSection>
+
+                {/* 11. ULID */}
+                <GeneratorSection
+                    id="ulid"
+                    title="ULID"
+                    icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'ulid' }, 'advanced:ulid')}
+                    loading={globalLoading && pendingSectionId === 'advanced:ulid'}
+                >
+                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Universally Unique Lexicographically Sortable Identifier.</p>
+                </GeneratorSection>
+
+                {/* 12. NanoID */}
+                <GeneratorSection
+                    id="nanoid"
+                    title="NanoID"
+                    icon="M13 10V3L4 14h7v7l9-11h-7z"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'nanoid', length: nanoid.length }, 'advanced:nanoid')}
+                    loading={globalLoading && pendingSectionId === 'advanced:nanoid'}
+                >
+                    <div>
+                        <label className="label">Comprimento (Padrão: 21)</label>
+                        <input type="number" min="5" max="128" className="input-field input-mono" value={nanoid.length} onChange={(e) => setNanoid({ length: parseInt(e.target.value) || 21 })} />
+                    </div>
+                </GeneratorSection>
+
+                {/* 13. FIPS-181 */}
+                <GeneratorSection
+                    id="fips-181"
+                    title="Senha Fonética (FIPS-181)"
+                    icon="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'fips181', length: fips181.length }, 'advanced:fips181')}
+                    loading={globalLoading && pendingSectionId === 'advanced:fips181'}
+                >
+                    <div>
+                        <label className="label">Comprimento</label>
+                        <input type="number" min="6" max="64" className="input-field input-mono" value={fips181.length} onChange={(e) => setFips181({ length: parseInt(e.target.value) || 10 })} />
+                    </div>
+                </GeneratorSection>
+
+                {/* 14. Bubble Babble */}
+                <GeneratorSection
+                    id="bubble-babble"
+                    title="Bubble Babble"
+                    icon="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8z"
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'bubble_babble' }, 'advanced:bubble_babble')}
+                    loading={globalLoading && pendingSectionId === 'advanced:bubble_babble'}
+                >
+                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Codificação sonora borbulhante para dados binários.</p>
                 </GeneratorSection>
 
             </div>
