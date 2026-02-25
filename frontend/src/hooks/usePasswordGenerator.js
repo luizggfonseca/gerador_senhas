@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 
-const API_BASE = 'http://localhost:8000';
+// Em desenvolvimento (local), a API roda em :8000. Em produção (Vercel), as rotas são relativas via rewrites.
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? 'http://localhost:8000'
+    : '';
 
 /**
  * Hook customizado para gerenciamento de geração de senhas.

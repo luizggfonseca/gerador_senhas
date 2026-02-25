@@ -566,6 +566,12 @@ IMPLEMENTAÇÃO:
     - Estética Aprimorada: Cores vibrantes (neon), indicadores maiores com brilho (glow) e tipografia em negrito (weight 800) para máxima legibilidade.
     - Sistema de cores semafórico aplicado tanto na legenda quanto no modal de resultado.
     - Backend atualizado para classificar entropia rigorosamente (Impossível >= 128 bits).
+  ✅ Segurança e Arquitetura - Zero Knowledge:
+    - Removido sistema de histórico de senhas no servidor (backend/history.py e arquivos .json). 
+    - Agora nenhuma senha ou token gerado é persistido em disco, garantindo privacidade total ("Zero Knowledge").
+    - Reestruturação de pastas: `backend/` renomeado para `api/` para compatibilidade com o padrão Serverless da Vercel.
+    - Adicionado `vercel.json` e configurado `API_BASE` dinâmico para facilitar o deploy global.
+    - O projeto agora é "stateless", permitindo escalabilidade e segurança de nível militar.
 
 ================================================================================
 FIM DO HISTÓRICO

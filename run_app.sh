@@ -36,7 +36,7 @@ done
 
 echo "🚀 Iniciando Backend API (Porta 8000)..."
 # Redirecionando para um arquivo de log para debug se necessário
-PYTHONPATH="$PROJECT_ROOT" .venv/bin/uvicorn backend.main:app --port 8000 > backend.log 2>&1 &
+PYTHONPATH="$PROJECT_ROOT" .venv/bin/uvicorn api.index:app --port 8000 > backend.log 2>&1 &
 BACKEND_PID=$!
 
 # Aguarda o backend subir e valida
