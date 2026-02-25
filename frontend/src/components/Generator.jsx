@@ -163,12 +163,12 @@ export default function Generator() {
             <div className="generator-main" ref={scrollContainerRef}>
                 {/* Entropy Legend */}
                 <div className="entropy-legend">
-                    <span className="legend-item"><span className="legend-dot legend-baixissima"></span> Baixíssima</span>
-                    <span className="legend-item"><span className="legend-dot legend-baixa"></span> Baixa</span>
-                    <span className="legend-item"><span className="legend-dot legend-media"></span> Média</span>
-                    <span className="legend-item"><span className="legend-dot legend-alta"></span> Alta</span>
-                    <span className="legend-item"><span className="legend-dot legend-altissima"></span> Altíssima</span>
-                    <span className="legend-item"><span className="legend-dot legend-impossivel"></span> Impossível</span>
+                    <span className="legend-item legend-baixissima"><span className="legend-dot"></span> Baixíssima</span>
+                    <span className="legend-item legend-baixa"><span className="legend-dot"></span> Baixa</span>
+                    <span className="legend-item legend-media"><span className="legend-dot"></span> Média</span>
+                    <span className="legend-item legend-alta"><span className="legend-dot"></span> Alta</span>
+                    <span className="legend-item legend-altissima"><span className="legend-dot"></span> Altíssima</span>
+                    <span className="legend-item legend-impossivel"><span className="legend-dot"></span> Impossível</span>
                 </div>
 
                 {/* 1. Diceware */}

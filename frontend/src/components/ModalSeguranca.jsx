@@ -9,12 +9,12 @@ export default function ModalSeguranca({ result, metadata, onClose, onGenerate }
 
     const getEntropyColor = (label) => {
         const colors = {
-            'Baixíssima': '#ff0033',
-            'Baixa': '#ff8000',
-            'Média': '#ffcc00',
-            'Alta': '#00ff66',
-            'Altíssima': '#00e5ff',
-            'Impossível': '#cc00ff'
+            'Baixíssima': '#f44336',
+            'Baixa': '#ff9800',
+            'Média': '#ffeb3b',
+            'Alta': '#76b852',
+            'Altíssima': '#1a73e8',
+            'Impossível': '#9c27b0'
         };
         return colors[label] || 'var(--accent)';
     };
