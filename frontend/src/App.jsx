@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import Generator from './components/Generator';
+import ModalManual from './components/ModalManual';
 import './App.css';
 
 function App() {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+  const [isManualOpen, setIsManualOpen] = useState(false);
 
   // Apply Theme
   useEffect(() => {
@@ -23,19 +25,17 @@ function App() {
           </div>
 
           <div className="app-controls">
-            {/* Help Button */}
-            <a
-              href="/manual.html"
-              target="_blank"
-              rel="noopener noreferrer"
+            {/* Help Button - Modal Trigger */}
+            <button
+              onClick={() => setIsManualOpen(true)}
               className="control-btn"
               title="Ajuda e Documentação Técnica"
-              style={{ textDecoration: 'none' }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer' }}
             >
               <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-            </a>
+            </button>
 
             {/* Theme Toggle */}
             <button
@@ -67,6 +67,8 @@ function App() {
           &copy; 2026 SecureGen. Nenhuma senha sai do seu dispositivo.
         </footer>
       </div>
+
+      <ModalManual isOpen={isManualOpen} onClose={() => setIsManualOpen(false)} />
     </div>
   );
 }
