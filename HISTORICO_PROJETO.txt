@@ -546,6 +546,13 @@ IMPLEMENTAÇÃO:
     - Redução de margens e paddings para otimizar o espaço vertical no desktop.
   ✅ Restauração de Idiomas: Reintroduzidos todos os 7 idiomas suportados (Português, Inglês, Espanhol, Francês, Italiano, Latim e Catalão) em ambas as seções de Diceware, corrigindo a omissão da versão anterior.
   ✅ Correção de UX (Loading): Agora o indicador de "Gerando..." é exibido apenas no botão do card que foi clicado, evitando confusão visual em múltiplos campos.
+  ✅ Ajustes de Nomenclatura e Performance (v1.2):
+    - Diceware Tradicional renomeado para "Diceware" e limitado a PT/EN.
+    - Diceware Modificado renomeado para "Diceware Mod." (nav e título) com idiomas em ordem alfabética.
+    - Otimização crítica no algoritmo Diceware: Redução drástica no tempo de geração através de amostragem criptográfica direta (secrets.sample), eliminando loops desnecessários.
+  ✅ Estabilização de Infraestrutura (v2.0):
+    - Correção do erro de travamento "Gerando..." causado por conflito de portas (quando o frontend subia na 5174 e era bloqueado pelo CORS do backend).
+    - Script de inicialização (run_app.sh) agora limpa processos antigos com kill -9 e força o uso das portas corretas.
 
 ================================================================================
 FIM DO HISTÓRICO
