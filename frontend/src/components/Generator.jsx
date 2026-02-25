@@ -232,11 +232,17 @@ export default function Generator() {
                     <div className="config-grid">
                         <div>
                             <label className="label">Comprimento</label>
-                            <input type="number" min="4" max="128" className="input-field input-mono" value={randomClassic.length} onChange={(e) => setRandomClassic({ ...randomClassic, length: parseInt(e.target.value) || 16 })} />
+                            <input type="number" min="4" max="128" className="input-field input-mono"
+                                value={randomClassic.length || ''}
+                                onChange={(e) => setRandomClassic({ ...randomClassic, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
                         </div>
                         <div>
                             <label className="label">Entropia (Bits)</label>
-                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono" value={randomClassic.entropy_bits || ''} onChange={(e) => setRandomClassic({ ...randomClassic, entropy_bits: parseInt(e.target.value) || 0 })} />
+                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono"
+                                value={randomClassic.entropy_bits || ''}
+                                onChange={(e) => setRandomClassic({ ...randomClassic, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
                         </div>
                     </div>
                     <div className="checkbox-grid" style={{ marginTop: '0.75rem' }}>
@@ -264,11 +270,17 @@ export default function Generator() {
                     <div className="config-grid">
                         <div>
                             <label className="label">Comprimento</label>
-                            <input type="number" min="4" max="512" className="input-field input-mono" value={tokenHex.length} onChange={(e) => setTokenHex({ ...tokenHex, length: parseInt(e.target.value) || 32 })} />
+                            <input type="number" min="4" max="512" className="input-field input-mono"
+                                value={tokenHex.length || ''}
+                                onChange={(e) => setTokenHex({ ...tokenHex, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
                         </div>
                         <div>
                             <label className="label">Entropia (Bits)</label>
-                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono" value={tokenHex.entropy_bits || ''} onChange={(e) => setTokenHex({ ...tokenHex, entropy_bits: parseInt(e.target.value) || 0 })} />
+                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono"
+                                value={tokenHex.entropy_bits || ''}
+                                onChange={(e) => setTokenHex({ ...tokenHex, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
                         </div>
                     </div>
                 </GeneratorSection>

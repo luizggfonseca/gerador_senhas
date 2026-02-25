@@ -557,6 +557,7 @@ IMPLEMENTAÇÃO:
     - Texto da "Ação Necessária" atualizado para "INFORMAÇÃO" com diretrizes mais rígidas sobre anotação manual e isenção de responsabilidade.
   ✅ Melhoria de UX (Gerador):
     - Botão "Gerar Outra Senha" agora permite cliques infinitos de forma recursiva, permitindo que o usuário gere quantas senhas desejar sem fechar o modal.
+    - Lógica Reativa: Campos de "Comprimento" e "Entropia" agora possuem exclusão mútua. Ao digitar em um, o outro é automaticamente limpo, evitando conflitos de parâmetros na geração de senhas e tokens.
 
 ================================================================================
 FIM DO HISTÓRICO
