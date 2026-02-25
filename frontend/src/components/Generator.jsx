@@ -109,13 +109,31 @@ export default function Generator() {
             delete finalOptions.use_symbols;
         }
 
-        // Entropy Logic
+        // Entropy Logic - Dynamic Calculation
         if (options.entropy_bits > 0) {
             const bits = options.entropy_bits;
             if (genId === 'random_classic' && options.mode === 'classic') {
-                finalOptions.length = Math.ceil(bits / 5.95);
-            } else if (genId === 'random_classic' && options.token_type === 'hex') {
-                finalOptions.token_length = Math.ceil(bits / 4);
+                // Calculate actual pool size to be precise
+                let poolSize = 0;
+                const ambig = options.exclude_ambiguous ? 5 : 0;
+                if (options.use_upper) poolSize += (26 - (options.exclude_ambiguous ? 2 : 0)); // I, O
+                if (options.use_lower) poolSize += (26 - (options.exclude_ambiguous ? 1 : 0)); // l
+                if (options.use_numbers) poolSize += (10 - (options.exclude_ambiguous ? 2 : 0)); // 1, 0
+                if (options.use_symbols && options.symbols) {
+                    const uniqueSymbols = new Set(options.symbols).size;
+                    poolSize += uniqueSymbols;
+                }
+                
+                if (poolSize > 1) {
+                    const bitsPerChar = Math.log2(poolSize);
+                    finalOptions.length = Math.ceil(bits / bitsPerChar);
+                }
+            } else if (genId === 'random_classic' && options.mode === 'token') {
+                if (options.token_type === 'hex') {
+                    finalOptions.token_length = Math.ceil(bits / 4);
+                } else if (options.token_type === 'urlsafe') {
+                    finalOptions.token_length = Math.ceil(bits / 6);
+                }
             }
         }
 

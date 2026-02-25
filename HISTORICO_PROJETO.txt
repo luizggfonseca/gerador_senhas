@@ -558,6 +558,9 @@ IMPLEMENTAÇÃO:
   ✅ Melhoria de UX (Gerador):
     - Botão "Gerar Outra Senha" agora permite cliques infinitos de forma recursiva, permitindo que o usuário gere quantas senhas desejar sem fechar o modal.
     - Lógica Reativa: Campos de "Comprimento" e "Entropia" agora possuem exclusão mútua. Ao digitar em um, o outro é automaticamente limpo, evitando conflitos de parâmetros na geração de senhas e tokens.
+  ✅ Precisão Matemática (Entropia):
+    - Implementado cálculo dinâmico de bits por caractere baseado no pool real selecionado (Upper, Lower, Números, Símbolos).
+    - Isso garante que, ao pedir uma entropia específica (ex: 103 bits), o sistema gere o menor comprimento possível que satisfaça o requisito, eliminando overshoots agressivos.
 
 ================================================================================
 FIM DO HISTÓRICO
