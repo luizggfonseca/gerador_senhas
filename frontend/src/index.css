@@ -415,7 +415,6 @@ body {
 .app-wrapper {
   width: 100%;
   max-width: 960px;
-  height: 620px;
   transition: all 0.3s ease;
 }
 

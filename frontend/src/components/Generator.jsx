@@ -5,7 +5,7 @@ import { GENERATOR_METADATA } from '../constants/generatorMetadata';
 
 /* ========================== Reusable Components ========================== */
 
-function GeneratorSection({ id, title, children, onGenerate, loading, icon }) {
+function GeneratorSection({ id, title, children, onGenerate, loading, icon, disabled }) {
     // Verifica se o ícone é um caminho de arquivo (PNG/JPG etc) ou um path SVG
     const isImagePath = typeof icon === 'string' && (icon.includes('.') || icon.startsWith('/'));
 
@@ -27,7 +27,7 @@ function GeneratorSection({ id, title, children, onGenerate, loading, icon }) {
             </div>
             <div className="section-body">{children}</div>
             <div className="section-actions">
-                <button onClick={onGenerate} disabled={loading} className="btn-generate-small">
+                <button onClick={onGenerate} disabled={loading || disabled} className="btn-generate-small">
                     {loading ? (
                         <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ width: '1.25rem', height: '1.25rem' }}>
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -87,13 +87,12 @@ export default function Generator() {
         entropy_bits: 0
     });
     const [tokenHex, setTokenHex] = useState({ length: 32, entropy_bits: 0 });
-    const [tokenUrl, setTokenUrl] = useState({ length: 32 });
-    const [highEntropy, setHighEntropy] = useState({ length: 32 });
-    const [consonants, setConsonants] = useState({ length: 16, use_upper: true, use_lower: true });
-    const [protonStyle, setProtonStyle] = useState({ length: 12 });
-    const [pin, setPin] = useState({ length: 6 });
-    const [nanoid, setNanoid] = useState({ length: 21 });
-    const [fips181, setFips181] = useState({ length: 10 });
+    const [tokenUrl, setTokenUrl] = useState({ length: 32, entropy_bits: 0 });
+    const [highEntropy, setHighEntropy] = useState({ length: 32, entropy_bits: 0 });
+    const [consonants, setConsonants] = useState({ length: 16, use_upper: true, use_lower: true, entropy_bits: 0 });
+    const [protonStyle, setProtonStyle] = useState({ length: 12, entropy_bits: 0 });
+    const [pin, setPin] = useState({ length: 6, entropy_bits: 0 });
+    const [fips181, setFips181] = useState({ length: 10, entropy_bits: 0 });
 
     const handleGenerate = async (genId, options, metadataPath) => {
         let finalOptions = { ...options };
@@ -107,27 +106,41 @@ export default function Generator() {
         // Entropy Logic - Dynamic Calculation
         if (options.entropy_bits > 0) {
             const bits = options.entropy_bits;
+            let poolSize = 0;
+
             if (genId === 'random_classic' && options.mode === 'classic') {
-                // Calculate actual pool size to be precise
-                let poolSize = 0;
                 const ambig = options.exclude_ambiguous ? 5 : 0;
-                if (options.use_upper) poolSize += (26 - (options.exclude_ambiguous ? 2 : 0)); // I, O
-                if (options.use_lower) poolSize += (26 - (options.exclude_ambiguous ? 1 : 0)); // l
-                if (options.use_numbers) poolSize += (10 - (options.exclude_ambiguous ? 2 : 0)); // 1, 0
-                if (options.use_symbols && options.symbols) {
-                    const uniqueSymbols = new Set(options.symbols).size;
-                    poolSize += uniqueSymbols;
-                }
+                if (options.use_upper) poolSize += (26 - (options.exclude_ambiguous ? 2 : 0));
+                if (options.use_lower) poolSize += (26 - (options.exclude_ambiguous ? 1 : 0));
+                if (options.use_numbers) poolSize += (10 - (options.exclude_ambiguous ? 2 : 0));
+                if (options.use_symbols && options.symbols) poolSize += new Set(options.symbols).size;
 
                 if (poolSize > 1) {
-                    const bitsPerChar = Math.log2(poolSize);
-                    finalOptions.length = Math.ceil(bits / bitsPerChar);
+                    finalOptions.length = Math.ceil(bits / Math.log2(poolSize));
                 }
             } else if (genId === 'random_classic' && options.mode === 'token') {
                 if (options.token_type === 'hex') {
                     finalOptions.token_length = Math.ceil(bits / 4);
                 } else if (options.token_type === 'urlsafe') {
                     finalOptions.token_length = Math.ceil(bits / 6);
+                }
+            } else if (genId === 'advanced_options') {
+                if (options.mode === 'consonants') {
+                    poolSize = 0;
+                    if (options.use_lower) poolSize += 21;
+                    if (options.use_upper) poolSize += 21;
+                    if (poolSize > 0) finalOptions.length = Math.ceil(bits / Math.log2(poolSize));
+                } else if (options.mode === 'pin') {
+                    finalOptions.length = Math.ceil(bits / Math.log2(10));
+                } else if (options.mode === 'proton') {
+                    // ProtonPass style uses letters + numbers + letters (roughly 2/3 letters, 1/3 numbers)
+                    // average bits per char = (2 * log2(26) + log2(10)) / 3 ≈ 4.2 bits
+                    finalOptions.length = Math.ceil(bits / 4.2);
+                } else if (options.mode === 'fips181') {
+                    // Roughly 4 bits per char
+                    finalOptions.length = Math.ceil(bits / 4);
+                } else if (options.mode === 'high_entropy') {
+                    finalOptions.length = Math.ceil(bits / Math.log2(62));
                 }
             }
         }
@@ -344,9 +357,21 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'urlsafe', token_length: tokenUrl.length }, 'random_classic:token:urlsafe')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:urlsafe'}
                 >
-                    <div>
-                        <label className="label">COMPRIMENTO</label>
-                        <input type="number" min="4" max="512" className="input-field input-mono" value={tokenUrl.length} onChange={(e) => setTokenUrl({ ...tokenUrl, length: parseInt(e.target.value) || 32 })} />
+                    <div className="config-grid">
+                        <div>
+                            <label className="label">COMPRIMENTO</label>
+                            <input type="number" min="4" max="512" className="input-field input-mono"
+                                value={tokenUrl.length || ''}
+                                onChange={(e) => setTokenUrl({ ...tokenUrl, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
+                        </div>
+                        <div>
+                            <label className="label">ENTROPIA (BITS)</label>
+                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono"
+                                value={tokenUrl.entropy_bits || ''}
+                                onChange={(e) => setTokenUrl({ ...tokenUrl, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
+                        </div>
                     </div>
                 </GeneratorSection>
 
@@ -369,9 +394,21 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'high_entropy', length: highEntropy.length }, 'advanced:high_entropy')}
                     loading={globalLoading && pendingSectionId === 'advanced:high_entropy'}
                 >
-                    <div>
-                        <label className="label">COMPRIMENTO</label>
-                        <input type="number" min="8" max="128" className="input-field input-mono" value={highEntropy.length} onChange={(e) => setHighEntropy({ length: parseInt(e.target.value) || 32 })} />
+                    <div className="config-grid">
+                        <div>
+                            <label className="label">COMPRIMENTO</label>
+                            <input type="number" min="8" max="128" className="input-field input-mono"
+                                value={highEntropy.length || ''}
+                                onChange={(e) => setHighEntropy({ ...highEntropy, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
+                        </div>
+                        <div>
+                            <label className="label">ENTROPIA (BITS)</label>
+                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono"
+                                value={highEntropy.entropy_bits || ''}
+                                onChange={(e) => setHighEntropy({ ...highEntropy, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
+                        </div>
                     </div>
                 </GeneratorSection>
 
@@ -382,11 +419,22 @@ export default function Generator() {
                     icon="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'consonants', length: consonants.length, use_upper: consonants.use_upper, use_lower: consonants.use_lower }, 'advanced:consonants')}
                     loading={globalLoading && pendingSectionId === 'advanced:consonants'}
+                    disabled={!consonants.use_upper && !consonants.use_lower}
                 >
                     <div className="config-grid">
                         <div>
                             <label className="label">COMPRIMENTO</label>
-                            <input type="number" min="4" max="128" className="input-field input-mono" value={consonants.length} onChange={(e) => setConsonants({ ...consonants, length: parseInt(e.target.value) || 16 })} />
+                            <input type="number" min="4" max="128" className="input-field input-mono"
+                                value={consonants.length || ''}
+                                onChange={(e) => setConsonants({ ...consonants, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
+                        </div>
+                        <div>
+                            <label className="label">ENTROPIA (BITS)</label>
+                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono"
+                                value={consonants.entropy_bits || ''}
+                                onChange={(e) => setConsonants({ ...consonants, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.25rem' }}>
                             <CheckboxOption checked={consonants.use_upper} onChange={(v) => setConsonants({ ...consonants, use_upper: v })} label="MAIÚSCULAS" />
@@ -403,9 +451,21 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'proton', length: protonStyle.length }, 'advanced:proton')}
                     loading={globalLoading && pendingSectionId === 'advanced:proton'}
                 >
-                    <div>
-                        <label className="label">Comprimento Total (aprox.)</label>
-                        <input type="number" min="8" max="128" className="input-field input-mono" value={protonStyle.length} onChange={(e) => setProtonStyle({ length: parseInt(e.target.value) || 12 })} />
+                    <div className="config-grid">
+                        <div>
+                            <label className="label">Comprimento Total (aprox.)</label>
+                            <input type="number" min="8" max="128" className="input-field input-mono"
+                                value={protonStyle.length || ''}
+                                onChange={(e) => setProtonStyle({ ...protonStyle, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
+                        </div>
+                        <div>
+                            <label className="label">ENTROPIA (BITS)</label>
+                            <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono"
+                                value={protonStyle.entropy_bits || ''}
+                                onChange={(e) => setProtonStyle({ ...protonStyle, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
+                        </div>
                     </div>
                 </GeneratorSection>
 
@@ -417,9 +477,21 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'pin', length: pin.length }, 'advanced:pin')}
                     loading={globalLoading && pendingSectionId === 'advanced:pin'}
                 >
-                    <div>
-                        <label className="label">COMPRIMENTO</label>
-                        <input type="number" min="4" max="12" className="input-field input-mono" value={pin.length} onChange={(e) => setPin({ length: parseInt(e.target.value) || 4 })} />
+                    <div className="config-grid">
+                        <div>
+                            <label className="label">COMPRIMENTO</label>
+                            <input type="number" min="4" max="12" className="input-field input-mono"
+                                value={pin.length || ''}
+                                onChange={(e) => setPin({ ...pin, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
+                        </div>
+                        <div>
+                            <label className="label">ENTROPIA (BITS)</label>
+                            <input type="number" min="0" max="64" placeholder="Opcional" className="input-field input-mono"
+                                value={pin.entropy_bits || ''}
+                                onChange={(e) => setPin({ ...pin, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
+                        </div>
                     </div>
                 </GeneratorSection>
 
@@ -453,9 +525,21 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'fips181', length: fips181.length }, 'advanced:fips181')}
                     loading={globalLoading && pendingSectionId === 'advanced:fips181'}
                 >
-                    <div>
-                        <label className="label">Comprimento</label>
-                        <input type="number" min="6" max="64" className="input-field input-mono" value={fips181.length} onChange={(e) => setFips181({ length: parseInt(e.target.value) || 10 })} />
+                    <div className="config-grid">
+                        <div>
+                            <label className="label">Comprimento</label>
+                            <input type="number" min="6" max="64" className="input-field input-mono"
+                                value={fips181.length || ''}
+                                onChange={(e) => setFips181({ ...fips181, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
+                            />
+                        </div>
+                        <div>
+                            <label className="label">ENTROPIA (BITS)</label>
+                            <input type="number" min="0" max="256" placeholder="Opcional" className="input-field input-mono"
+                                value={fips181.entropy_bits || ''}
+                                onChange={(e) => setFips181({ ...fips181, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                            />
+                        </div>
                     </div>
                 </GeneratorSection>
 

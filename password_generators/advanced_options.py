@@ -36,8 +36,7 @@ class AdvancedOptionsGenerator(PasswordGenerator):
                 pool += "".join(c for c in string.ascii_uppercase if c not in vowels)
             
             if not pool:
-                # Fallback para evitar erro se nada for selecionado
-                pool = "".join(c for c in string.ascii_lowercase if c not in vowels)
+                return GeneratedPassword("", 0)
                 
             password = "".join(secrets.choice(pool) for _ in range(self.length))
             entropy = self.length * math.log2(len(pool))
@@ -67,9 +66,8 @@ class AdvancedOptionsGenerator(PasswordGenerator):
             
         elif self.mode == "ulid":
             value = self._generate_ulid()
-            # ULID tem 128 bits de informação total, mas 48 são timestamp (previsível)
-            # A entropia de segurança real é 80 bits.
-            return GeneratedPassword(value, 80.0)
+            # ULID tem 128 bits de informação total.
+            return GeneratedPassword(value, 128.0)
             
         elif self.mode == "nanoid":
             # NanoID padrão usa alphabet de 64 chars e length 21
