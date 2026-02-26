@@ -616,6 +616,8 @@ IMPLEMENTAÇÃO:
 
     - Layout: Centralização do botão "Gerar senha" em todas as seções do dashboard para melhor equilíbrio visual.
 
+    - Padronização Visual: Renomeação de todos os títulos de seção para MAIÚSCULAS (ex: DICEWARE, URL (BASE 64), TOKEN / API KEY HEX.) e padronização de todos os rótulos de campos (labels) para maiúsculas (ex: COMPRIMENTO, IDIOMA) para maior clareza e consistência.
+
 ================================================================================
 FIM DO HISTÓRICO
 ================================================================================

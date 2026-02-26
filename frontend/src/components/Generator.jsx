@@ -161,7 +161,7 @@ export default function Generator() {
                 {/* 1. Diceware */}
                 <GeneratorSection
                     id="diceware-pure"
-                    title="Diceware"
+                    title="DICEWARE"
                     icon="/icons/diceware.png"
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure')}
                     loading={globalLoading && pendingSectionId === 'diceware_pure'}
@@ -188,7 +188,7 @@ export default function Generator() {
                 {/* 2. Diceware (personalizável) */}
                 <GeneratorSection
                     id="diceware-mod"
-                    title="Diceware (personalizável)"
+                    title="DICEWARE (PERSONALIZÁVEL)"
                     icon="/icons/diceware.png"
                     onGenerate={() => {
                         const options = {
@@ -310,24 +310,24 @@ export default function Generator() {
                     </div>
                 </GeneratorSection>
 
-                {/* 4. Token Hexadecimal */}
+                {/* 4. Token Hex. */}
                 <GeneratorSection
                     id="token-hex"
-                    title="Token / API Key Hexadecimal"
+                    title="TOKEN / API KEY HEX."
                     icon="/icons/token.png"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'hex', token_length: tokenHex.length, entropy_bits: tokenHex.entropy_bits }, 'random_classic:token:hex')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:hex'}
                 >
                     <div className="config-grid">
                         <div>
-                            <label className="label">Comprimento</label>
+                            <label className="label">COMPRIMENTO</label>
                             <input type="number" min="4" max="512" className="input-field input-mono"
                                 value={tokenHex.length || ''}
                                 onChange={(e) => setTokenHex({ ...tokenHex, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
                             />
                         </div>
                         <div>
-                            <label className="label">Entropia (Bits)</label>
+                            <label className="label">ENTROPIA (BITS)</label>
                             <input type="number" min="0" max="512" placeholder="Opcional" className="input-field input-mono"
                                 value={tokenHex.entropy_bits || ''}
                                 onChange={(e) => setTokenHex({ ...tokenHex, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
@@ -339,13 +339,13 @@ export default function Generator() {
                 {/* 5. Token URL Safe */}
                 <GeneratorSection
                     id="token-url"
-                    title="Token URL (Base64)"
+                    title="URL (BASE 64)"
                     icon="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'urlsafe', token_length: tokenUrl.length }, 'random_classic:token:urlsafe')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:urlsafe'}
                 >
                     <div>
-                        <label className="label">Comprimento</label>
+                        <label className="label">COMPRIMENTO</label>
                         <input type="number" min="4" max="512" className="input-field input-mono" value={tokenUrl.length} onChange={(e) => setTokenUrl({ ...tokenUrl, length: parseInt(e.target.value) || 32 })} />
                     </div>
                 </GeneratorSection>
@@ -353,24 +353,24 @@ export default function Generator() {
                 {/* 6. UUID */}
                 <GeneratorSection
                     id="uuid"
-                    title="UUID (v4)"
+                    title="UUID (V4)"
                     icon="M7 7h.01M7 11h.01M7 15h.01M10 7h.01M10 11h.01M10 15h.01M13 7h.01M13 11h.01M13 15h.01M17 7h.01M17 11h.01M17 15h.01"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'uuid' }, 'random_classic:token:uuid')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:uuid'}
                 >
-                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Identificador único universal versao 4 (aleatório padrão RFC 4122).</p>
+                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Identificador único universal versão 4 (aleatório padrão RFC 4122).</p>
                 </GeneratorSection>
 
                 {/* 7. High-Entropy */}
                 <GeneratorSection
                     id="high-entropy"
-                    title="High-Entropy Alphanumeric"
+                    title="HIGH-ENTROPY ALPHANUMERIC"
                     icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'high_entropy', length: highEntropy.length }, 'advanced:high_entropy')}
                     loading={globalLoading && pendingSectionId === 'advanced:high_entropy'}
                 >
                     <div>
-                        <label className="label">Comprimento</label>
+                        <label className="label">COMPRIMENTO</label>
                         <input type="number" min="8" max="128" className="input-field input-mono" value={highEntropy.length} onChange={(e) => setHighEntropy({ length: parseInt(e.target.value) || 32 })} />
                     </div>
                 </GeneratorSection>
