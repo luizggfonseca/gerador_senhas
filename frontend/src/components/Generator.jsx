@@ -179,7 +179,7 @@ export default function Generator() {
                         <div>
                             <label className="label">QUANT. DE PALAVRAS</label>
                             <select className="input-field input-mono" value={dicewareTrad.num_words} onChange={(e) => setDicewareTrad({ ...dicewareTrad, num_words: parseInt(e.target.value) })}>
-                                {[5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                                {[5, 6, 7, 8, 9, 10].map(n => (
                                     <option key={n} value={n}>{n}</option>
                                 ))}
                             </select>
@@ -229,7 +229,7 @@ export default function Generator() {
                         <div>
                             <label className="label">QUANT. DE PALAVRAS</label>
                             <select className="input-field input-mono" value={dicewareMod.num_words} onChange={(e) => setDicewareMod({ ...dicewareMod, num_words: parseInt(e.target.value) })}>
-                                {[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(n => (
+                                {[5, 6, 7, 8, 9, 10].map(n => (
                                     <option key={n} value={n}>{n}</option>
                                 ))}
                             </select>
