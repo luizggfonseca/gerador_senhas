@@ -612,7 +612,7 @@ IMPLEMENTAÇÃO:
 
     - Ajuste de escala visual: aumento do tamanho dos títulos das seções (1.25rem), títulos globais, títulos de modais e todos os ícones (dashboard, botões e controles) para melhorar a legibilidade e o destaque visual.
 
-    - Atualização da paleta do modo claro: substituição do azul padrão pelo tom Oxford Blue (#002147) para um visual mais sério e profissional.
+    - Modo Claro: Alteração da cor de destaque (accent) do azul padrão para o azul Oxford (#002147), incluindo variações de hover, glow e transparências (accent-rgb).
 
 ================================================================================
 FIM DO HISTÓRICO
