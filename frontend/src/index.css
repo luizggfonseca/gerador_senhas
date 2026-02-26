@@ -105,6 +105,62 @@
   color: var(--accent);
 }
 
+/* ---------- Tooltips ---------- */
+.tooltip-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  position: relative;
+  cursor: help;
+}
+
+.tooltip-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.tooltip-container:hover .tooltip-icon {
+  opacity: 1;
+}
+
+.tooltip-box {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  width: 220px;
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: normal;
+  text-transform: none;
+  box-shadow: var(--shadow);
+  z-index: 100;
+  display: none;
+  pointer-events: none;
+  line-height: 1.4;
+}
+
+.tooltip-container:hover .tooltip-box {
+  display: block;
+}
+
+.tooltip-box::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: var(--border) transparent transparent transparent;
+}
+
 /* ---------- Reset & Base ---------- */
 
 *,

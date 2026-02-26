@@ -242,17 +242,44 @@ export default function Generator() {
                                 ))}
                             </select>
                         </div>
-                        <div>
-                            <label className="label">NÚMERO</label>
-                            <select className="input-field input-mono" value={dicewareMod.number_count} onChange={(e) => setDicewareMod({ ...dicewareMod, number_count: parseInt(e.target.value) })}>
-                                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
-                                    <option key={n} value={n}>{n === 0 ? 'Desativado' : n}</option>
-                                ))}
-                            </select>
+                        <div className="tooltip-wrapper">
+                            <label className="label" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                NÚMERO
+                                <div className="tooltip-container">
+                                    <svg className="tooltip-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <div className="tooltip-box">
+                                        Os números inseridos aqui entrarão na senha em posições aleatórias.
+                                        Ex: Se colocar "135", a senha poderá ser "colher1-cha3-mulher5".
+                                    </div>
+                                </div>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Ex: 135"
+                                className="input-field input-mono"
+                                value={dicewareMod.numbers_pool}
+                                onChange={(e) => setDicewareMod({
+                                    ...dicewareMod,
+                                    numbers_pool: e.target.value,
+                                    number_count: e.target.value.length
+                                })}
+                            />
                         </div>
                         <div>
                             <label className="label">SÍMBOLOS</label>
-                            <input type="text" placeholder="Ex: !@#$..." className="input-field input-mono" value={dicewareMod.symbols_pool} onChange={(e) => setDicewareMod({ ...dicewareMod, symbols_pool: e.target.value })} />
+                            <input
+                                type="text"
+                                placeholder="Padrão: !@#$..."
+                                className="input-field input-mono"
+                                value={dicewareMod.symbols_pool}
+                                onChange={(e) => setDicewareMod({
+                                    ...dicewareMod,
+                                    symbols_pool: e.target.value,
+                                    symbol_count: e.target.value.length || 0
+                                })}
+                            />
                         </div>
                     </div>
                 </GeneratorSection>

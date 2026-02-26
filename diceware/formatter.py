@@ -50,26 +50,18 @@ def format_modified(words: List[str], config: Dict) -> str:
         for i in secure_sample(range(n), min(cap_count, n)):
             w[i] = w[i].capitalize()
 
-    used_num = set()
-
-    # 2) Números no início ou fim
+    # 2) Inserção de caracteres do pool de números (pode ser personalizado)
     if num_count > 0:
         for i in secure_sample(range(n), min(num_count, n)):
-            used_num.add(i)
-            # FIX: Use configured numbers_pool instead of hardcoded string.digits
             d = secrets.choice(numbers_pool)
             if secrets.choice([True, False]):
                 w[i] = d + w[i]
             else:
                 w[i] = w[i] + d
 
-    # 3) Símbolos (evita sobrepor com palavras que já receberam números, se desejado)
-    indices = list(range(n))
-    if avoid_overlap:
-        indices = [i for i in indices if i not in used_num]
-
-    if sym_count > 0 and indices:
-        for i in secure_sample(indices, min(sym_count, len(indices))):
+    # 3) Símbolos
+    if sym_count > 0:
+        for i in secure_sample(range(n), min(sym_count, n)):
             s = secrets.choice(symbols_pool)
             if secrets.choice([True, False]):
                 w[i] = s + w[i]
