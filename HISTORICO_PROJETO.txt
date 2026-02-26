@@ -583,6 +583,8 @@ IMPLEMENTAÇÃO:
     - Implementação de High-Entropy Alphanumeric, Apenas Consoantes e estilo ProtonPass.
     - Adição de geradores de PIN (4, 6, 8 dígitos), ULID (ordenável) e NanoID (moderno).
     - Inclusão de algoritmos fonéticos (FIPS-181) e codificação Bubble Babble para verificações visuais.
+  🎨 Refinamento de UI:
+    - Remoção da barra de navegação superior (links) para um design mais minimalista e limpo.
 
 ================================================================================
 FIM DO HISTÓRICO

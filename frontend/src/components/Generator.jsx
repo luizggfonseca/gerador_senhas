@@ -56,30 +56,6 @@ export default function Generator() {
     const [pendingSectionId, setPendingSectionId] = useState(null);
     const scrollContainerRef = useRef(null);
 
-    // Navigation Links Data
-    const navLinks = [
-        { id: 'diceware-pure', label: 'Diceware' },
-        { id: 'diceware-mod', label: 'Diceware Mod.' },
-        { id: 'random-classic', label: 'Aleatória' },
-        { id: 'token-hex', label: 'Token Hex' },
-        { id: 'token-url', label: 'Token URL' },
-        { id: 'uuid', label: 'UUID' },
-        { id: 'high-entropy', label: 'High-Entropy' },
-        { id: 'consonants', label: 'Consoantes' },
-        { id: 'proton-style', label: 'Proton' },
-        { id: 'pin', label: 'PIN' },
-        { id: 'ulid', label: 'ULID' },
-        { id: 'nanoid', label: 'NanoID' },
-        { id: 'fips-181', label: 'Fonética' },
-        { id: 'bubble-babble', label: 'Bubble' }
-    ];
-
-    const scrollToSection = (id) => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    };
 
     // States for each section
     const [dicewareTrad, setDicewareTrad] = useState({ language: 'português', num_words: 4 });
@@ -165,14 +141,6 @@ export default function Generator() {
 
     return (
         <div className="generator-layout">
-            {/* Navigation Bar */}
-            <nav className="dashboard-nav">
-                {navLinks.map(link => (
-                    <button key={link.id} onClick={() => scrollToSection(link.id)} className="nav-link">
-                        {link.label}
-                    </button>
-                ))}
-            </nav>
 
             <div className="generator-main" ref={scrollContainerRef}>
                 {/* Entropy Legend */}
