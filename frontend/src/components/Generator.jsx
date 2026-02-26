@@ -37,7 +37,7 @@ function GeneratorSection({ id, title, children, onGenerate, loading, icon }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     )}
-                    {loading ? 'Gerando...' : 'Gerar Senha'}
+                    {loading ? 'Gerando...' : 'Gerar senha'}
                 </button>
             </div>
         </section>
@@ -168,7 +168,7 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure')}
                     loading={globalLoading && pendingSectionId === 'diceware_pure'}
                 >
-                    <div className="config-grid">
+                    <div className="config-stack">
                         <div>
                             <label className="label">Idioma</label>
                             <select className="input-field" value={dicewareTrad.language} onChange={(e) => setDicewareTrad({ ...dicewareTrad, language: e.target.value })}>
@@ -177,21 +177,21 @@ export default function Generator() {
                             </select>
                         </div>
                         <div>
-                            <label className="label">Número de Palavras</label>
-                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareTrad.num_words} onChange={(e) => setDicewareTrad({ ...dicewareTrad, num_words: parseInt(e.target.value) || 3 })} />
+                            <label className="label">Número de palavras</label>
+                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareTrad.num_words} onChange={(e) => setDicewareTrad({ ...dicewareTrad, num_words: parseInt(e.target.value) || 5 })} />
                         </div>
                     </div>
                 </GeneratorSection>
 
-                {/* 2. Diceware Mod. */}
+                {/* 2. Diceware (personalizável) */}
                 <GeneratorSection
                     id="diceware-mod"
-                    title="Diceware Mod."
+                    title="Diceware (personalizável)"
                     icon="/icons/diceware.png"
                     onGenerate={() => handleGenerate('diceware_modified', dicewareMod, 'diceware_modified')}
                     loading={globalLoading && pendingSectionId === 'diceware_modified'}
                 >
-                    <div className="config-grid">
+                    <div className="config-stack">
                         <div>
                             <label className="label">Idioma</label>
                             <select className="input-field" value={dicewareMod.language} onChange={(e) => setDicewareMod({ ...dicewareMod, language: e.target.value })}>
@@ -208,22 +208,18 @@ export default function Generator() {
                             <label className="label">Separador</label>
                             <input type="text" className="input-field input-mono" value={dicewareMod.separator} onChange={(e) => setDicewareMod({ ...dicewareMod, separator: e.target.value })} />
                         </div>
-                    </div>
-                    <div className="config-grid" style={{ marginTop: '0.5rem' }}>
                         <div>
                             <label className="label">Palavras</label>
-                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareMod.num_words} onChange={(e) => setDicewareMod({ ...dicewareMod, num_words: parseInt(e.target.value) || 3 })} />
+                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareMod.num_words} onChange={(e) => setDicewareMod({ ...dicewareMod, num_words: parseInt(e.target.value) || 5 })} />
                         </div>
                         <div>
-                            <CheckboxOption checked={dicewareMod.use_uppercase} onChange={(v) => setDicewareMod({ ...dicewareMod, use_uppercase: v })} label="Letras Maiúsculas" />
+                            <CheckboxOption checked={dicewareMod.use_uppercase} onChange={(v) => setDicewareMod({ ...dicewareMod, use_uppercase: v })} label="Letras maiúsculas" />
                             {dicewareMod.use_uppercase && (
                                 <input type="number" min="1" max={dicewareMod.num_words} className="input-field input-mono" style={{ marginTop: '0.25rem', height: '32px' }} value={dicewareMod.capitalize_count} onChange={(e) => setDicewareMod({ ...dicewareMod, capitalize_count: parseInt(e.target.value) || 1 })} />
                             )}
                         </div>
-                    </div>
-                    <div className="config-grid" style={{ marginTop: '0.5rem' }}>
                         <div>
-                            <CheckboxOption checked={dicewareMod.use_numbers} onChange={(v) => setDicewareMod({ ...dicewareMod, use_numbers: v })} label="Números" />
+                            <CheckboxOption checked={dicewareMod.use_numbers} onChange={(v) => setDicewareMod({ ...dicewareMod, use_numbers: v })} label="Número" />
                             {dicewareMod.use_numbers && (
                                 <input type="number" min="1" max="8" className="input-field input-mono" style={{ marginTop: '0.25rem', height: '32px' }} value={dicewareMod.number_count} onChange={(e) => setDicewareMod({ ...dicewareMod, number_count: parseInt(e.target.value) || 1 })} />
                             )}
