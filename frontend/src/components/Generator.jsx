@@ -68,15 +68,13 @@ export default function Generator() {
     const [dicewareTrad, setDicewareTrad] = useState({ language: 'português', num_words: 4 });
     const [dicewareMod, setDicewareMod] = useState({
         language: 'português',
-        num_words: 4,
+        num_words: 5,
         separator: '-',
-        use_uppercase: true,
         capitalize_count: 1,
-        use_numbers: true,
-        number_count: 1,
-        use_symbols: true,
-        symbol_count: 1,
-        symbols_pool: '!@#$%&*'
+        number_count: 0,
+        numbers_pool: '',
+        symbol_count: 0,
+        symbols_pool: ''
     });
     const [randomClassic, setRandomClassic] = useState({
         length: 16,

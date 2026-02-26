@@ -50,22 +50,35 @@ def format_modified(words: List[str], config: Dict) -> str:
         for i in secure_sample(range(n), min(cap_count, n)):
             w[i] = w[i].capitalize()
 
-    # 2) Inserção de caracteres do pool de números (pode ser personalizado)
-    if num_count > 0:
-        for i in secure_sample(range(n), min(num_count, n)):
-            d = secrets.choice(numbers_pool)
+    # 2) Inserção de caracteres do pool de números (distribuídos de forma única)
+    if num_count > 0 and numbers_pool:
+        # Pega os caracteres que serão usados. Se o pool for menor que num_count, 
+        # (embora no frontend sejam iguais), usamos o que tem.
+        available_chars = list(numbers_pool)
+        # Embaralhamos para que a ordem mude a cada geração
+        secrets.SystemRandom().shuffle(available_chars)
+        
+        # Selecionamos quais palavras receberão os caracteres (limitado ao n de palavras)
+        target_indices = secure_sample(range(n), min(len(available_chars), n))
+        
+        for idx, char in zip(target_indices, available_chars):
             if secrets.choice([True, False]):
-                w[i] = d + w[i]
+                w[idx] = char + w[idx]
             else:
-                w[i] = w[i] + d
+                w[idx] = w[idx] + char
 
-    # 3) Símbolos
-    if sym_count > 0:
-        for i in secure_sample(range(n), min(sym_count, n)):
-            s = secrets.choice(symbols_pool)
+    # 3) Inserção de caracteres do pool de símbolos (distribuídos de forma única)
+    if sym_count > 0 and symbols_pool:
+        available_syms = list(symbols_pool)
+        secrets.SystemRandom().shuffle(available_syms)
+        
+        # Selecionamos quais palavras receberão os símbolos
+        target_indices = secure_sample(range(n), min(len(available_syms), n))
+        
+        for idx, char in zip(target_indices, available_syms):
             if secrets.choice([True, False]):
-                w[i] = s + w[i]
+                w[idx] = char + w[idx]
             else:
-                w[i] = w[i] + s
+                w[idx] = w[idx] + char
 
     return (sep if sep is not None else "-").join(w)
