@@ -585,6 +585,7 @@ IMPLEMENTAÇÃO:
     - Inclusão de algoritmos fonéticos (FIPS-181) e codificação Bubble Babble para verificações visuais.
   🎨 Refinamento de UI:
     - Remoção da barra de navegação superior (links) para um design mais minimalista e limpo.
+    - Remoção do link de ajuda redundante dentro do Modal de Segurança para manter o foco na senha e anotação.
 
 ================================================================================
 FIM DO HISTÓRICO

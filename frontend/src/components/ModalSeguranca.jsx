@@ -84,9 +84,6 @@ export default function ModalSeguranca({ result, metadata, onClose, onGenerate }
                     </p>
                 </div>
 
-                <p style={{ fontSize: '0.75rem', textAlign: 'center', marginTop: '1rem', opacity: 0.7 }}>
-                    Para mais detalhes técnicos, consulte o <a href="/manual.html" target="_blank" style={{ color: 'var(--accent)', fontWeight: 600 }}>Manual de Ajuda</a>.
-                </p>
 
                 <div className="modal-footer" style={{ marginTop: '1.5rem', flexDirection: 'column', gap: '0.75rem' }}>
                     <button
