@@ -39,6 +39,11 @@ app.add_middleware(
 # ---------------------------------------------------------------------------
 
 
+# ---------------------------------------------------------------------------
+# Logic / State
+# ---------------------------------------------------------------------------
+
+
 def _load_wordlists() -> dict:
     """Carrega todas as listas Diceware configuradas."""
     data = {}
@@ -51,8 +56,21 @@ def _load_wordlists() -> dict:
 
 wordlists = _load_wordlists()
 _app_context = {"wordlists": wordlists}
-_generators_list = get_generators(_app_context)
-_generators_map = {g.id: g for g in _generators_list}
+
+# Mapeamento de classes para instanciar sob demanda
+from password_generators import (
+    DicewarePureGenerator,
+    DicewareModifiedGenerator,
+    RandomClassicGenerator,
+    AdvancedOptionsGenerator
+)
+
+_generators_map = {
+    "diceware_pure": DicewarePureGenerator,
+    "diceware_modified": DicewareModifiedGenerator,
+    "random_classic": RandomClassicGenerator,
+    "advanced_options": AdvancedOptionsGenerator,
+}
 
 # ---------------------------------------------------------------------------
 # Models
@@ -77,19 +95,25 @@ class GenerateResponse(BaseModel):
 
 @app.get("/api/generators")
 def list_generators():
+    # Retornamos os IDs fixos esperados pela UI
     return [
-        {"id": g.id, "name": g.id.replace("_", " ").title()}
-        for g in _generators_list
+        {"id": "diceware_pure", "name": "Diceware Clássico"},
+        {"id": "diceware_modified", "name": "Diceware Personalizado"},
+        {"id": "random_classic", "name": "Senha Aleatória Clássica"},
+        {"id": "advanced_options", "name": "Opções Avançadas"},
     ]
 
 
 @app.post("/api/generate", response_model=GenerateResponse)
 def generate_password(req: GenerateRequest):
-    gen = _generators_map.get(req.generator_id)
-    if not gen:
+    gen_cls = _generators_map.get(req.generator_id)
+    if not gen_cls:
         raise HTTPException(status_code=404, detail="Gerador não encontrado.")
 
-    # Configura o gerador através do método seguro
+    # Instancia um novo gerador para este request (limpo de estados anteriores)
+    gen = gen_cls(_app_context)
+    
+    # Configura o gerador
     gen.configure(req.options)
 
     try:

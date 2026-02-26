@@ -623,10 +623,10 @@ IMPLEMENTAÇÃO:
         - Simplificação das opções de 'SEPARADOR' no Diceware personalizado.
         - NanoID: Fixado em 21 caracteres (comprimento padrão de segurança) e remoção do campo de ajuste.
         - ULID: Expansão detalhada da descrição técnica para melhor compreensão do usuário.
-        - Apenas Consoantes: Suporte a Maiúsculas e Minúsculas via interface (checkboxes) e lógica de backend.
-        - PIN Numérico: Interface simplificada, removendo botões de preset e mantendo apenas o campo numérico.
-        - Remoção definitiva da seção 'Bubble Bobble' (frontend e backend).
-        - Atualização de textos explicativos em UUID (V4).
+        - Adição de campos de ENTROPIA (BITS) personalizáveis para: Apenas Consoantes, URL (Base64), ProtonPass Style, PIN Numérico e Senha Fonética.
+        - ULID: Atualizado para o padrão de 128 bits e 26 caracteres.
+        - Consoantes: Implementação de trava de interface para o botão "Gerar senha" quando nenhum checkbox (Maiúsculas/Minúsculas) está selecionado.
+        - Layout: Restauração da fluidez de altura do container e ajuste de largura para melhor visualização.
 
 ================================================================================
 FIM DO HISTÓRICO

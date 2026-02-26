@@ -45,17 +45,26 @@ class AdvancedOptionsGenerator(PasswordGenerator):
         elif self.mode == "proton":
             # intercalam blocos de letras e números (ex: abcd-1234-efgh)
             # Vamos gerar 3 blocos: letras-números-letras
-            letters_pool = string.ascii_lowercase
+            # Usamos ascii_letters (52 chars) para aumentar a entropia
+            letters_pool = string.ascii_letters
             numbers_pool = string.digits
             
-            block_size = max(4, self.length // 3)
-            b1 = "".join(secrets.choice(letters_pool) for _ in range(block_size))
-            b2 = "".join(secrets.choice(numbers_pool) for _ in range(block_size))
-            b3 = "".join(secrets.choice(letters_pool) for _ in range(block_size))
+            # Divide o comprimento em 3 partes, dando prioridade para as letras
+            base_size = self.length // 3
+            extra = self.length % 3
+            
+            s1 = base_size + (1 if extra > 0 else 0)
+            s2 = base_size
+            s3 = base_size + (1 if extra > 1 else 0)
+            
+            b1 = "".join(secrets.choice(letters_pool) for _ in range(s1))
+            b2 = "".join(secrets.choice(numbers_pool) for _ in range(s2))
+            b3 = "".join(secrets.choice(letters_pool) for _ in range(s3))
             
             password = f"{b1}-{b2}-{b3}"
-            # Entropia real dos caracteres gerados
-            entropy = (block_size * 2 * math.log2(26)) + (block_size * math.log2(10))
+            # Entropia: (s1+s3)*log2(52) + s2*log2(10)
+            # log2(52) ≈ 5.7, log2(10) ≈ 3.32
+            entropy = ((s1 + s3) * math.log2(52)) + (s2 * math.log2(10))
             return GeneratedPassword(password, entropy)
             
         elif self.mode == "pin":

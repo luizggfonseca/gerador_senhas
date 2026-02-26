@@ -131,16 +131,17 @@ export default function Generator() {
                     if (options.use_upper) poolSize += 21;
                     if (poolSize > 0) finalOptions.length = Math.ceil(bits / Math.log2(poolSize));
                 } else if (options.mode === 'pin') {
-                    finalOptions.length = Math.ceil(bits / Math.log2(10));
+                    // log2(10) ≈ 3.32
+                    finalOptions.length = Math.ceil(bits / 3.32);
                 } else if (options.mode === 'proton') {
-                    // ProtonPass style uses letters + numbers + letters (roughly 2/3 letters, 1/3 numbers)
-                    // average bits per char = (2 * log2(26) + log2(10)) / 3 ≈ 4.2 bits
-                    finalOptions.length = Math.ceil(bits / 4.2);
+                    // Média realista: (2*log2(52) + log2(10)) / 3 ≈ 4.9 bits/char
+                    finalOptions.length = Math.ceil(bits / 4.9);
                 } else if (options.mode === 'fips181') {
-                    // Roughly 4 bits per char
-                    finalOptions.length = Math.ceil(bits / 4);
+                    // FIPS-181 é baseado em sílabas, entropia real é baixa (~3.4 bits/char)
+                    finalOptions.length = Math.ceil(bits / 3.4);
                 } else if (options.mode === 'high_entropy') {
-                    finalOptions.length = Math.ceil(bits / Math.log2(62));
+                    // 62 caracteres (A-Z, a-z, 0-9) -> log2(62) ≈ 5.954
+                    finalOptions.length = Math.ceil(bits / 5.95);
                 }
             }
         }
@@ -354,7 +355,7 @@ export default function Generator() {
                     id="token-url"
                     title="URL (BASE 64)"
                     icon="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                    onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'urlsafe', token_length: tokenUrl.length }, 'random_classic:token:urlsafe')}
+                    onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'urlsafe', token_length: tokenUrl.length, entropy_bits: tokenUrl.entropy_bits }, 'random_classic:token:urlsafe')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:urlsafe'}
                 >
                     <div className="config-grid">
@@ -391,7 +392,7 @@ export default function Generator() {
                     id="high-entropy"
                     title="Alta entropia alfanumérica (HEA)"
                     icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'high_entropy', length: highEntropy.length }, 'advanced:high_entropy')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'high_entropy', length: highEntropy.length, entropy_bits: highEntropy.entropy_bits }, 'advanced:high_entropy')}
                     loading={globalLoading && pendingSectionId === 'advanced:high_entropy'}
                 >
                     <div className="config-grid">
@@ -417,7 +418,7 @@ export default function Generator() {
                     id="consonants"
                     title="Apenas Consoantes"
                     icon="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'consonants', length: consonants.length, use_upper: consonants.use_upper, use_lower: consonants.use_lower }, 'advanced:consonants')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'consonants', length: consonants.length, use_upper: consonants.use_upper, use_lower: consonants.use_lower, entropy_bits: consonants.entropy_bits }, 'advanced:consonants')}
                     loading={globalLoading && pendingSectionId === 'advanced:consonants'}
                     disabled={!consonants.use_upper && !consonants.use_lower}
                 >
@@ -448,7 +449,7 @@ export default function Generator() {
                     id="proton-style"
                     title="ProtonPass Style"
                     icon="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'proton', length: protonStyle.length }, 'advanced:proton')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'proton', length: protonStyle.length, entropy_bits: protonStyle.entropy_bits }, 'advanced:proton')}
                     loading={globalLoading && pendingSectionId === 'advanced:proton'}
                 >
                     <div className="config-grid">
@@ -474,7 +475,7 @@ export default function Generator() {
                     id="pin"
                     title="PIN Numérico"
                     icon="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'pin', length: pin.length }, 'advanced:pin')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'pin', length: pin.length, entropy_bits: pin.entropy_bits }, 'advanced:pin')}
                     loading={globalLoading && pendingSectionId === 'advanced:pin'}
                 >
                     <div className="config-grid">
@@ -503,7 +504,7 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'ulid' }, 'advanced:ulid')}
                     loading={globalLoading && pendingSectionId === 'advanced:ulid'}
                 >
-                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>É um identificador único de 128 bits, representado por uma string de 26 caracteres (usando Crockford's Base32), projetado para ser uma alternativa ao UUID. Combina um timestamp de 48 bits com 80 bits de aleatoriedade, garantindo unicidade, ordenação cronológica automática e alta eficiência em bancos de dados.</p>
+                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Identificador único de 128 bits (26 caracteres em Crockford's Base32). Combina timestamp e componentes aleatórios para garantir unicidade e ordenação cronológica eficiente.</p>
                 </GeneratorSection>
 
                 {/* 12. NanoID */}
@@ -522,7 +523,7 @@ export default function Generator() {
                     id="fips-181"
                     title="Senha Fonética (FIPS-181)"
                     icon="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'fips181', length: fips181.length }, 'advanced:fips181')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'fips181', length: fips181.length, entropy_bits: fips181.entropy_bits }, 'advanced:fips181')}
                     loading={globalLoading && pendingSectionId === 'advanced:fips181'}
                 >
                     <div className="config-grid">
