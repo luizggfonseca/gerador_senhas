@@ -50,18 +50,15 @@ def format_modified(words: List[str], config: Dict) -> str:
         for i in secure_sample(range(n), min(cap_count, n)):
             w[i] = w[i].capitalize()
 
-    # 2) Inserção de caracteres do pool de números (distribuídos de forma única)
+    # 2) Inserção de caracteres do pool de números (aleatórios)
     if num_count > 0 and numbers_pool:
-        # Pega os caracteres que serão usados. Se o pool for menor que num_count, 
-        # (embora no frontend sejam iguais), usamos o que tem.
-        available_chars = list(numbers_pool)
-        # Embaralhamos para que a ordem mude a cada geração
-        secrets.SystemRandom().shuffle(available_chars)
+        # Pega a quantidade solicitada de dígitos aleatórios do pool
+        selected_chars = [secrets.choice(numbers_pool) for _ in range(num_count)]
         
-        # Selecionamos quais palavras receberão os caracteres (limitado ao n de palavras)
-        target_indices = secure_sample(range(n), min(len(available_chars), n))
+        # Selecionamos quais palavras receberão os caracteres
+        target_indices = secure_sample(range(n), min(len(selected_chars), n))
         
-        for idx, char in zip(target_indices, available_chars):
+        for idx, char in zip(target_indices, selected_chars):
             if secrets.choice([True, False]):
                 w[idx] = char + w[idx]
             else:
