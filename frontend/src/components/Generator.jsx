@@ -313,7 +313,7 @@ export default function Generator() {
                 {/* 4. Token Hex. */}
                 <GeneratorSection
                     id="token-hex"
-                    title="TOKEN / API KEY HEX."
+                    title="TOKEN/API KEY HEX."
                     icon="/icons/token.png"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'hex', token_length: tokenHex.length, entropy_bits: tokenHex.entropy_bits }, 'random_classic:token:hex')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:hex'}
