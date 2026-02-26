@@ -586,6 +586,11 @@ IMPLEMENTAÇÃO:
   🎨 Refinamento de UI:
     - Remoção da barra de navegação superior (links) para um design mais minimalista e limpo.
     - Remoção do link de ajuda redundante dentro do Modal de Segurança para manter o foco na senha e anotação.
+  🧹 Limpeza e Manutenção:
+    - Remoção de diretórios obsoletos (`docs/`, `vault/`).
+    - Exclusão de componentes React não utilizados (`Sidebar.jsx`, `ConfigPanel.jsx`, `ResultPanel.jsx`).
+    - Remoção de arquivos estáticos legados (`manual.html`) e arquivos de log.
+    - Limpeza de caches de sistema e arquivos temporários.
 
 ================================================================================
 FIM DO HISTÓRICO
