@@ -610,6 +610,8 @@ IMPLEMENTAÇÃO:
 
     - Renomeação das opções de caracteres na seção Senha Aleatória para: ABC (maiúsculas), abc (minúsculas), 123 (números) e !@# (símbolos).
 
+    - Ajuste de escala visual: aumento do tamanho dos títulos das seções (1.25rem), títulos globais, títulos de modais e todos os ícones (dashboard, botões e controles) para melhorar a legibilidade e o destaque visual.
+
 ================================================================================
 FIM DO HISTÓRICO
 ================================================================================

@@ -15,9 +15,9 @@ function GeneratorSection({ id, title, children, onGenerate, loading, icon }) {
                 <h3 className="section-title">
                     {icon && (
                         isImagePath ? (
-                            <img src={icon} alt="" className="section-icon-img" style={{ width: '1.5rem', height: '1.5rem', objectFit: 'contain' }} />
+                            <img src={icon} alt="" className="section-icon-img" style={{ width: '1.8rem', height: '1.8rem', objectFit: 'contain' }} />
                         ) : (
-                            <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.25rem' }}>
+                            <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.5rem' }}>
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={icon} />
                             </svg>
                         )
@@ -29,11 +29,11 @@ function GeneratorSection({ id, title, children, onGenerate, loading, icon }) {
             <div className="section-actions">
                 <button onClick={onGenerate} disabled={loading} className="btn-generate-small">
                     {loading ? (
-                        <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ width: '1rem', height: '1rem' }}>
+                        <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ width: '1.25rem', height: '1.25rem' }}>
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
                     ) : (
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.25rem' }}>
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.4rem', height: '1.4rem' }}>
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                         </svg>
                     )}
