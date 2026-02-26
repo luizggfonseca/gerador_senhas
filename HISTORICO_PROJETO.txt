@@ -586,6 +586,7 @@ IMPLEMENTAÇÃO:
   🎨 Refinamento de UI:
     - Remoção da barra de navegação superior (links) para um design mais minimalista e limpo.
     - Remoção do link de ajuda redundante dentro do Modal de Segurança para manter o foco na senha e anotação.
+    - Substituição de ícones SVG por ícones PNG personalizados nas seções Diceware, Aleatória e Token Hexadecimal.
   🧹 Limpeza e Manutenção:
     - Remoção de diretórios obsoletos (`docs/`, `vault/`).
     - Exclusão de componentes React não utilizados (`Sidebar.jsx`, `ConfigPanel.jsx`, `ResultPanel.jsx`).

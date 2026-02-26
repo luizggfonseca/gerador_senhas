@@ -6,14 +6,21 @@ import { GENERATOR_METADATA } from '../constants/generatorMetadata';
 /* ========================== Reusable Components ========================== */
 
 function GeneratorSection({ id, title, children, onGenerate, loading, icon }) {
+    // Verifica se o ícone é um caminho de arquivo (PNG/JPG etc) ou um path SVG
+    const isImagePath = typeof icon === 'string' && (icon.includes('.') || icon.startsWith('/'));
+
     return (
         <section id={id} className="dashboard-section">
             <div className="section-header">
                 <h3 className="section-title">
                     {icon && (
-                        <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.25rem' }}>
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={icon} />
-                        </svg>
+                        isImagePath ? (
+                            <img src={icon} alt="" className="section-icon-img" style={{ width: '1.5rem', height: '1.5rem', objectFit: 'contain' }} />
+                        ) : (
+                            <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.25rem' }}>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={icon} />
+                            </svg>
+                        )
                     )}
                     {title}
                 </h3>
@@ -157,7 +164,7 @@ export default function Generator() {
                 <GeneratorSection
                     id="diceware-pure"
                     title="Diceware"
-                    icon="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    icon="/icons/diceware.png"
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure')}
                     loading={globalLoading && pendingSectionId === 'diceware_pure'}
                 >
@@ -171,7 +178,7 @@ export default function Generator() {
                         </div>
                         <div>
                             <label className="label">Número de Palavras</label>
-                            <input type="number" min="3" max="15" className="input-field input-mono" value={dicewareTrad.num_words} onChange={(e) => setDicewareTrad({ ...dicewareTrad, num_words: parseInt(e.target.value) || 3 })} />
+                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareTrad.num_words} onChange={(e) => setDicewareTrad({ ...dicewareTrad, num_words: parseInt(e.target.value) || 3 })} />
                         </div>
                     </div>
                 </GeneratorSection>
@@ -180,7 +187,7 @@ export default function Generator() {
                 <GeneratorSection
                     id="diceware-mod"
                     title="Diceware Mod."
-                    icon="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    icon="/icons/diceware.png"
                     onGenerate={() => handleGenerate('diceware_modified', dicewareMod, 'diceware_modified')}
                     loading={globalLoading && pendingSectionId === 'diceware_modified'}
                 >
@@ -205,7 +212,7 @@ export default function Generator() {
                     <div className="config-grid" style={{ marginTop: '0.5rem' }}>
                         <div>
                             <label className="label">Palavras</label>
-                            <input type="number" min="3" max="15" className="input-field input-mono" value={dicewareMod.num_words} onChange={(e) => setDicewareMod({ ...dicewareMod, num_words: parseInt(e.target.value) || 3 })} />
+                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareMod.num_words} onChange={(e) => setDicewareMod({ ...dicewareMod, num_words: parseInt(e.target.value) || 3 })} />
                         </div>
                         <div>
                             <CheckboxOption checked={dicewareMod.use_uppercase} onChange={(v) => setDicewareMod({ ...dicewareMod, use_uppercase: v })} label="Letras Maiúsculas" />
@@ -234,7 +241,7 @@ export default function Generator() {
                 <GeneratorSection
                     id="random-classic"
                     title="Senha Clássica Aleatória"
-                    icon="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                    icon="/icons/aleatoria.png"
                     onGenerate={() => handleGenerate('random_classic', { ...randomClassic, mode: 'classic' }, 'random_classic:classic')}
                     loading={globalLoading && pendingSectionId === 'random_classic:classic'}
                 >
@@ -272,7 +279,7 @@ export default function Generator() {
                 <GeneratorSection
                     id="token-hex"
                     title="Token / API Key Hexadecimal"
-                    icon="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                    icon="/icons/token.png"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'hex', token_length: tokenHex.length, entropy_bits: tokenHex.entropy_bits }, 'random_classic:token:hex')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:hex'}
                 >
