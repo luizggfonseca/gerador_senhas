@@ -289,23 +289,24 @@ export default function Generator() {
                             />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.25rem' }}>
-                            <CheckboxOption checked={randomClassic.use_upper} onChange={(v) => setRandomClassic({ ...randomClassic, use_upper: v })} label="ABC" />
-                            <CheckboxOption checked={randomClassic.use_lower} onChange={(v) => setRandomClassic({ ...randomClassic, use_lower: v })} label="abc" />
+                            <CheckboxOption checked={randomClassic.use_upper} onChange={(v) => setRandomClassic({ ...randomClassic, use_upper: v })} label="ABC (maiúsculas)" />
+                            <CheckboxOption checked={randomClassic.use_lower} onChange={(v) => setRandomClassic({ ...randomClassic, use_lower: v })} label="abc (minúsculas)" />
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.25rem' }}>
-                            <CheckboxOption checked={randomClassic.use_numbers} onChange={(v) => setRandomClassic({ ...randomClassic, use_numbers: v })} label="123" />
-                            <CheckboxOption checked={randomClassic.use_symbols} onChange={(v) => setRandomClassic({ ...randomClassic, use_symbols: v })} label="!@#" />
+                            <CheckboxOption checked={randomClassic.use_numbers} onChange={(v) => setRandomClassic({ ...randomClassic, use_numbers: v })} label="123 (números)" />
+                            <CheckboxOption checked={randomClassic.use_symbols} onChange={(v) => setRandomClassic({ ...randomClassic, use_symbols: v })} label="!@# (símbolos)" />
                         </div>
-                        <div>
-                            <label className="label">SÍMBOLOS PERSONALIZADOS</label>
-                            <input
-                                type="text"
-                                className="input-field input-mono"
-                                value={randomClassic.symbols}
-                                disabled={!randomClassic.use_symbols}
-                                onChange={(e) => setRandomClassic({ ...randomClassic, symbols: e.target.value })}
-                            />
-                        </div>
+                        {randomClassic.use_symbols && (
+                            <div>
+                                <label className="label">SÍMBOLOS PERSONALIZADOS</label>
+                                <input
+                                    type="text"
+                                    className="input-field input-mono"
+                                    value={randomClassic.symbols}
+                                    onChange={(e) => setRandomClassic({ ...randomClassic, symbols: e.target.value })}
+                                />
+                            </div>
+                        )}
                     </div>
                 </GeneratorSection>
 

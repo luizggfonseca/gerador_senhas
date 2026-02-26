@@ -598,6 +598,18 @@ IMPLEMENTAÇÃO:
     - Remoção de arquivos estáticos legados (`manual.html`) e arquivos de log.
     - Limpeza de caches de sistema e arquivos temporários.
 
+  ✅ Ajustes de Layout e Regras (26/02/2026):
+    - Limitação da quantidade de palavras no Diceware (Tradicional e Mod.) para o intervalo de 5 a 10 palavras.
+    - Reversão do campo de NÚMERO no Diceware Mod. para seletor (dropdown) de 1 a 5, simplificando a interface.
+    - Seção "Senha Clássica Aleatória" renomeada para "Senha Aleatória".
+    - Reorganização total da seção Senha Aleatória: agora com layout de grade (grid) onde COMPRIMENTO, ENTROPIA, as opções de caracteres (ABC, abc, 123, !@#) e SÍMBOLOS PERSONALIZADOS ficam todos posicionados lado a lado.
+    - Padronização de rótulos em MAIÚSCULAS para todas as seções refinadas.
+    - Melhoria no backend (formatter.py) para garantir que caracteres de pools personalizados (números/símbolos) sejam distribuídos de forma única e aleatória entre as palavras da senha.
+
+    - Implementação de visibilidade condicional para o campo "SÍMBOLOS PERSONALIZADOS", que agora só aparece quando a opção de símbolos (!@#) está ativada.
+
+    - Renomeação das opções de caracteres na seção Senha Aleatória para: ABC (maiúsculas), abc (minúsculas), 123 (números) e !@# (símbolos).
+
 ================================================================================
 FIM DO HISTÓRICO
 ================================================================================
