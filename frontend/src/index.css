@@ -822,7 +822,7 @@ body {
 
 .section-actions {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 0.5rem;
   padding-top: 0.75rem;
   border-top: 1px solid var(--border);

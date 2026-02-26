@@ -614,6 +614,8 @@ IMPLEMENTAÇÃO:
 
     - Modo Claro: Alteração da cor de destaque (accent) do azul padrão para o azul Oxford (#002147), incluindo variações de hover, glow e transparências (accent-rgb).
 
+    - Layout: Centralização do botão "Gerar senha" em todas as seções do dashboard para melhor equilíbrio visual.
+
 ================================================================================
 FIM DO HISTÓRICO
 ================================================================================
