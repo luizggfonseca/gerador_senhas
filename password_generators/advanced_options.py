@@ -14,8 +14,10 @@ class AdvancedOptionsGenerator(PasswordGenerator):
 
     def __init__(self, app_context):
         super().__init__(app_context)
-        self.mode = "high_entropy" # high_entropy, consonants, proton, pin, ulid, nanoid, fips181, bubble_babble
+        self.mode = "high_entropy" # high_entropy, consonants, proton, pin, ulid, nanoid, fips181
         self.length = 16
+        self.use_upper = True
+        self.use_lower = True
         self.alphabet = string.ascii_letters + string.digits # Default for NanoID
         
     def generate(self) -> GeneratedPassword:
@@ -27,7 +29,16 @@ class AdvancedOptionsGenerator(PasswordGenerator):
             
         elif self.mode == "consonants":
             vowels = "aeiouAEIOU"
-            pool = "".join(c for c in string.ascii_letters if c not in vowels)
+            pool = ""
+            if self.use_lower:
+                pool += "".join(c for c in string.ascii_lowercase if c not in vowels)
+            if self.use_upper:
+                pool += "".join(c for c in string.ascii_uppercase if c not in vowels)
+            
+            if not pool:
+                # Fallback para evitar erro se nada for selecionado
+                pool = "".join(c for c in string.ascii_lowercase if c not in vowels)
+                
             password = "".join(secrets.choice(pool) for _ in range(self.length))
             entropy = self.length * math.log2(len(pool))
             return GeneratedPassword(password, entropy)
@@ -75,13 +86,6 @@ class AdvancedOptionsGenerator(PasswordGenerator):
             entropy = (self.length / 3) * 12.0 
             return GeneratedPassword(password, entropy)
 
-        elif self.mode == "bubble_babble":
-            # Gera 8 bytes aleatórios e codifica
-            raw = secrets.token_bytes(6)
-            password = self._bubble_babble(raw)
-            entropy = 6 * 8.0 # 48 bits de aleatoriedade na base
-            return GeneratedPassword(password, entropy)
-
         return GeneratedPassword("OPCAO_INVALIDA", 0)
 
     def _generate_ulid(self):
@@ -110,42 +114,3 @@ class AdvancedOptionsGenerator(PasswordGenerator):
                 s += secrets.choice(consonants)
             res += s
         return res[:length]
-
-    def _bubble_babble(self, data: bytes) -> str:
-        vowels = "aeiouy"
-        consonants = "bcdfghklmnprstvzx"
-        
-        # Simplified BubbleBabble logic
-        # Spec is x + v + c + v + c ... + x
-        # With checksum bits.
-        # Here we implement the essence: alternating sounds.
-        res = ["x"]
-        seed = 1
-        for i in range(0, len(data), 2):
-            if i + 1 < len(data):
-                b1, b2 = data[i], data[i+1]
-                v1 = (((b1 >> 6) & 3) + seed) % 6
-                c1 = (b1 >> 2) & 15
-                v2 = (b1 & 3) % 6
-                # simplified
-                res.append(vowels[v1])
-                res.append(consonants[c1])
-                res.append(vowels[v2])
-                
-                v3 = (((b2 >> 6) & 3) + seed) % 6
-                c2 = (b2 >> 2) & 15
-                v4 = (b2 & 3) % 6
-                res.append("-")
-                res.append(vowels[v3])
-                res.append(consonants[c2])
-                res.append(vowels[v4])
-            else:
-                b1 = data[i]
-                v1 = (((b1 >> 6) & 3) + seed) % 6
-                c1 = (b1 >> 2) & 15
-                v2 = (b1 & 3) % 6
-                res.append(vowels[v1])
-                res.append(consonants[c1])
-                res.append(vowels[v2])
-        res.append("x")
-        return "".join(res)

@@ -618,6 +618,16 @@ IMPLEMENTAÇÃO:
 
     - Padronização Visual: Renomeação de todos os títulos de seção para MAIÚSCULAS (ex: DICEWARE, URL (BASE 64), TOKEN/API KEY HEX.) e padronização de todos os rótulos de campos (labels) para maiúsculas (ex: COMPRIMENTO, IDIOMA) para maior clareza e consistência.
 
+    - Refinamento de Interface (Manual): Ajuste fino nas nomenclaturas das seções para termos mais descritivos (ex: Diceware clássico, Diceware personalizado, Senha aleatória clássica, Alta entropia alfanumérica (HEA)).
+    - Ajustes de Componentes e Lógica: 
+        - Simplificação das opções de 'SEPARADOR' no Diceware personalizado.
+        - NanoID: Fixado em 21 caracteres (comprimento padrão de segurança) e remoção do campo de ajuste.
+        - ULID: Expansão detalhada da descrição técnica para melhor compreensão do usuário.
+        - Apenas Consoantes: Suporte a Maiúsculas e Minúsculas via interface (checkboxes) e lógica de backend.
+        - PIN Numérico: Interface simplificada, removendo botões de preset e mantendo apenas o campo numérico.
+        - Remoção definitiva da seção 'Bubble Bobble' (frontend e backend).
+        - Atualização de textos explicativos em UUID (V4).
+
 ================================================================================
 FIM DO HISTÓRICO
 ================================================================================

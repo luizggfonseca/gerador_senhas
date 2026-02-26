@@ -89,7 +89,7 @@ export default function Generator() {
     const [tokenHex, setTokenHex] = useState({ length: 32, entropy_bits: 0 });
     const [tokenUrl, setTokenUrl] = useState({ length: 32 });
     const [highEntropy, setHighEntropy] = useState({ length: 32 });
-    const [consonants, setConsonants] = useState({ length: 16 });
+    const [consonants, setConsonants] = useState({ length: 16, use_upper: true, use_lower: true });
     const [protonStyle, setProtonStyle] = useState({ length: 12 });
     const [pin, setPin] = useState({ length: 6 });
     const [nanoid, setNanoid] = useState({ length: 21 });
@@ -161,7 +161,7 @@ export default function Generator() {
                 {/* 1. Diceware */}
                 <GeneratorSection
                     id="diceware-pure"
-                    title="DICEWARE"
+                    title="Diceware clássico"
                     icon="/icons/diceware.png"
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure')}
                     loading={globalLoading && pendingSectionId === 'diceware_pure'}
@@ -188,7 +188,7 @@ export default function Generator() {
                 {/* 2. Diceware (personalizável) */}
                 <GeneratorSection
                     id="diceware-mod"
-                    title="DICEWARE (PERSONALIZÁVEL)"
+                    title="Diceware personalizado"
                     icon="/icons/diceware.png"
                     onGenerate={() => {
                         const options = {
@@ -217,11 +217,11 @@ export default function Generator() {
                         <div>
                             <label className="label">SEPARADOR</label>
                             <select className="input-field input-mono" value={dicewareMod.separator} onChange={(e) => setDicewareMod({ ...dicewareMod, separator: e.target.value })}>
-                                <option value=" ">Espaço ( )</option>
-                                <option value="-">Hífen (-)</option>
-                                <option value="_">Underline (_)</option>
-                                <option value=".">Ponto (.)</option>
-                                <option value=",">Vírgula (,)</option>
+                                <option value=" ">Espaço</option>
+                                <option value="-">Traço</option>
+                                <option value="_">Underline</option>
+                                <option value=".">Ponto</option>
+                                <option value=",">Vírgula</option>
                             </select>
                         </div>
                         <div>
@@ -268,7 +268,7 @@ export default function Generator() {
                 {/* 3. Senha Aleatória */}
                 <GeneratorSection
                     id="random-classic"
-                    title="Senha Aleatória"
+                    title="Senha aleatória clássica"
                     icon="/icons/aleatoria.png"
                     onGenerate={() => handleGenerate('random_classic', { ...randomClassic, mode: 'classic' }, 'random_classic:classic')}
                     loading={globalLoading && pendingSectionId === 'random_classic:classic'}
@@ -313,7 +313,7 @@ export default function Generator() {
                 {/* 4. Token Hex. */}
                 <GeneratorSection
                     id="token-hex"
-                    title="TOKEN/API KEY HEX."
+                    title="Token/API Key Hex."
                     icon="/icons/token.png"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'hex', token_length: tokenHex.length, entropy_bits: tokenHex.entropy_bits }, 'random_classic:token:hex')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:hex'}
@@ -358,13 +358,13 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'uuid' }, 'random_classic:token:uuid')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:uuid'}
                 >
-                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Identificador único universal versão 4 (aleatório padrão RFC 4122).</p>
+                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>id único universal (v4), aleatório padrão RFC 4122</p>
                 </GeneratorSection>
 
                 {/* 7. High-Entropy */}
                 <GeneratorSection
                     id="high-entropy"
-                    title="HIGH-ENTROPY ALPHANUMERIC"
+                    title="Alta entropia alfanumérica (HEA)"
                     icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'high_entropy', length: highEntropy.length }, 'advanced:high_entropy')}
                     loading={globalLoading && pendingSectionId === 'advanced:high_entropy'}
@@ -380,12 +380,18 @@ export default function Generator() {
                     id="consonants"
                     title="Apenas Consoantes"
                     icon="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'consonants', length: consonants.length }, 'advanced:consonants')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'consonants', length: consonants.length, use_upper: consonants.use_upper, use_lower: consonants.use_lower }, 'advanced:consonants')}
                     loading={globalLoading && pendingSectionId === 'advanced:consonants'}
                 >
-                    <div>
-                        <label className="label">Comprimento</label>
-                        <input type="number" min="4" max="128" className="input-field input-mono" value={consonants.length} onChange={(e) => setConsonants({ length: parseInt(e.target.value) || 16 })} />
+                    <div className="config-grid">
+                        <div>
+                            <label className="label">COMPRIMENTO</label>
+                            <input type="number" min="4" max="128" className="input-field input-mono" value={consonants.length} onChange={(e) => setConsonants({ ...consonants, length: parseInt(e.target.value) || 16 })} />
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.25rem' }}>
+                            <CheckboxOption checked={consonants.use_upper} onChange={(v) => setConsonants({ ...consonants, use_upper: v })} label="MAIÚSCULAS" />
+                            <CheckboxOption checked={consonants.use_lower} onChange={(v) => setConsonants({ ...consonants, use_lower: v })} label="MINÚSCULAS" />
+                        </div>
                     </div>
                 </GeneratorSection>
 
@@ -411,11 +417,9 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'pin', length: pin.length }, 'advanced:pin')}
                     loading={globalLoading && pendingSectionId === 'advanced:pin'}
                 >
-                    <div className="config-grid">
-                        <button className={`btn-outline ${pin.length === 4 ? 'active' : ''}`} onClick={() => setPin({ length: 4 })}>4 Dígitos</button>
-                        <button className={`btn-outline ${pin.length === 6 ? 'active' : ''}`} onClick={() => setPin({ length: 6 })}>6 Dígitos</button>
-                        <button className={`btn-outline ${pin.length === 8 ? 'active' : ''}`} onClick={() => setPin({ length: 8 })}>8 Dígitos</button>
-                        <input type="number" className="input-field input-mono" value={pin.length} onChange={(e) => setPin({ length: parseInt(e.target.value) || 4 })} />
+                    <div>
+                        <label className="label">COMPRIMENTO</label>
+                        <input type="number" min="4" max="12" className="input-field input-mono" value={pin.length} onChange={(e) => setPin({ length: parseInt(e.target.value) || 4 })} />
                     </div>
                 </GeneratorSection>
 
@@ -427,7 +431,7 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'ulid' }, 'advanced:ulid')}
                     loading={globalLoading && pendingSectionId === 'advanced:ulid'}
                 >
-                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Universally Unique Lexicographically Sortable Identifier.</p>
+                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>É um identificador único de 128 bits, representado por uma string de 26 caracteres (usando Crockford's Base32), projetado para ser uma alternativa ao UUID. Combina um timestamp de 48 bits com 80 bits de aleatoriedade, garantindo unicidade, ordenação cronológica automática e alta eficiência em bancos de dados.</p>
                 </GeneratorSection>
 
                 {/* 12. NanoID */}
@@ -435,13 +439,10 @@ export default function Generator() {
                     id="nanoid"
                     title="NanoID"
                     icon="M13 10V3L4 14h7v7l9-11h-7z"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'nanoid', length: nanoid.length }, 'advanced:nanoid')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'nanoid', length: 21 }, 'advanced:nanoid')}
                     loading={globalLoading && pendingSectionId === 'advanced:nanoid'}
                 >
-                    <div>
-                        <label className="label">Comprimento (Padrão: 21)</label>
-                        <input type="number" min="5" max="128" className="input-field input-mono" value={nanoid.length} onChange={(e) => setNanoid({ length: parseInt(e.target.value) || 21 })} />
-                    </div>
+                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Comprimento fixo: 21 caracteres</p>
                 </GeneratorSection>
 
                 {/* 13. FIPS-181 */}
@@ -458,16 +459,6 @@ export default function Generator() {
                     </div>
                 </GeneratorSection>
 
-                {/* 14. Bubble Babble */}
-                <GeneratorSection
-                    id="bubble-babble"
-                    title="Bubble Babble"
-                    icon="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2m8-10a4 4 0 100-8 4 4 0 000 8z"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'bubble_babble' }, 'advanced:bubble_babble')}
-                    loading={globalLoading && pendingSectionId === 'advanced:bubble_babble'}
-                >
-                    <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Codificação sonora borbulhante para dados binários.</p>
-                </GeneratorSection>
 
             </div>
 
