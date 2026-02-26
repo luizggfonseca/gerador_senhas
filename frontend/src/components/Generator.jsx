@@ -168,17 +168,21 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure')}
                     loading={globalLoading && pendingSectionId === 'diceware_pure'}
                 >
-                    <div className="config-stack">
+                    <div className="config-grid">
                         <div>
-                            <label className="label">Idioma</label>
+                            <label className="label">IDIOMA</label>
                             <select className="input-field" value={dicewareTrad.language} onChange={(e) => setDicewareTrad({ ...dicewareTrad, language: e.target.value })}>
                                 <option value="português">Português</option>
                                 <option value="inglês">Inglês</option>
                             </select>
                         </div>
                         <div>
-                            <label className="label">Número de palavras</label>
-                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareTrad.num_words} onChange={(e) => setDicewareTrad({ ...dicewareTrad, num_words: parseInt(e.target.value) || 5 })} />
+                            <label className="label">QUANT. DE PALAVRAS</label>
+                            <select className="input-field input-mono" value={dicewareTrad.num_words} onChange={(e) => setDicewareTrad({ ...dicewareTrad, num_words: parseInt(e.target.value) })}>
+                                {[5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                                    <option key={n} value={n}>{n}</option>
+                                ))}
+                            </select>
                         </div>
                     </div>
                 </GeneratorSection>
@@ -188,12 +192,20 @@ export default function Generator() {
                     id="diceware-mod"
                     title="Diceware (personalizável)"
                     icon="/icons/diceware.png"
-                    onGenerate={() => handleGenerate('diceware_modified', dicewareMod, 'diceware_modified')}
+                    onGenerate={() => {
+                        const options = {
+                            ...dicewareMod,
+                            use_uppercase: dicewareMod.capitalize_count > 0,
+                            use_numbers: dicewareMod.number_count > 0,
+                            use_symbols: dicewareMod.symbols_pool.length > 0
+                        };
+                        handleGenerate('diceware_modified', options, 'diceware_modified');
+                    }}
                     loading={globalLoading && pendingSectionId === 'diceware_modified'}
                 >
-                    <div className="config-stack">
+                    <div className="config-grid">
                         <div>
-                            <label className="label">Idioma</label>
+                            <label className="label">IDIOMA</label>
                             <select className="input-field" value={dicewareMod.language} onChange={(e) => setDicewareMod({ ...dicewareMod, language: e.target.value })}>
                                 <option value="catalão">Catalão</option>
                                 <option value="espanhol">Espanhol</option>
@@ -205,30 +217,42 @@ export default function Generator() {
                             </select>
                         </div>
                         <div>
-                            <label className="label">Separador</label>
-                            <input type="text" className="input-field input-mono" value={dicewareMod.separator} onChange={(e) => setDicewareMod({ ...dicewareMod, separator: e.target.value })} />
+                            <label className="label">SEPARADOR</label>
+                            <select className="input-field input-mono" value={dicewareMod.separator} onChange={(e) => setDicewareMod({ ...dicewareMod, separator: e.target.value })}>
+                                <option value=" ">Espaço ( )</option>
+                                <option value="-">Hífen (-)</option>
+                                <option value="_">Underline (_)</option>
+                                <option value=".">Ponto (.)</option>
+                                <option value=",">Vírgula (,)</option>
+                            </select>
                         </div>
                         <div>
-                            <label className="label">Palavras</label>
-                            <input type="number" min="5" max="15" className="input-field input-mono" value={dicewareMod.num_words} onChange={(e) => setDicewareMod({ ...dicewareMod, num_words: parseInt(e.target.value) || 5 })} />
+                            <label className="label">QUANT. DE PALAVRAS</label>
+                            <select className="input-field input-mono" value={dicewareMod.num_words} onChange={(e) => setDicewareMod({ ...dicewareMod, num_words: parseInt(e.target.value) })}>
+                                {[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map(n => (
+                                    <option key={n} value={n}>{n}</option>
+                                ))}
+                            </select>
                         </div>
                         <div>
-                            <CheckboxOption checked={dicewareMod.use_uppercase} onChange={(v) => setDicewareMod({ ...dicewareMod, use_uppercase: v })} label="Letras maiúsculas" />
-                            {dicewareMod.use_uppercase && (
-                                <input type="number" min="1" max={dicewareMod.num_words} className="input-field input-mono" style={{ marginTop: '0.25rem', height: '32px' }} value={dicewareMod.capitalize_count} onChange={(e) => setDicewareMod({ ...dicewareMod, capitalize_count: parseInt(e.target.value) || 1 })} />
-                            )}
+                            <label className="label">LETRAS MAIÚSCULAS</label>
+                            <select className="input-field input-mono" value={dicewareMod.capitalize_count} onChange={(e) => setDicewareMod({ ...dicewareMod, capitalize_count: parseInt(e.target.value) })}>
+                                {[0, 1, 2, 3, 4, 5].map(n => (
+                                    <option key={n} value={n}>{n === 0 ? 'Desativado' : n}</option>
+                                ))}
+                            </select>
                         </div>
                         <div>
-                            <CheckboxOption checked={dicewareMod.use_numbers} onChange={(v) => setDicewareMod({ ...dicewareMod, use_numbers: v })} label="Número" />
-                            {dicewareMod.use_numbers && (
-                                <input type="number" min="1" max="8" className="input-field input-mono" style={{ marginTop: '0.25rem', height: '32px' }} value={dicewareMod.number_count} onChange={(e) => setDicewareMod({ ...dicewareMod, number_count: parseInt(e.target.value) || 1 })} />
-                            )}
+                            <label className="label">NÚMERO</label>
+                            <select className="input-field input-mono" value={dicewareMod.number_count} onChange={(e) => setDicewareMod({ ...dicewareMod, number_count: parseInt(e.target.value) })}>
+                                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+                                    <option key={n} value={n}>{n === 0 ? 'Desativado' : n}</option>
+                                ))}
+                            </select>
                         </div>
                         <div>
-                            <CheckboxOption checked={dicewareMod.use_symbols} onChange={(v) => setDicewareMod({ ...dicewareMod, use_symbols: v })} label="Símbolos" />
-                            {dicewareMod.use_symbols && (
-                                <input type="text" className="input-field input-mono" style={{ marginTop: '0.25rem', height: '32px' }} value={dicewareMod.symbols_pool} onChange={(e) => setDicewareMod({ ...dicewareMod, symbols_pool: e.target.value })} />
-                            )}
+                            <label className="label">SÍMBOLOS</label>
+                            <input type="text" placeholder="Ex: !@#$..." className="input-field input-mono" value={dicewareMod.symbols_pool} onChange={(e) => setDicewareMod({ ...dicewareMod, symbols_pool: e.target.value })} />
                         </div>
                     </div>
                 </GeneratorSection>

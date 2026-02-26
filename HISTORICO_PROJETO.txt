@@ -584,7 +584,10 @@ IMPLEMENTAÇÃO:
     - Adição de geradores de PIN (4, 6, 8 dígitos), ULID (ordenável) e NanoID (moderno).
     - Inclusão de algoritmos fonéticos (FIPS-181) e codificação Bubble Babble para verificações visuais.
   🎨 Refinamento de UI:
-    - Reestruturação das seções 'Diceware' e 'Diceware (personalizável)' para layout vertical (stack) em vez de grade.
+    - Reversão das seções Diceware para layout em grade (lado a lado).
+    - Substituição de campos de entrada numérica por seletores (dropdowns) com rótulos em MAIÚSCULAS.
+    - Implementação de seletor de separadores predefinidos.
+    - Remoção de checkboxes em favor de seletores numéricos (0 desativa a opção).
     - Padronização rigorosa de rótulos e textos de botões ('Gerar senha' em minúsculo).
     - Remoção da barra de navegação superior (links) para um design mais minimalista e limpo.
     - Remoção do link de ajuda redundante dentro do Modal de Segurança para manter o foco na senha e anotação.
