@@ -92,7 +92,7 @@ export default function Generator() {
     const [consonants, setConsonants] = useState({ length: 16, use_upper: true, use_lower: true, entropy_bits: 0 });
     const [protonStyle, setProtonStyle] = useState({ length: 12, entropy_bits: 0 });
     const [pin, setPin] = useState({ length: 6, entropy_bits: 0 });
-    const [fips181, setFips181] = useState({ length: 10, entropy_bits: 0 });
+    const [fips181, setFips181] = useState({ length: 10 });
 
     const handleGenerate = async (genId, options, metadataPath) => {
         let finalOptions = { ...options };
@@ -136,9 +136,6 @@ export default function Generator() {
                 } else if (options.mode === 'proton') {
                     // Média realista: (2*log2(52) + log2(10)) / 3 ≈ 4.9 bits/char
                     finalOptions.length = Math.ceil(bits / 4.9);
-                } else if (options.mode === 'fips181') {
-                    // FIPS-181 é baseado em sílabas, entropia real é baixa (~3.4 bits/char)
-                    finalOptions.length = Math.ceil(bits / 3.4);
                 } else if (options.mode === 'high_entropy') {
                     // 62 caracteres (A-Z, a-z, 0-9) -> log2(62) ≈ 5.954
                     finalOptions.length = Math.ceil(bits / 5.95);
@@ -531,14 +528,7 @@ export default function Generator() {
                             <label className="label">Comprimento</label>
                             <input type="number" min="6" max="64" className="input-field input-mono"
                                 value={fips181.length || ''}
-                                onChange={(e) => setFips181({ ...fips181, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
-                            />
-                        </div>
-                        <div>
-                            <label className="label">ENTROPIA (BITS)</label>
-                            <input type="number" min="0" max="256" placeholder="Opcional" className="input-field input-mono"
-                                value={fips181.entropy_bits || ''}
-                                onChange={(e) => setFips181({ ...fips181, entropy_bits: parseInt(e.target.value) || 0, length: 0 })}
+                                onChange={(e) => setFips181({ length: parseInt(e.target.value) || 0 })}
                             />
                         </div>
                     </div>
