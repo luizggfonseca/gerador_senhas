@@ -97,7 +97,7 @@ export default function Generator() {
     const [protonStyle, setProtonStyle] = useState({ length: 12, entropy_bits: 0 });
     const [pin, setPin] = useState({ length: 6, entropy_bits: 0 });
     const [fips181, setFips181] = useState({ length: 10 });
-    const [openSection, setOpenSection] = useState('diceware-pure');
+    const [openSection, setOpenSection] = useState(null);
 
     const toggleSection = (sectionId) => {
         setOpenSection(openSection === sectionId ? null : sectionId);

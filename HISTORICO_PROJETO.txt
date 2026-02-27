@@ -644,6 +644,8 @@ IMPLEMENTAÇÃO:
 
     - Documentação Técnica (Readme): Reescrita completa do README.md em Português e Inglês, detalhando os 12 modelos de geração, arquitetura stateless e a fundamentação matemática da Entropia de Shannon aplicada ao projeto.
 
+    - Refinamento de UI (Acordeão): Alterado o estado inicial para que todos os geradores iniciem fechados ao carregar a página, proporcionando uma interface mais limpa e minimalista.
+
 ================================================================================
 FIM DO HISTÓRICO
 ================================================================================
