@@ -628,6 +628,22 @@ IMPLEMENTAÇÃO:
         - Consoantes: Implementação de trava de interface para o botão "Gerar senha" quando nenhum checkbox (Maiúsculas/Minúsculas) está selecionado.
         - Layout: Restauração da fluidez de altura do container e ajuste de largura para melhor visualização.
 
+    - Precisão na Entropia: Correção crítica nos cálculos para "ProtonPass Style" e "Apenas Consoantes", garantindo que a entropia solicitada gere o comprimento real necessário.
+    - Segurança da Sessão: Refatoração da API (/api/generate) para instanciar geradores "limpos" a cada requisição, eliminando o problema de persistência indesejada (vazamento) de configurações entre gerações (ex: maiúsculas/minúsculas).
+    - Refinamento ULID: Descrição técnica simplificada focada no padrão de 128 bits.
+    - Simplificação FIPS-181: Remoção do campo de entropia do gerador fonético, mantendo foco apenas no comprimento e otimizando a largura do campo na interface.
+    - Ajuste de UI Clássico: Reposicionamento do campo "Símbolos Personalizados" para ficar diretamente abaixo do checkbox de símbolos, otimizando o fluxo visual da coluna.
+
+    - Refinamento de UI (Floating Screens): Implementação de sistema de acordeão para os geradores, onde cada seção funciona como uma "tela flutuante" que se expande ao clicar no cabeçalho, permitindo uma interface limpa e organizada focada no método selecionado.
+
+    - Refinamento de UI (Sombras e Bordas Profissionais): Implementação de um sistema de "Layering Shadows" (sombras em camadas) e bordas com brilho interno (inner glow), seguindo padrões de design gráfico de alta fidelidade para criar uma sensação de profundidade e materialidade nas telas flutuantes.
+
+    - Refinamento de UI (Ícones): Atualização do ícone da seção PIN Numérico para utilizar a imagem pin_numerico.png, mantendo a consistência visual com os demais geradores.
+
+    - Refinamento de Configuração: Ajuste do limite de comprimento do PIN Numérico para o intervalo de 4 a 50 caracteres.
+
+    - Documentação Técnica (Readme): Reescrita completa do README.md em Português e Inglês, detalhando os 12 modelos de geração, arquitetura stateless e a fundamentação matemática da Entropia de Shannon aplicada ao projeto.
+
 ================================================================================
 FIM DO HISTÓRICO
 ================================================================================

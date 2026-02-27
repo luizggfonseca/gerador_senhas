@@ -5,13 +5,13 @@ import { GENERATOR_METADATA } from '../constants/generatorMetadata';
 
 /* ========================== Reusable Components ========================== */
 
-function GeneratorSection({ id, title, children, onGenerate, loading, icon, disabled }) {
+function GeneratorSection({ id, title, children, onGenerate, loading, icon, disabled, isExpanded, onToggle }) {
     // Verifica se o ícone é um caminho de arquivo (PNG/JPG etc) ou um path SVG
     const isImagePath = typeof icon === 'string' && (icon.includes('.') || icon.startsWith('/'));
 
     return (
-        <section id={id} className="dashboard-section">
-            <div className="section-header">
+        <section id={id} className={`dashboard-section ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}>
+            <div className="section-header" onClick={onToggle} style={{ cursor: 'pointer', borderBottom: isExpanded ? '1px solid var(--border)' : 'none', marginBottom: isExpanded ? '0.5rem' : '0' }}>
                 <h3 className="section-title">
                     {icon && (
                         isImagePath ? (
@@ -25,21 +25,25 @@ function GeneratorSection({ id, title, children, onGenerate, loading, icon, disa
                     {title}
                 </h3>
             </div>
-            <div className="section-body">{children}</div>
-            <div className="section-actions">
-                <button onClick={onGenerate} disabled={loading || disabled} className="btn-generate-small">
-                    {loading ? (
-                        <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ width: '1.25rem', height: '1.25rem' }}>
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                        </svg>
-                    ) : (
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.4rem', height: '1.4rem' }}>
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                    )}
-                    {loading ? 'Gerando...' : 'Gerar senha'}
-                </button>
-            </div>
+            {isExpanded && (
+                <>
+                    <div className="section-body">{children}</div>
+                    <div className="section-actions">
+                        <button onClick={(e) => { e.stopPropagation(); onGenerate(); }} disabled={loading || disabled} className="btn-generate-small">
+                            {loading ? (
+                                <svg className="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ width: '1.25rem', height: '1.25rem' }}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                            ) : (
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '1.4rem', height: '1.4rem' }}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            )}
+                            {loading ? 'Gerando...' : 'Gerar senha'}
+                        </button>
+                    </div>
+                </>
+            )}
         </section>
     );
 }
@@ -93,6 +97,11 @@ export default function Generator() {
     const [protonStyle, setProtonStyle] = useState({ length: 12, entropy_bits: 0 });
     const [pin, setPin] = useState({ length: 6, entropy_bits: 0 });
     const [fips181, setFips181] = useState({ length: 10 });
+    const [openSection, setOpenSection] = useState('diceware-pure');
+
+    const toggleSection = (sectionId) => {
+        setOpenSection(openSection === sectionId ? null : sectionId);
+    };
 
     const handleGenerate = async (genId, options, metadataPath) => {
         let finalOptions = { ...options };
@@ -176,6 +185,8 @@ export default function Generator() {
                     icon="/icons/diceware.png"
                     onGenerate={() => handleGenerate('diceware_pure', dicewareTrad, 'diceware_pure')}
                     loading={globalLoading && pendingSectionId === 'diceware_pure'}
+                    isExpanded={openSection === 'diceware-pure'}
+                    onToggle={() => toggleSection('diceware-pure')}
                 >
                     <div className="config-grid">
                         <div>
@@ -211,6 +222,8 @@ export default function Generator() {
                         handleGenerate('diceware_modified', options, 'diceware_modified');
                     }}
                     loading={globalLoading && pendingSectionId === 'diceware_modified'}
+                    isExpanded={openSection === 'diceware-mod'}
+                    onToggle={() => toggleSection('diceware-mod')}
                 >
                     <div className="config-grid">
                         <div>
@@ -283,6 +296,8 @@ export default function Generator() {
                     icon="/icons/aleatoria.png"
                     onGenerate={() => handleGenerate('random_classic', { ...randomClassic, mode: 'classic' }, 'random_classic:classic')}
                     loading={globalLoading && pendingSectionId === 'random_classic:classic'}
+                    isExpanded={openSection === 'random-classic'}
+                    onToggle={() => toggleSection('random-classic')}
                 >
                     <div className="config-grid">
                         <div>
@@ -306,18 +321,19 @@ export default function Generator() {
                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0.25rem' }}>
                             <CheckboxOption checked={randomClassic.use_numbers} onChange={(v) => setRandomClassic({ ...randomClassic, use_numbers: v })} label="123 (números)" />
                             <CheckboxOption checked={randomClassic.use_symbols} onChange={(v) => setRandomClassic({ ...randomClassic, use_symbols: v })} label="!@# (símbolos)" />
+                            {randomClassic.use_symbols && (
+                                <div style={{ marginTop: '0.5rem' }}>
+                                    <label className="label" style={{ fontSize: '0.7rem' }}>SÍMBOLOS PERSONALIZADOS</label>
+                                    <input
+                                        type="text"
+                                        className="input-field input-mono"
+                                        style={{ padding: '0.4rem 0.6rem', fontSize: '0.8rem' }}
+                                        value={randomClassic.symbols}
+                                        onChange={(e) => setRandomClassic({ ...randomClassic, symbols: e.target.value })}
+                                    />
+                                </div>
+                            )}
                         </div>
-                        {randomClassic.use_symbols && (
-                            <div>
-                                <label className="label">SÍMBOLOS PERSONALIZADOS</label>
-                                <input
-                                    type="text"
-                                    className="input-field input-mono"
-                                    value={randomClassic.symbols}
-                                    onChange={(e) => setRandomClassic({ ...randomClassic, symbols: e.target.value })}
-                                />
-                            </div>
-                        )}
                     </div>
                 </GeneratorSection>
 
@@ -328,6 +344,8 @@ export default function Generator() {
                     icon="/icons/token.png"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'hex', token_length: tokenHex.length, entropy_bits: tokenHex.entropy_bits }, 'random_classic:token:hex')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:hex'}
+                    isExpanded={openSection === 'token-hex'}
+                    onToggle={() => toggleSection('token-hex')}
                 >
                     <div className="config-grid">
                         <div>
@@ -354,6 +372,8 @@ export default function Generator() {
                     icon="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'urlsafe', token_length: tokenUrl.length, entropy_bits: tokenUrl.entropy_bits }, 'random_classic:token:urlsafe')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:urlsafe'}
+                    isExpanded={openSection === 'token-url'}
+                    onToggle={() => toggleSection('token-url')}
                 >
                     <div className="config-grid">
                         <div>
@@ -380,6 +400,8 @@ export default function Generator() {
                     icon="M7 7h.01M7 11h.01M7 15h.01M10 7h.01M10 11h.01M10 15h.01M13 7h.01M13 11h.01M13 15h.01M17 7h.01M17 11h.01M17 15h.01"
                     onGenerate={() => handleGenerate('random_classic', { mode: 'token', token_type: 'uuid' }, 'random_classic:token:uuid')}
                     loading={globalLoading && pendingSectionId === 'random_classic:token:uuid'}
+                    isExpanded={openSection === 'uuid'}
+                    onToggle={() => toggleSection('uuid')}
                 >
                     <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>id único universal (v4), aleatório padrão RFC 4122</p>
                 </GeneratorSection>
@@ -391,6 +413,8 @@ export default function Generator() {
                     icon="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'high_entropy', length: highEntropy.length, entropy_bits: highEntropy.entropy_bits }, 'advanced:high_entropy')}
                     loading={globalLoading && pendingSectionId === 'advanced:high_entropy'}
+                    isExpanded={openSection === 'high-entropy'}
+                    onToggle={() => toggleSection('high-entropy')}
                 >
                     <div className="config-grid">
                         <div>
@@ -418,6 +442,8 @@ export default function Generator() {
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'consonants', length: consonants.length, use_upper: consonants.use_upper, use_lower: consonants.use_lower, entropy_bits: consonants.entropy_bits }, 'advanced:consonants')}
                     loading={globalLoading && pendingSectionId === 'advanced:consonants'}
                     disabled={!consonants.use_upper && !consonants.use_lower}
+                    isExpanded={openSection === 'consonants'}
+                    onToggle={() => toggleSection('consonants')}
                 >
                     <div className="config-grid">
                         <div>
@@ -448,6 +474,8 @@ export default function Generator() {
                     icon="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'proton', length: protonStyle.length, entropy_bits: protonStyle.entropy_bits }, 'advanced:proton')}
                     loading={globalLoading && pendingSectionId === 'advanced:proton'}
+                    isExpanded={openSection === 'proton-style'}
+                    onToggle={() => toggleSection('proton-style')}
                 >
                     <div className="config-grid">
                         <div>
@@ -471,14 +499,16 @@ export default function Generator() {
                 <GeneratorSection
                     id="pin"
                     title="PIN Numérico"
-                    icon="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    icon="/icons/pin_numerico.png"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'pin', length: pin.length, entropy_bits: pin.entropy_bits }, 'advanced:pin')}
                     loading={globalLoading && pendingSectionId === 'advanced:pin'}
+                    isExpanded={openSection === 'pin'}
+                    onToggle={() => toggleSection('pin')}
                 >
                     <div className="config-grid">
                         <div>
                             <label className="label">COMPRIMENTO</label>
-                            <input type="number" min="4" max="12" className="input-field input-mono"
+                            <input type="number" min="4" max="50" className="input-field input-mono"
                                 value={pin.length || ''}
                                 onChange={(e) => setPin({ ...pin, length: parseInt(e.target.value) || 0, entropy_bits: 0 })}
                             />
@@ -500,6 +530,8 @@ export default function Generator() {
                     icon="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'ulid' }, 'advanced:ulid')}
                     loading={globalLoading && pendingSectionId === 'advanced:ulid'}
+                    isExpanded={openSection === 'ulid'}
+                    onToggle={() => toggleSection('ulid')}
                 >
                     <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Identificador único de 128 bits (26 caracteres em Crockford's Base32). Combina timestamp e componentes aleatórios para garantir unicidade e ordenação cronológica eficiente.</p>
                 </GeneratorSection>
@@ -511,6 +543,8 @@ export default function Generator() {
                     icon="M13 10V3L4 14h7v7l9-11h-7z"
                     onGenerate={() => handleGenerate('advanced_options', { mode: 'nanoid', length: 21 }, 'advanced:nanoid')}
                     loading={globalLoading && pendingSectionId === 'advanced:nanoid'}
+                    isExpanded={openSection === 'nanoid'}
+                    onToggle={() => toggleSection('nanoid')}
                 >
                     <p className="sidebar-tip-text" style={{ fontSize: '0.85rem', opacity: 0.8 }}>Comprimento fixo: 21 caracteres</p>
                 </GeneratorSection>
@@ -520,17 +554,17 @@ export default function Generator() {
                     id="fips-181"
                     title="Senha Fonética (FIPS-181)"
                     icon="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                    onGenerate={() => handleGenerate('advanced_options', { mode: 'fips181', length: fips181.length, entropy_bits: fips181.entropy_bits }, 'advanced:fips181')}
+                    onGenerate={() => handleGenerate('advanced_options', { mode: 'fips181', length: fips181.length }, 'advanced:fips181')}
                     loading={globalLoading && pendingSectionId === 'advanced:fips181'}
+                    isExpanded={openSection === 'fips-181'}
+                    onToggle={() => toggleSection('fips-181')}
                 >
-                    <div className="config-grid">
-                        <div>
-                            <label className="label">Comprimento</label>
-                            <input type="number" min="6" max="64" className="input-field input-mono"
-                                value={fips181.length || ''}
-                                onChange={(e) => setFips181({ length: parseInt(e.target.value) || 0 })}
-                            />
-                        </div>
+                    <div>
+                        <label className="label">Comprimento</label>
+                        <input type="number" min="6" max="64" className="input-field input-mono"
+                            value={fips181.length || ''}
+                            onChange={(e) => setFips181({ length: parseInt(e.target.value) || 0 })}
+                        />
                     </div>
                 </GeneratorSection>
 
