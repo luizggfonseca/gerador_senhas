@@ -8,11 +8,6 @@ export default function ModalManual({ isOpen, onClose }) {
 
     const manualData = [
         {
-            title: "Diceware Puro (Lista Padrão)",
-            usage: "Senhas mestras de gerenciadores de senhas (como Bitwarden, KeePass), chaves de criptografia de disco (LUKS, FileVault, BitLocker) e chaves privadas PGP/SSH.",
-            justification: "É projetado para o cérebro humano. Oferece altíssima entropia matemática (usando 5 a 7 palavras) e resistência contra ataques de força bruta, mantendo uma curva de memorização e digitação fluida para acessos diários."
-        },
-        {
             title: "Diceware Modificado",
             usage: "Logins corporativos (Active Directory), sistemas bancários ou formulários web antigos que você precisa digitar manualmente com frequência.",
             justification: "Ideal para contornar políticas de senha engessadas ou obsoletas que exigem caracteres especiais obrigatórios, mantendo a base memorizável do método Diceware."

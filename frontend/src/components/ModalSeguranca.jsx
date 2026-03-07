@@ -42,12 +42,12 @@ export default function ModalSeguranca({ result, metadata, onClose, onGenerate }
 
     const getEntropyColor = (label) => {
         const colors = {
-            'Baixíssima': '#f44336',
-            'Baixa': '#ff9800',
-            'Média': '#ffeb3b',
-            'Alta': '#76b852',
-            'Altíssima': '#1a73e8',
-            'Impossível': '#9c27b0'
+            'Baixíssima': '#f21404ff',
+            'Baixa': '#b4ab00ff',
+            'Média': '#6502c8ff',
+            'Alta': '#3a9608ff',
+            'Altíssima': '#c201a5ff',
+            'Impossível': '#e400c4ff'
         };
         return colors[label] || 'var(--accent)';
     };
@@ -67,7 +67,7 @@ export default function ModalSeguranca({ result, metadata, onClose, onGenerate }
 
                 <div className="modal-info-grid" style={{ marginBottom: '1.5rem' }}>
                     <div className="modal-info-item">
-                        <span className="modal-info-label">Força da Senha (Entropia)</span>
+                        <span className="modal-info-label">Entropia (força da senha)</span>
                         <p style={{ color: getEntropyColor(result.entropy_label), fontWeight: 600, fontSize: '0.9rem', margin: 0 }}>
                             {result.entropy_label} ({result.entropy.toFixed(1)} bits)
                         </p>
@@ -91,14 +91,14 @@ export default function ModalSeguranca({ result, metadata, onClose, onGenerate }
                         className="btn btn-secondary"
                         style={{ width: '100%', background: 'transparent', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
                     >
-                        Gerar Outra Senha
+                        Gerar outra senha
                     </button>
                     <button
                         onClick={onClose}
                         className="btn btn-generate"
                         style={{ width: '100%', padding: '0.8rem' }}
                     >
-                        Concluído e Anotado
+                        Concluído e anotado
                     </button>
                 </div>
             </div>

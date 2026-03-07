@@ -14,7 +14,7 @@ class AdvancedOptionsGenerator(PasswordGenerator):
 
     def __init__(self, app_context):
         super().__init__(app_context)
-        self.mode = "high_entropy" # high_entropy, consonants, proton, pin, ulid, nanoid, fips181
+        self.mode = "high_entropy" # high_entropy, consonants, proton, pin, ulid, nanoid
         self.length = 16
         self.use_upper = True
         self.use_lower = True
@@ -86,13 +86,6 @@ class AdvancedOptionsGenerator(PasswordGenerator):
             entropy = length * math.log2(len(pool))
             return GeneratedPassword(password, entropy)
 
-        elif self.mode == "fips181":
-            password = self._generate_fips181(self.length)
-            # Entropia aproximada (fonemas são limitados)
-            # Syllables are roughly ~12 bits each.
-            entropy = (self.length / 3) * 12.0 
-            return GeneratedPassword(password, entropy)
-
         return GeneratedPassword("OPCAO_INVALIDA", 0)
 
     def _generate_ulid(self):
@@ -109,15 +102,3 @@ class AdvancedOptionsGenerator(PasswordGenerator):
         # 80 bits randomness
         rnd = secrets.randbits(80)
         return encode(ts, 10) + encode(rnd, 16)
-
-    def _generate_fips181(self, length):
-        vowels = "aeiou"
-        consonants = "bcdfghjklmnpqrstvwxyz"
-        res = ""
-        while len(res) < length:
-            # syllable: CVC or CV
-            s = secrets.choice(consonants) + secrets.choice(vowels)
-            if secrets.randbelow(2) == 0:
-                s += secrets.choice(consonants)
-            res += s
-        return res[:length]

@@ -59,14 +59,12 @@ _app_context = {"wordlists": wordlists}
 
 # Mapeamento de classes para instanciar sob demanda
 from password_generators import (
-    DicewarePureGenerator,
     DicewareModifiedGenerator,
     RandomClassicGenerator,
     AdvancedOptionsGenerator
 )
 
 _generators_map = {
-    "diceware_pure": DicewarePureGenerator,
     "diceware_modified": DicewareModifiedGenerator,
     "random_classic": RandomClassicGenerator,
     "advanced_options": AdvancedOptionsGenerator,
@@ -97,7 +95,6 @@ class GenerateResponse(BaseModel):
 def list_generators():
     # Retornamos os IDs fixos esperados pela UI
     return [
-        {"id": "diceware_pure", "name": "Diceware Clássico"},
         {"id": "diceware_modified", "name": "Diceware Personalizado"},
         {"id": "random_classic", "name": "Senha Aleatória Clássica"},
         {"id": "advanced_options", "name": "Opções Avançadas"},
