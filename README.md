@@ -33,7 +33,7 @@ O GhostPass foca nos algoritmos mais robustos do mercado:
 Calculamos a **Entropia de Shannon** exata para cada combinação:
 
 > $E = L \cdot \log_2(R)$
-> Feedback imediato: 🔴 Baixa | 🟡 Média | 🟢 Alta | 🟣 Crítica (> 128 bits).
+> Feedback imediato: Baixa | Média | Alta | Crítica (> 128 bits).
 
 ---
 
@@ -66,7 +66,7 @@ GhostPass focuses on the market's most robust algorithms:
 We calculate the exact **Shannon Entropy** for every combination:
 
 > $E = L \cdot \log_2(R)$
-> Instant feedback: 🔴 Low | 🟡 Medium | 🟢 High | 🟣 Critical (> 128 bits).
+> Instant feedback: Low | Medium | High | Critical (> 128 bits).
 
 ---
 
